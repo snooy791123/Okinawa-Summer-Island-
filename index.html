@@ -549,7 +549,11 @@ tailwind.config = {
   <section id="view-phrases" class="view-section max-w-5xl mx-auto">
     <div class="mb-8">
       <h2 class="font-heading font-black text-4xl text-ink mb-2 tracking-tight">急救日文小卡 🗣️</h2>
-      <p class="text-ink/60 font-medium">點擊喇叭讓手機直接幫你說！點餐、購物、問路必備。</p>
+      <p class="text-ink/60 font-medium">100 句旅遊實用日語，點擊喇叭讓手機直接幫你說！點餐、購物、問路、緊急狀況必備。</p>
+    </div>
+    <div class="relative mb-5">
+      <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-ink/30 text-sm"></i>
+      <input type="text" id="phrases-search" oninput="setPhrasesSearch(this.value)" placeholder="搜尋中文、日文或拼音…（例如：多少錢、トイレ、sumimasen）" class="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-white/60 border border-white shadow-inner-light text-sm font-bold text-ink placeholder:text-ink/30 focus:outline-none focus:bg-white focus:shadow-float transition">
     </div>
     <div class="flex gap-2 overflow-x-auto no-scroll mb-6 pb-2 px-1" id="phrases-filters"></div>
     <div id="phrases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
@@ -907,16 +911,105 @@ const CHECKLIST_DATA = [
 
 const PHRASES_DATA = [
   { tag: '👋 日常問候', color: 'sky', tw: '你好。', ja: 'こんにちは。', romaji: 'Konnichiwa.', speak: 'こんにちは' },
+  { tag: '👋 日常問候', color: 'sky', tw: '早安。', ja: 'おはようございます。', romaji: 'Ohayō gozaimasu.', speak: 'おはようございます' },
+  { tag: '👋 日常問候', color: 'sky', tw: '晚安。', ja: 'こんばんは。', romaji: 'Konbanwa.', speak: 'こんばんは' },
   { tag: '👋 日常問候', color: 'sky', tw: '謝謝。', ja: 'ありがとうございます。', romaji: 'Arigatō gozaimasu.', speak: 'ありがとうございます' },
   { tag: '👋 日常問候', color: 'sky', tw: '對不起 / 不好意思。', ja: 'すみません。', romaji: 'Sumimasen.', speak: 'すみません' },
+  { tag: '👋 日常問候', color: 'sky', tw: '麻煩您了。', ja: 'お願いします。', romaji: 'Onegaishimasu.', speak: 'お願いします' },
+  { tag: '👋 日常問候', color: 'sky', tw: '是 / 好的。', ja: 'はい。', romaji: 'Hai.', speak: 'はい' },
+  { tag: '👋 日常問候', color: 'sky', tw: '不是 / 不用了。', ja: 'いいえ。', romaji: 'Iie.', speak: 'いいえ' },
+  { tag: '👋 日常問候', color: 'sky', tw: '我不會說日語。', ja: '日本語が話せません。', romaji: 'Nihongo ga hanasemasen.', speak: '日本語が話せません' },
+  { tag: '👋 日常問候', color: 'sky', tw: '請說慢一點。', ja: 'ゆっくり話してください。', romaji: 'Yukkuri hanashite kudasai.', speak: 'ゆっくり話してください' },
+  { tag: '👋 日常問候', color: 'sky', tw: '請問你會說英語嗎？', ja: '英語は話せますか？', romaji: 'Eigo wa hanasemasu ka?', speak: '英語は話せますか' },
+  { tag: '👋 日常問候', color: 'sky', tw: '我聽不懂。', ja: 'わかりません。', romaji: 'Wakarimasen.', speak: 'わかりません' },
+  { tag: '👋 日常問候', color: 'sky', tw: '我知道了。', ja: 'わかりました。', romaji: 'Wakarimashita.', speak: 'わかりました' },
+  { tag: '👋 日常問候', color: 'sky', tw: '沒關係。', ja: '大丈夫です。', romaji: 'Daijōbu desu.', speak: '大丈夫です' },
+  { tag: '👋 日常問候', color: 'sky', tw: '再見。', ja: 'さようなら。', romaji: 'Sayōnara.', speak: 'さようなら' },
   { tag: '🚗 交通問路', color: 'ocean', tw: '請問車站在哪裡？', ja: '駅はどこですか？', romaji: 'Eki wa doko desu ka?', speak: '駅はどこですか' },
-  { tag: '🚗 交通問路', color: 'ocean', tw: '請載我到這個地址。', ja: 'この住所までお願いします。', romaji: 'Kono jūsho made onegaishimasu.', speak: 'こちらの住所までお願いします' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '請載我到這個地址。', ja: 'この住所までお願いします。', romaji: 'Kono jūsho made onegaishimasu.', speak: 'この住所までお願いします' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '到那霸機場多少錢？', ja: '那覇空港までいくらですか？', romaji: 'Naha kūkō made ikura desu ka?', speak: '那覇空港までいくらですか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '單軌電車要怎麼搭？', ja: 'ゆいレールはどう乗りますか？', romaji: 'Yui rēru wa dō norimasu ka?', speak: 'ゆいレールはどう乗りますか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '這班車有到國際通嗎？', ja: 'これは国際通りに行きますか？', romaji: 'Kore wa kokusai dōri ni ikimasu ka?', speak: 'これは国際通りに行きますか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '請問計程車招呼站在哪？', ja: 'タクシー乗り場はどこですか？', romaji: 'Takushī noriba wa doko desu ka?', speak: 'タクシー乗り場はどこですか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '請在這裡停車。', ja: 'ここで止めてください。', romaji: 'Koko de tomete kudasai.', speak: 'ここで止めてください' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '加油站在哪裡？', ja: 'ガソリンスタンドはどこですか？', romaji: 'Gasorin sutando wa doko desu ka?', speak: 'ガソリンスタンドはどこですか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '請幫我加滿油。', ja: '満タンでお願いします。', romaji: 'Mantan de onegaishimasu.', speak: '満タンでお願いします' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '停車場在哪裡？', ja: '駐車場はどこですか？', romaji: 'Chūshajō wa doko desu ka?', speak: '駐車場はどこですか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '走路要多久？', ja: '歩いてどのくらいですか？', romaji: 'Aruite dono kurai desu ka?', speak: '歩いてどのくらいですか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '我迷路了。', ja: '道に迷いました。', romaji: 'Michi ni mayoimashita.', speak: '道に迷いました' },
   { tag: '🏨 飯店住宿', color: 'sand', tw: '我要辦理入住。', ja: 'チェックインをお願いします。', romaji: 'Chekkuin o onegaishimasu.', speak: 'チェックインをお願いします' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '我要退房。', ja: 'チェックアウトをお願いします。', romaji: 'Chekkuauto o onegaishimasu.', speak: 'チェックアウトをお願いします' },
   { tag: '🏨 飯店住宿', color: 'sand', tw: '可以寄放行李嗎？', ja: '荷物を預かってもらえますか？', romaji: 'Nimotsu o azukatte moraemasu ka?', speak: '荷物を預かってもらえますか' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '幾點可以入住？', ja: '何時にチェックインできますか？', romaji: 'Nanji ni chekkuin dekimasu ka?', speak: '何時にチェックインできますか' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '有提供 WiFi 嗎？', ja: 'WiFiはありますか？', romaji: 'WiFi wa arimasu ka?', speak: 'WiFiはありますか' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: 'WiFi 密碼是多少？', ja: 'WiFiのパスワードは何ですか？', romaji: 'WiFi no pasuwādo wa nan desu ka?', speak: 'WiFiのパスワードは何ですか' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '房間的冷氣壞了。', ja: '部屋のエアコンが壊れています。', romaji: 'Heya no eakon ga kowarete imasu.', speak: '部屋のエアコンが壊れています' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '可以多給我一條毛巾嗎？', ja: 'タオルをもう一枚もらえますか？', romaji: 'Taoru o mō ichimai moraemasu ka?', speak: 'タオルをもう一枚もらえますか' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '早餐是幾點？', ja: '朝食は何時ですか？', romaji: 'Chōshoku wa nanji desu ka?', speak: '朝食は何時ですか' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '可以延後退房嗎？', ja: 'レイトチェックアウトはできますか？', romaji: 'Reito chekkuauto wa dekimasu ka?', speak: 'レイトチェックアウトはできますか' },
   { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '不好意思，請給我菜單。', ja: 'すみません、メニューをお願いします。', romaji: 'Sumimasen, menyū o onegaishimasu.', speak: 'すみません、メニューをお願いします' },
   { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '請幫我結帳。', ja: 'お会計をお願いします。', romaji: 'Okaikei o onegaishimasu.', speak: 'お会計をお願いします' },
-  { tag: '🛍️ 購物結帳', color: 'mint', tw: '這個可以退稅嗎？', ja: '免税（めんぜい）できますか？', romaji: 'Menzei dekimasu ka?', speak: '免税できますか' },
-  { tag: '🛍️ 購物結帳', color: 'mint', tw: '可以用信用卡嗎？', ja: 'クレジットカードは使えますか？', romaji: 'Kurejitto kādo wa tsukaemasu ka?', speak: 'クレジットカードは使えますか' }
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '有中文菜單嗎？', ja: '中国語のメニューはありますか？', romaji: 'Chūgokugo no menyū wa arimasu ka?', speak: '中国語のメニューはありますか' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '我要點這個。', ja: 'これをください。', romaji: 'Kore o kudasai.', speak: 'これをください' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '請給我推薦的。', ja: 'おすすめは何ですか？', romaji: 'Osusume wa nan desu ka?', speak: 'おすすめは何ですか' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '兩位。', ja: '二人です。', romaji: 'Futari desu.', speak: '二人です' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '我要一杯生啤酒。', ja: '生ビールを一つください。', romaji: 'Nama bīru o hitotsu kudasai.', speak: '生ビールを一つください' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '請給我水。', ja: 'お水をください。', romaji: 'Omizu o kudasai.', speak: 'お水をください' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '這個不要太辣。', ja: 'あまり辛くしないでください。', romaji: 'Amari karaku shinaide kudasai.', speak: 'あまり辛くしないでください' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '我對蝦子過敏。', ja: 'エビアレルギーがあります。', romaji: 'Ebi arerugī ga arimasu.', speak: 'エビアレルギーがあります' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '可以外帶嗎？', ja: '持ち帰りできますか？', romaji: 'Mochikaeri dekimasu ka?', speak: '持ち帰りできますか' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '很好吃！', ja: 'おいしいです！', romaji: 'Oishii desu!', speak: 'おいしいです！' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '請給我餐巾紙。', ja: '紙ナプキンをください。', romaji: 'Kami napukin o kudasai.', speak: '紙ナプキンをください' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '可以分開結帳嗎？', ja: '別々に払えますか？', romaji: 'Betsubetsu ni haraemasu ka?', speak: '別々に払えますか' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '我要禁菸座位。', ja: '禁煙席をお願いします。', romaji: 'Kin\'en seki o onegaishimasu.', speak: '禁煙席をお願いします' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '這個可以退稅嗎？', ja: '免税できますか？', romaji: 'Menzei dekimasu ka?', speak: '免税できますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '可以用信用卡嗎？', ja: 'クレジットカードは使えますか？', romaji: 'Kurejitto kādo wa tsukaemasu ka?', speak: 'クレジットカードは使えますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '這個多少錢？', ja: 'これはいくらですか？', romaji: 'Kore wa ikura desu ka?', speak: 'これはいくらですか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '可以試穿嗎？', ja: '試着できますか？', romaji: 'Shichaku dekimasu ka?', speak: '試着できますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '有大一點的尺寸嗎？', ja: '大きいサイズはありますか？', romaji: 'Ōkii saizu wa arimasu ka?', speak: '大きいサイズはありますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '有別的顏色嗎？', ja: '他の色はありますか？', romaji: 'Hoka no iro wa arimasu ka?', speak: '他の色はありますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '請給我袋子。', ja: '袋をください。', romaji: 'Fukuro o kudasai.', speak: '袋をください' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '可以幫我包裝成禮物嗎？', ja: 'ギフト包装できますか？', romaji: 'Gifuto hōsō dekimasu ka?', speak: 'ギフト包装できますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '我只是看看。', ja: '見ているだけです。', romaji: 'Mite iru dake desu.', speak: '見ているだけです' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '這個有貨嗎？', ja: 'これは在庫ありますか？', romaji: 'Kore wa zaiko arimasu ka?', speak: 'これは在庫ありますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '可以用電子支付嗎？', ja: '電子マネーは使えますか？', romaji: 'Denshi manē wa tsukaemasu ka?', speak: '電子マネーは使えますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '請給我收據。', ja: 'レシートをください。', romaji: 'Reshīto o kudasai.', speak: 'レシートをください' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '請幫幫我！', ja: '助けてください！', romaji: 'Tasukete kudasai!', speak: '助けてください！' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '我身體不舒服。', ja: '気分が悪いです。', romaji: 'Kibun ga warui desu.', speak: '気分が悪いです' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '請叫救護車。', ja: '救急車を呼んでください。', romaji: 'Kyūkyūsha o yonde kudasai.', speak: '救急車を呼んでください' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '附近有醫院嗎？', ja: '近くに病院はありますか？', romaji: 'Chikaku ni byōin wa arimasu ka?', speak: '近くに病院はありますか' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '我頭很痛。', ja: '頭が痛いです。', romaji: 'Atama ga itai desu.', speak: '頭が痛いです' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '我肚子痛。', ja: 'お腹が痛いです。', romaji: 'Onaka ga itai desu.', speak: 'お腹が痛いです' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '我發燒了。', ja: '熱があります。', romaji: 'Netsu ga arimasu.', speak: '熱があります' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '附近有藥局嗎？', ja: '近くに薬局はありますか？', romaji: 'Chikaku ni yakkyoku wa arimasu ka?', speak: '近くに薬局はありますか' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '我需要這個藥。', ja: 'この薬がほしいです。', romaji: 'Kono kusuri ga hoshii desu.', speak: 'この薬がほしいです' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '請叫警察。', ja: '警察を呼んでください。', romaji: 'Keisatsu o yonde kudasai.', speak: '警察を呼んでください' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '我的錢包被偷了。', ja: '財布を盗まれました。', romaji: 'Saifu o nusumaremashita.', speak: '財布を盗まれました' },
+  { tag: '🆘 緊急醫療', color: 'coral', tw: '我受傷了。', ja: '怪我をしました。', romaji: 'Kega o shimashita.', speak: '怪我をしました' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '入場費多少錢？', ja: '入場料はいくらですか？', romaji: 'Nyūjōryō wa ikura desu ka?', speak: '入場料はいくらですか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '幾點關門？', ja: '何時に閉まりますか？', romaji: 'Nanji ni shimarimasu ka?', speak: '何時に閉まりますか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '可以拍照嗎？', ja: '写真を撮ってもいいですか？', romaji: 'Shashin o totte mo ii desu ka?', speak: '写真を撮ってもいいですか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '可以幫我拍張照嗎？', ja: '写真を撮ってもらえますか？', romaji: 'Shashin o totte moraemasu ka?', speak: '写真を撮ってもらえますか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '廁所在哪裡？', ja: 'トイレはどこですか？', romaji: 'Toire wa doko desu ka?', speak: 'トイレはどこですか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '這附近有什麼好玩的？', ja: 'この近くにおすすめはありますか？', romaji: 'Kono chikaku ni osusume wa arimasu ka?', speak: 'この近くにおすすめはありますか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '有寄物櫃嗎？', ja: 'コインロッカーはありますか？', romaji: 'Koin rokkā wa arimasu ka?', speak: 'コインロッカーはありますか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '紀念品店在哪裡？', ja: 'お土産屋はどこですか？', romaji: 'Omiyage ya wa doko desu ka?', speak: 'お土産屋はどこですか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '今天有營業嗎？', ja: '今日は営業していますか？', romaji: 'Kyō wa eigyō shite imasu ka?', speak: '今日は営業していますか' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '下雨了，哪裡可以買傘？', ja: '傘はどこで買えますか？', romaji: 'Kasa wa doko de kaemasu ka?', speak: '傘はどこで買えますか' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '我的手機沒電了。', ja: 'スマホの充電が切れました。', romaji: 'Sumaho no jūden ga kiremashita.', speak: 'スマホの充電が切れました' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '哪裡可以換錢？', ja: '両替はどこでできますか？', romaji: 'Ryōgae wa doko de dekimasu ka?', speak: '両替はどこでできますか' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '哪裡有提款機？', ja: 'ATMはどこにありますか？', romaji: 'ATM wa doko ni arimasu ka?', speak: 'ATMはどこにありますか' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '我把東西忘在這裡了。', ja: '忘れ物をしました。', romaji: 'Wasuremono o shimashita.', speak: '忘れ物をしました' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '可以借我充電嗎？', ja: '充電させてもらえますか？', romaji: 'Jūden sasete moraemasu ka?', speak: '充電させてもらえますか' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '末班車是幾點？', ja: '終電は何時ですか？', romaji: 'Shūden wa nanji desu ka?', speak: '終電は何時ですか' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '這個壞掉了。', ja: 'これは壊れています。', romaji: 'Kore wa kowarete imasu.', speak: 'これは壊れています' },
+  { tag: '🌧️ 突發狀況', color: 'sand', tw: '我趕時間。', ja: '急いでいます。', romaji: 'Isoide imasu.', speak: '急いでいます' },
+  { tag: '👋 日常問候', color: 'sky', tw: '請再說一次。', ja: 'もう一度お願いします。', romaji: 'Mō ichido onegaishimasu.', speak: 'もう一度お願いします' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '請問要等多久？', ja: 'どのくらい待ちますか？', romaji: 'Dono kurai machimasu ka?', speak: 'どのくらい待ちますか' },
+  { tag: '🗺️ 觀光景點', color: 'ocean', tw: '有中文導覽嗎？', ja: '中国語のガイドはありますか？', romaji: 'Chūgokugo no gaido wa arimasu ka?', speak: '中国語のガイドはありますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '可以便宜一點嗎？', ja: '少し安くなりますか？', romaji: 'Sukoshi yasuku narimasu ka?', speak: '少し安くなりますか' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '可以幫我叫計程車嗎？', ja: 'タクシーを呼んでもらえますか？', romaji: 'Takushī o yonde moraemasu ka?', speak: 'タクシーを呼んでもらえますか' },
+  { tag: '👋 日常問候', color: 'sky', tw: '初次見面，請多指教。', ja: 'はじめまして。', romaji: 'Hajimemashite.', speak: 'はじめまして' },
 ];
 
 // ===================== RAINY & SELECT 30 DATA =====================
@@ -974,6 +1067,7 @@ let state = {
   currentDayTab: 'itinerary',
   placeFilter: 'all',
   phrasesFilter: 'all',
+  phrasesSearch: '',
   checklist: JSON.parse(localStorage.getItem('ok_checklist_v3') || '{}'),
   wishlist: JSON.parse(localStorage.getItem('ok_wishlist_v4') || '[]'),
   notes: JSON.parse(localStorage.getItem('ok_notes_v3') || '{}'),
@@ -1367,7 +1461,20 @@ function renderPhrases() {
     `).join('')}
   `;
 
-  const filtered = state.phrasesFilter === 'all' ? PHRASES_DATA : PHRASES_DATA.filter(p => p.tag === state.phrasesFilter);
+  const q = (state.phrasesSearch || '').trim().toLowerCase();
+  let filtered = state.phrasesFilter === 'all' ? PHRASES_DATA : PHRASES_DATA.filter(p => p.tag === state.phrasesFilter);
+  if (q) {
+    filtered = filtered.filter(p =>
+      p.tw.toLowerCase().includes(q) ||
+      p.ja.toLowerCase().includes(q) ||
+      p.romaji.toLowerCase().includes(q) ||
+      p.tag.toLowerCase().includes(q)
+    );
+  }
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="col-span-full text-center py-16 text-ink/40 font-bold"><i class="fas fa-search text-3xl mb-3 opacity-50"></i><br>找不到「${state.phrasesSearch}」相關的句子<br><span class="text-xs font-medium">試試其他關鍵字，或點上方分類瀏覽</span></div>`;
+    return;
+  }
   grid.innerHTML = filtered.map(p => `
     <div class="glass-card rounded-3xl p-6 border border-white relative group transition duration-300 hover:shadow-float hover:-translate-y-1">
       <button class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white text-${p.color} shadow-sm border border-white flex items-center justify-center hover:bg-${p.color} hover:text-white transition cursor-pointer group-hover:scale-110" onclick="speakJapanese('${p.speak}')" title="朗讀日文">
@@ -1383,6 +1490,11 @@ function renderPhrases() {
 
 window.setPhrasesFilter = (tag) => {
   state.phrasesFilter = tag;
+  renderPhrases();
+};
+
+window.setPhrasesSearch = (val) => {
+  state.phrasesSearch = val;
   renderPhrases();
 };
 
