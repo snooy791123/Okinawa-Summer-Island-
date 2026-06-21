@@ -199,7 +199,7 @@ tailwind.config = {
 
 <nav id="sidebar" class="hidden md:flex w-72 glass-card h-screen overflow-y-auto custom-scroll flex-shrink-0 flex-col p-6 sticky top-0 border-r border-white/60 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
   <div class="mb-8 pl-2">
-    <h1 class="font-serif text-3xl text-ink leading-tight tracking-tight" style="font-weight:800">Okinawa<br><span class="text-ocean text-lg font-bold">夏日海島紀行</span></h1>
+    <h1 class="font-heading font-black text-3xl text-ink leading-tight tracking-tight">Okinawa<br><span class="text-ocean text-lg font-bold">夏日海島紀行</span></h1>
     <div class="inline-block mt-3 px-3 py-1 bg-ink text-white rounded-full font-mono text-xs font-bold shadow-sm">2026.07.02 - 07.06</div>
   </div>
   
@@ -239,8 +239,7 @@ tailwind.config = {
   <section id="view-overview" class="view-section active max-w-5xl mx-auto">
     <div class="mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <div id="greeting" class="font-serif text-ocean/80 text-base md:text-lg mb-2 tracking-wide"></div>
-        <h2 class="font-serif font-black text-4xl md:text-5xl text-ink tracking-tight mb-2" style="font-weight:800">
+        <h2 class="font-heading font-black text-4xl md:text-5xl text-ink tracking-tight mb-2">
           Trip Overview
         </h2>
         <p class="text-ink/60 text-sm md:text-base font-medium">即時天氣、匯率與實用連結，一手掌握。</p>
@@ -348,7 +347,7 @@ tailwind.config = {
 
   <section id="view-checklist" class="view-section max-w-4xl mx-auto">
     <div class="mb-8">
-      <h2 class="font-serif text-4xl text-ink mb-2" style="font-weight:800">出發準備清單</h2>
+      <h2 class="font-heading font-black text-4xl text-ink mb-2">出發準備清單</h2>
       <p class="text-ink/60 font-medium">點擊項目標記完成，進度將自動儲存於瀏覽器中。</p>
     </div>
     
@@ -373,7 +372,7 @@ tailwind.config = {
   <section id="view-tools" class="view-section max-w-5xl mx-auto">
     <div class="mb-8 text-center md:text-left flex justify-between items-end">
       <div>
-        <h2 class="font-serif text-4xl text-ink tracking-tight mb-2" style="font-weight:800">實用百寶箱 🧰</h2>
+        <h2 class="font-heading font-black text-4xl text-ink tracking-tight mb-2">實用百寶箱 🧰</h2>
         <p class="text-ink/60 font-medium text-sm md:text-base">整合尺寸換算與實用票券備忘，旅行更輕鬆。</p>
       </div>
     </div>
@@ -516,7 +515,7 @@ tailwind.config = {
 
   <section id="view-wishlist" class="view-section max-w-5xl mx-auto">
     <div class="mb-8">
-      <h2 class="font-serif text-4xl text-ink mb-2 tracking-tight" style="font-weight:800">我的收藏清單 ❤️</h2>
+      <h2 class="font-heading font-black text-4xl text-ink mb-2 tracking-tight">我的收藏清單 ❤️</h2>
       <p class="text-ink/60 font-medium">從各天行程中點擊愛心，將想去的景點加入收藏。</p>
     </div>
     <div id="wishlist-empty" class="text-center py-20 text-ink/30 glass-card rounded-3xl border border-white">
@@ -532,7 +531,7 @@ tailwind.config = {
       <div class="inline-flex items-center gap-2 px-3 py-1 bg-ocean/10 text-ocean rounded-full font-heading text-xs font-bold mb-3 border border-ocean/20">
         <i class="fas fa-cloud-showers-heavy"></i> Rain or Shine
       </div>
-      <h2 class="font-serif text-4xl text-ink mb-2 tracking-tight" style="font-weight:800">雨天備案與市區精選 30 選</h2>
+      <h2 class="font-heading font-black text-4xl text-ink mb-2 tracking-tight">雨天備案與市區精選 30 選</h2>
       <p class="text-ink/60 font-medium">不論下雨或大太陽都不掃興！嚴選沖繩 30 間頂級質感選物、室內景品與美食指標。</p>
     </div>
 
@@ -549,7 +548,7 @@ tailwind.config = {
 
   <section id="view-phrases" class="view-section max-w-5xl mx-auto">
     <div class="mb-8">
-      <h2 class="font-serif text-4xl text-ink mb-2 tracking-tight" style="font-weight:800">急救日文小卡 🗣️</h2>
+      <h2 class="font-heading font-black text-4xl text-ink mb-2 tracking-tight">急救日文小卡 🗣️</h2>
       <p class="text-ink/60 font-medium">100 句旅遊實用日語，點擊喇叭讓手機直接幫你說！點餐、購物、問路、緊急狀況必備。</p>
     </div>
     <div class="relative mb-5">
@@ -607,7 +606,7 @@ tailwind.config = {
 
   <section id="view-search" class="view-section max-w-5xl mx-auto">
     <div class="mb-8">
-      <h2 class="font-serif text-4xl text-ink tracking-tight" style="font-weight:800">搜尋結果</h2>
+      <h2 class="font-heading font-black text-4xl text-ink tracking-tight">搜尋結果</h2>
       
       <div class="mt-4 relative md:hidden">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-ink/40 text-sm"></i>
@@ -1081,7 +1080,6 @@ document.addEventListener('DOMContentLoaded', () => {
   buildNavigation();
   setupNavClicks();
   initOverview();
-  renderGreeting();
   renderChecklist();
   initNotes();
   renderPhrases();
@@ -1092,25 +1090,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.sidebar-btn[data-target="view-overview"]')?.classList.add('active-sidebar');
   document.querySelector('.mobile-btn[data-target="view-overview"]')?.classList.add('active-mobile');
 });
-
-function renderGreeting() {
-  const el = document.getElementById('greeting');
-  if (!el) return;
-  const h = new Date().getHours();
-  let greet;
-  if (h >= 5 && h < 11) {
-    greet = { ja: 'おはようございます', zh: '早安，今天也是美好的島嶼日常', icon: '🌅' };
-  } else if (h >= 11 && h < 14) {
-    greet = { ja: 'こんにちは', zh: '午安，來杯 Blue Seal 配海風吧', icon: '☀️' };
-  } else if (h >= 14 && h < 18) {
-    greet = { ja: 'こんにちは', zh: '午後時光，沖繩的陽光正溫柔', icon: '🌴' };
-  } else if (h >= 18 && h < 22) {
-    greet = { ja: 'こんばんは', zh: '晚安，國際通的夜正熱鬧', icon: '🌆' };
-  } else {
-    greet = { ja: 'おやすみなさい', zh: '夜深了，願你夢見蔚藍的海', icon: '🌙' };
-  }
-  el.innerHTML = `${greet.icon} <span class="font-medium">${greet.ja}</span> · ${greet.zh}`;
-}
 
 function buildNavigation() {
   const sidebarDays = document.getElementById('sidebar-days');
@@ -1600,7 +1579,7 @@ function renderDayView(dayId) {
     </div>
     <div>
       <div class="font-mono font-black text-xs mb-1 uppercase tracking-widest px-2 py-0.5 rounded bg-white/50 inline-block border border-white" style="color:${day.hex}">${day.date}</div>
-      <h2 class="font-serif text-3xl md:text-4xl text-ink tracking-tight mb-2" style="font-weight:800">${day.title}</h2>
+      <h2 class="font-heading font-black text-3xl md:text-4xl text-ink tracking-tight mb-2">${day.title}</h2>
       <p class="font-serif text-ink/70 text-sm font-medium leading-relaxed max-w-2xl">${day.intro}</p>
     </div>`;
 
