@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Okinawa 2026 | 沖繩夏日海島紀行</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Shippori+Mincho:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: '#1b2a30', 
+        paper: '#fcfbf9', 
+        paperDark: '#f2efe9',
+        ocean: '#4A8594', 
+        mint: '#72A98F', 
+        sand: '#D5A87B',
+        coral: '#E2858E', 
+        sky: '#95C1D1', 
+        glass: 'rgba(255, 255, 255, 0.65)',
+        glassBorder: 'rgba(255, 255, 255, 0.5)',
+      },
+      fontFamily: {
+        sans: ['Noto Sans TC', 'sans-serif'],
+        heading: ['Zen Maru Gothic', 'sans-serif'],
+        serif: ['Shippori Mincho', 'serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      boxShadow: {
+        'glass': '0 8px 32px 0 rgba(74, 133, 148, 0.08)',
+        'float': '0 12px 40px -8px rgba(27, 42, 48, 0.15)',
+        'inner-light': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.8)',
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  :root { -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; }
+  
+  /* 動態琉璃海島背景 */
+  body { 
+    background: linear-gradient(135deg, #fcfbf9 0%, #e6f0f2 50%, #f4eee5 100%);
+    background-attachment: fixed;
+    color: #1b2a30; 
+    overflow-x: hidden; 
+    min-height: 100vh; 
+    overscroll-behavior-y: none;
+  }
+  
+  /* 輕微的紙張紋理疊加 */
+  body::before { 
+    content:''; position:fixed; inset:0; 
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0,0 1 0 0 0,0 0 1 0 0,0 0 0 0.03 0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E"); 
+    pointer-events:none; z-index:-1; 
+  }
+  
+  .view-section { display:none; animation:fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
+  .view-section.active { display:block; }
+  @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+  
+  /* 隱藏原生滾動條 */
+  .custom-scroll::-webkit-scrollbar { width: 0px; display: none; }
+  .custom-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+  
+  .no-scroll::-webkit-scrollbar { display:none; }
+  .no-scroll { -ms-overflow-style:none; scrollbar-width:none; }
+  
+  /* Timeline 樣式 */
+  .timeline-dot::before { content:''; position:absolute; left:1.1rem; top:2.5rem; bottom:-1rem; width:2px; border-left:2px dashed rgba(74, 133, 148, 0.25); }
+  .timeline-item:last-child .timeline-dot::before { display:none; }
+  
+  input[type=checkbox] { accent-color: #72A98F; cursor:pointer; width: 1.25rem; height: 1.25rem; border-radius: 4px; border: 1px solid rgba(74,133,148,0.3); transition: all 0.2s;}
+  .checked-label span { text-decoration:line-through; opacity:0.35; }
+  
+  /* 導航按鈕活動狀態 */
+  .active-sidebar { background: rgba(255,255,255,0.8) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,1) !important; color: #1b2a30 !important; font-weight: 700; transform: translateX(4px); }
+  .active-mobile { background: #1b2a30 !important; color: #fff !important; box-shadow: 0 4px 12px rgba(27,42,48,0.3) !important; transform: translateY(-4px); }
+  .active-mobile i { color: #fff !important; }
+  
+  .filter-active { background: #1b2a30 !important; color: white !important; box-shadow: 0 4px 10px rgba(27,42,48,0.2); border-color: #1b2a30 !important;}
+  .tab-active { background: #1b2a30 !important; color: white !important; }
+  
+  .pb-safe { padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
+
+  textarea:focus, input:focus { outline:none; box-shadow: 0 0 0 3px rgba(149, 193, 209, 0.3); border-color: #95C1D1 !important; }
+  
+  #toast { position:fixed; bottom: 6.5rem; left:50%; transform:translateX(-50%) translateY(20px) scale(0.95); background: rgba(27,42,48,0.95); backdrop-filter: blur(8px); color:white; padding: 0.8rem 1.5rem; border-radius: 99px; font-size: 0.85rem; font-weight:700; opacity:0; transition:all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index:9999; pointer-events:none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+
+  .glass-card { background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glassBorder); box-shadow: var(--glass), var(--inner-light); }
+
+  /* 雨天模式 */
+  body.theme-rainy {
+    background: linear-gradient(135deg, #c4d4d9 0%, #a2b8c2 50%, #879ea8 100%);
+  }
+  body.theme-rainy::before {
+    opacity: 0.8;
+  }
+  body.theme-rainy .glass-card {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  body.theme-rainy .text-ocean { color: #2c4a52; }
+  /* ===== 店家照片 ===== */
+  .place-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .place-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .place-photo img.loaded { opacity: 1; }
+  .place-photo-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    color: rgba(43,43,43,0.25);
+  }
+  .place-photo-fallback .ph-initial {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 900;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: rgba(43,43,43,0.18);
+  }
+  .place-photo-fallback .ph-label {
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(43,43,43,0.22);
+  }
+</style>
+</head>
+
+<body class="flex flex-col md:flex-row">
+
+<div id="toast"></div>
+
+<header class="md:hidden glass-card px-5 py-3.5 flex justify-between items-center sticky top-0 z-40 rounded-b-3xl mb-4 mx-2 mt-2 shadow-sm">
+  <div class="font-heading font-black text-xl text-ink tracking-tight">Okinawa <span class="text-ocean">2026</span></div>
+  <button onclick="openMobileSearch()" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/60 text-ink/70 hover:text-ink transition shadow-sm border border-white">
+    <i class="fas fa-search"></i>
+  </button>
+</header>
+
+<nav id="sidebar" class="hidden md:flex w-72 glass-card h-screen overflow-y-auto custom-scroll flex-shrink-0 flex-col p-6 sticky top-0 border-r border-white/60 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+  <div class="mb-8 pl-2">
+    <h1 class="font-heading font-black text-3xl text-ink leading-tight tracking-tight">Okinawa<br><span class="text-ocean text-lg font-bold">夏日海島紀行</span></h1>
+    <div class="inline-block mt-3 px-3 py-1 bg-ink text-white rounded-full font-mono text-xs font-bold shadow-sm">2026.07.02 - 07.06</div>
+  </div>
+  
+  <div class="relative mb-6">
+    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-ink/40 text-sm"></i>
+    <input id="quickSearch" type="text" placeholder="搜尋景點、美食..." class="w-full pl-10 pr-4 py-3 text-sm bg-white/60 backdrop-blur-md border border-white shadow-inner-light rounded-2xl font-sans outline-none focus:bg-white transition placeholder:text-ink/40" oninput="handleSearch(this.value)">
+  </div>
+
+  <div class="space-y-1 font-heading text-sm font-medium text-ink/70">
+    <div class="text-[10px] tracking-widest text-ink/40 mb-2 mt-4 font-sans uppercase font-bold pl-2">Dashboard</div>
+    <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 active-sidebar" data-target="view-overview">
+      <div class="w-7 h-7 rounded-full bg-sand/20 flex items-center justify-center"><i class="fas fa-compass text-sand text-xs"></i></div> 總覽與環境資訊
+    </button>
+    <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-checklist">
+      <div class="w-7 h-7 rounded-full bg-coral/20 flex items-center justify-center"><i class="fas fa-suitcase-rolling text-coral text-xs"></i></div> 出發準備清單
+    </button>
+    <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-tools">
+      <div class="w-7 h-7 rounded-full bg-dusk/20 flex items-center justify-center"><i class="fas fa-toolbox text-dusk text-xs"></i></div> 實用百寶箱
+    </button>
+    <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-wishlist">
+      <div class="w-7 h-7 rounded-full bg-coral/20 flex items-center justify-center"><i class="fas fa-heart text-coral text-xs"></i></div> 我的收藏清單
+    </button>
+    <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-rainy-backup">
+      <div class="w-7 h-7 rounded-full bg-ocean/20 flex items-center justify-center"><i class="fas fa-umbrella text-ocean text-xs"></i></div> 雨天備案與精選30選
+    </button>
+    <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-phrases">
+      <div class="w-7 h-7 rounded-full bg-sky/20 flex items-center justify-center"><i class="fas fa-language text-sky text-xs"></i></div> 實用日文小卡
+    </button>
+    
+    <div class="text-[10px] tracking-widest text-ink/40 mb-2 mt-8 font-sans uppercase font-bold pl-2">Itinerary</div>
+    <div id="sidebar-days" class="space-y-1"></div>
+  </div>
+</nav>
+
+<main class="flex-1 overflow-y-auto custom-scroll p-4 pb-32 md:p-8 lg:p-12" id="mainContent">
+  
+  <section id="view-overview" class="view-section active max-w-5xl mx-auto">
+    <div class="mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <h2 class="font-heading font-black text-4xl md:text-5xl text-ink tracking-tight mb-2">
+          Trip Overview
+        </h2>
+        <p class="text-ink/60 text-sm md:text-base font-medium">即時天氣、匯率與實用連結，一手掌握。</p>
+      </div>
+      <div class="glass-card px-5 py-3 rounded-2xl inline-flex items-center gap-4 border border-white">
+        <div class="text-xs font-bold text-ink/50 uppercase tracking-widest">Countdown</div>
+        <div id="countdown-display" class="font-mono font-black text-2xl text-ocean tracking-tight">--</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      <a href="https://vjw-lp.digital.go.jp/zh-hant/" target="_blank" class="glass-card flex flex-col items-center justify-center p-4 rounded-3xl hover:bg-white/80 transition group border border-white">
+        <div class="w-12 h-12 rounded-full bg-sky/10 flex items-center justify-center text-sky mb-2 group-hover:scale-110 group-hover:bg-sky group-hover:text-white transition duration-300 shadow-sm"><i class="fas fa-passport text-lg"></i></div>
+        <div class="text-xs font-bold text-ink mt-1">Visit Japan Web</div>
+      </a>
+      <a href="https://www.naha-airport.co.jp/zh-hant/" target="_blank" class="glass-card flex flex-col items-center justify-center p-4 rounded-3xl hover:bg-white/80 transition group border border-white">
+        <div class="w-12 h-12 rounded-full bg-ocean/10 flex items-center justify-center text-ocean mb-2 group-hover:scale-110 group-hover:bg-ocean group-hover:text-white transition duration-300 shadow-sm"><i class="fas fa-plane text-lg"></i></div>
+        <div class="text-xs font-bold text-ink mt-1">那霸機場官網</div>
+      </a>
+      <a href="https://www.yui-rail.co.jp/tc/" target="_blank" class="glass-card flex flex-col items-center justify-center p-4 rounded-3xl hover:bg-white/80 transition group border border-white">
+        <div class="w-12 h-12 rounded-full bg-mint/10 flex items-center justify-center text-mint mb-2 group-hover:scale-110 group-hover:bg-mint group-hover:text-white transition duration-300 shadow-sm"><i class="fas fa-train-tram text-lg"></i></div>
+        <div class="text-xs font-bold text-ink mt-1">單軌電車時刻表</div>
+      </a>
+      <a href="https://translate.google.com/?hl=zh-TW&sl=zh-TW&tl=ja" target="_blank" class="glass-card flex flex-col items-center justify-center p-4 rounded-3xl hover:bg-white/80 transition group border border-white">
+        <div class="w-12 h-12 rounded-full bg-sand/10 flex items-center justify-center text-sand mb-2 group-hover:scale-110 group-hover:bg-sand group-hover:text-white transition duration-300 shadow-sm"><i class="fas fa-language text-lg"></i></div>
+        <div class="text-xs font-bold text-ink mt-1">Google 翻譯</div>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="glass-card rounded-3xl p-6 lg:col-span-2 border border-white flex flex-col">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-ocean/10 flex items-center justify-center text-ocean"><i class="fas fa-cloud-sun text-lg"></i></div>
+            <div>
+              <h3 class="font-heading font-black text-lg text-ink">即時環境與氣象預報</h3>
+              <p class="text-[10px] font-bold text-ink/40 mt-0.5">數據來源：Open-Meteo API (那霸市)</p>
+            </div>
+          </div>
+          
+          <div class="flex gap-3 bg-white/50 backdrop-blur-sm px-4 py-2.5 rounded-2xl border border-white/60 shadow-inner-light overflow-x-auto no-scroll">
+            <div class="flex items-center gap-2 pr-3 border-r border-ink/10 flex-shrink-0">
+              <i class="fas fa-umbrella text-sky text-sm"></i>
+              <div>
+                <div class="text-[9px] text-ink/50 font-bold uppercase">Rain</div>
+                <div id="rain-prob" class="font-mono font-bold text-sm text-ink leading-none mt-0.5">--%</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 pr-3 border-r border-ink/10 flex-shrink-0">
+              <i class="fas fa-sun text-coral text-sm animate-pulse"></i>
+              <div>
+                <div class="text-[9px] text-ink/50 font-bold uppercase">UV Index</div>
+                <div id="uv-index" class="font-mono font-bold text-sm text-ink leading-none mt-0.5">--</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <i class="fas fa-sunset text-sand text-sm"></i>
+              <div>
+                <div class="text-[9px] text-ink/50 font-bold uppercase">Sunset</div>
+                <div id="sunset-time" class="font-mono font-bold text-sm text-ink leading-none mt-0.5">--:--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="relative w-full flex-1 min-h-[250px]" style="height:250px;">
+          <canvas id="weatherChart"></canvas>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6 border border-white">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-10 h-10 rounded-full bg-sky/10 flex items-center justify-center text-sky"><i class="fas fa-water text-lg"></i></div>
+          <h3 class="font-heading font-black text-lg text-ink">未來七日海浪預報</h3>
+        </div>
+        <p class="text-xs font-medium text-ink/50 mb-4 bg-white/40 px-3 py-2 rounded-xl inline-block border border-white/50">浪高 &lt; 1m 適宜潛水；&gt; 1.5m 請注意安全</p>
+        <div id="marine-data" class="flex gap-3 overflow-x-auto no-scroll pb-2">
+          <span class="text-sm font-bold text-ink/40 animate-pulse flex items-center gap-2"><i class="fas fa-spin fa-spinner"></i> 載入海象數據中...</span>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6 border border-white">
+        <div class="flex justify-between items-start mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-sand/10 flex items-center justify-center text-sand"><i class="fas fa-yen-sign text-lg"></i></div>
+            <h3 class="font-heading font-black text-lg text-ink">匯率速算</h3>
+          </div>
+          <span id="rateUpdate" class="text-[10px] font-bold text-ink/40 bg-white/50 px-2 py-1 rounded-lg border border-white">更新中...</span>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-mono font-black text-ink/30">¥</span>
+            <input type="number" id="jpyInput" value="1000" class="w-full bg-white/70 border border-white/80 shadow-inner-light rounded-2xl pl-8 pr-4 py-3 font-mono font-bold text-xl text-ink outline-none transition">
+          </div>
+          <div class="flex justify-center text-ink/20"><i class="fas fa-arrow-down"></i></div>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-mono font-black text-ocean/40">NT$</span>
+            <div id="twdOutput" class="w-full bg-ocean/10 border border-ocean/20 rounded-2xl pl-12 pr-4 py-3 font-mono font-black text-2xl text-ocean">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-checklist" class="view-section max-w-4xl mx-auto">
+    <div class="mb-8">
+      <h2 class="font-heading font-black text-4xl text-ink mb-2">出發準備清單</h2>
+      <p class="text-ink/60 font-medium">點擊項目標記完成，進度將自動儲存於瀏覽器中。</p>
+    </div>
+    
+    <div class="glass-card rounded-3xl p-5 mb-8 sticky top-4 z-20 border border-white shadow-sm flex items-center gap-5">
+      <div class="w-12 h-12 rounded-full bg-mint/10 flex items-center justify-center text-mint flex-shrink-0"><i class="fas fa-tasks text-xl"></i></div>
+      <div class="flex-1">
+        <div class="flex justify-between text-sm font-black mb-2">
+          <span class="text-ink">整體準備進度</span>
+          <span id="progress-text" class="text-mint font-mono">0%</span>
+        </div>
+        <div class="w-full bg-black/5 rounded-full h-2.5 overflow-hidden shadow-inner">
+          <div id="progress-bar" class="bg-mint h-full rounded-full transition-all duration-700 ease-out w-0 relative overflow-hidden">
+            <div class="absolute inset-0 bg-white/20 w-full h-full" style="background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent); background-size: 1rem 1rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+  </section>
+
+  <section id="view-tools" class="view-section max-w-5xl mx-auto">
+    <div class="mb-8 text-center md:text-left flex justify-between items-end">
+      <div>
+        <h2 class="font-heading font-black text-4xl text-ink tracking-tight mb-2">實用百寶箱 🧰</h2>
+        <p class="text-ink/60 font-medium text-sm md:text-base">整合尺寸換算與實用票券備忘，旅行更輕鬆。</p>
+      </div>
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto no-scroll mb-6 pb-2 px-1">
+      <button class="tool-tab px-5 py-3 text-sm font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0" onclick="switchToolTab(this, 'size')"><i class="fas fa-ruler-combined mr-2"></i>尺寸對照表</button>
+      <button class="tool-tab px-5 py-3 text-sm font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="switchToolTab(this, 'info')"><i class="fas fa-ticket-alt mr-2"></i>票券與備忘</button>
+    </div>
+
+    <div id="tool-size" class="tool-content active glass-card border border-white rounded-3xl p-6 lg:p-8">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-full bg-sky/10 flex items-center justify-center text-sky"><i class="fas fa-ruler-combined text-lg"></i></div>
+        <div>
+          <h3 class="font-heading font-black text-xl text-ink">尺寸對照表</h3>
+          <p class="text-[11px] text-ink/50 font-bold mt-0.5">日本鞋碼通常以公分(cm)計算</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white/60 border border-white shadow-sm rounded-2xl overflow-hidden">
+          <div class="bg-ocean/10 px-4 py-3 font-bold text-ink text-sm flex items-center gap-2"><i class="fas fa-shoe-prints text-ocean"></i>女鞋尺寸 (Women)</div>
+          <table class="w-full text-sm text-center">
+            <thead class="bg-white/50 text-ink/40 text-[10px] uppercase tracking-wider">
+              <tr><th class="py-2 font-bold">日本 (JP/cm)</th><th class="py-2 font-bold">台灣 (EUR)</th><th class="py-2 font-bold">美國 (US)</th></tr>
+            </thead>
+            <tbody class="divide-y divide-white/50 text-ink/80 font-mono">
+              <tr><td class="py-2 font-black text-ocean bg-ocean/5">22.5</td><td class="py-2">35</td><td class="py-2">5.5</td></tr>
+              <tr><td class="py-2 font-black text-ocean bg-ocean/5">23.0</td><td class="py-2">36</td><td class="py-2">6.0</td></tr>
+              <tr><td class="py-2 font-black text-ocean bg-ocean/5">23.5</td><td class="py-2">37</td><td class="py-2">6.5</td></tr>
+              <tr><td class="py-2 font-black text-ocean bg-ocean/5">24.0</td><td class="py-2">38</td><td class="py-2">7.0</td></tr>
+              <tr><td class="py-2 font-black text-ocean bg-ocean/5">24.5</td><td class="py-2">39</td><td class="py-2">7.5</td></tr>
+              <tr><td class="py-2 font-black text-ocean bg-ocean/5">25.0</td><td class="py-2">40</td><td class="py-2">8.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bg-white/60 border border-white shadow-sm rounded-2xl overflow-hidden">
+          <div class="bg-mint/10 px-4 py-3 font-bold text-ink text-sm flex items-center gap-2"><i class="fas fa-shoe-prints text-mint"></i>男鞋尺寸 (Men)</div>
+          <table class="w-full text-sm text-center">
+            <thead class="bg-white/50 text-ink/40 text-[10px] uppercase tracking-wider">
+              <tr><th class="py-2 font-bold">日本 (JP/cm)</th><th class="py-2 font-bold">台灣 (EUR)</th><th class="py-2 font-bold">美國 (US)</th></tr>
+            </thead>
+            <tbody class="divide-y divide-white/50 text-ink/80 font-mono">
+              <tr><td class="py-2 font-black text-mint bg-mint/5">25.0</td><td class="py-2">40</td><td class="py-2">7.0</td></tr>
+              <tr><td class="py-2 font-black text-mint bg-mint/5">26.0</td><td class="py-2">41</td><td class="py-2">8.0</td></tr>
+              <tr><td class="py-2 font-black text-mint bg-mint/5">26.5</td><td class="py-2">42</td><td class="py-2">8.5</td></tr>
+              <tr><td class="py-2 font-black text-mint bg-mint/5">27.5</td><td class="py-2">43</td><td class="py-2">9.5</td></tr>
+              <tr><td class="py-2 font-black text-mint bg-mint/5">28.0</td><td class="py-2">44</td><td class="py-2">10.0</td></tr>
+              <tr><td class="py-2 font-black text-mint bg-mint/5">29.0</td><td class="py-2">45</td><td class="py-2">11.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tool-info" class="tool-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="glass-card rounded-3xl p-5 border border-white">
+          <h3 class="font-heading font-black text-ink mb-3"><i class="fas fa-hotel text-ocean mr-2"></i>住宿資訊</h3>
+          <div class="bg-white/50 rounded-xl px-4 py-3 relative border border-white">
+            <div class="font-black text-ink">HOTEL STRATA NAHA</div>
+            <div class="text-ink/60 text-xs mt-1 font-bold">7/2 15:00 入住 - 7/6 11:00 退房</div>
+            <div class="text-ink/50 text-[10px] mt-2 border-t border-ink/5 pt-2 space-y-1">
+              <div class="flex justify-between"><span>Twin Room with Sofa</span><span class="font-sans font-bold tracking-wide text-ink/70">#1711854072</span></div>
+              <div class="flex justify-between"><span>Standard Twin</span><span class="font-sans font-bold tracking-wide text-ink/70">#1711854779</span></div>
+              <div class="flex justify-between"><span>Standard Twin</span><span class="font-sans font-bold tracking-wide text-ink/70">#1711855268</span></div>
+            </div>
+            <button onclick="copyText('Hotel Strata Naha')" class="absolute top-3 right-3 text-xs w-7 h-7 flex items-center justify-center rounded-lg bg-white text-ocean hover:bg-ocean hover:text-white transition shadow-sm border border-ocean/10"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+        <div class="glass-card rounded-3xl p-5 border border-white">
+          <h3 class="font-heading font-black text-ink mb-3"><i class="fas fa-plane text-coral mr-2"></i>航班與租車</h3>
+          <div class="space-y-2">
+            <div class="bg-white/50 rounded-xl px-4 py-2 border border-white">
+              <div class="font-black text-ink text-sm">去程：7/2 台灣虎航 IT728</div>
+              <div class="text-ink/60 text-[11px] font-bold">高雄 16:15 → 那霸 18:40</div>
+            </div>
+            <div class="bg-white/50 rounded-xl px-4 py-2 border border-white">
+              <div class="font-black text-ink text-sm">回程：7/6 中華航空 CI133</div>
+              <div class="text-ink/60 text-[11px] font-bold">那霸 19:45 → 高雄 20:30 <span class="ml-2 font-mono bg-coral/10 text-coral px-1 rounded">EQG9IH</span></div>
+            </div>
+            <div class="bg-white/50 rounded-xl px-4 py-2 border border-white flex justify-between items-center">
+              <div>
+                <div class="font-black text-ink text-sm">Kuruca租車</div>
+                <div class="text-ink/60 text-[11px] font-bold">7/3 09:00 - 7/6 16:00</div>
+              </div>
+              <span class="font-mono text-xs font-bold text-mint bg-mint/10 px-2 py-1 rounded">247193404</span>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card rounded-3xl p-5 border border-white">
+          <h3 class="font-heading font-black text-ink mb-3"><i class="fas fa-ticket-alt text-sand mr-2"></i>活動票券</h3>
+          <div class="bg-white/50 rounded-xl px-4 py-3 relative border border-white">
+            <div class="font-black text-ink">海洋博美麗海煙火大會</div>
+            <div class="text-ink/60 text-xs mt-1 font-bold">7/4 (六) VELTRA 預訂</div>
+            <div class="text-ink/50 text-[10px] mt-2 border-t border-ink/5 pt-2 space-y-1">
+              <div class="flex justify-between items-center"><span>棧敷席A (遊玩濱)</span><span class="font-sans font-bold tracking-wide text-ink/70">#9058476</span></div>
+              <div class="flex justify-between items-center"><span>停車場A・B</span><span class="font-sans font-bold tracking-wide text-ink/70">#9058502</span></div>
+            </div>
+            <div class="mt-2 text-[10px] text-ink/60 bg-white/60 px-2 py-1.5 rounded-lg border border-white leading-relaxed font-bold">
+              📍 <a href="http://maps.google.com/?q=Lawson+海洋博公園前店" target="_blank" class="text-ocean underline decoration-ocean/30 hover:text-ocean/70 transition">導航至臨時駐車場A・B</a><br>🕒 14:00開放，搭乘免費接駁車。
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="glass-card rounded-3xl p-5 border border-white">
+          <h3 class="font-heading font-black text-ink mb-3"><i class="fas fa-music text-coral mr-2"></i>夜生活預訂</h3>
+          <div class="bg-white/50 rounded-xl px-4 py-3 relative border border-white">
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="font-black text-ink">沖繩 ちゅらさん 6 (Churasun 6)</div>
+                <div class="text-ink/40 text-[11px] font-bold mt-0.5">沖繩大型秀場 showCLUB</div>
+              </div>
+              <span class="font-mono text-[10px] font-black text-white bg-ink px-2 py-0.5 rounded shadow-sm">NT$ 8,989</span>
+            </div>
+            <div class="text-ink/60 text-xs mt-3 font-bold flex items-center gap-1.5"><i class="far fa-calendar-alt text-ocean"></i> 7/3 (五) 第二場表演 22:30 開演</div>
+            <div class="text-ink/50 text-[11px] mt-2 border-t border-ink/5 pt-2 flex justify-between items-center font-mono font-bold">
+              <span>座位：6 x 震撼座位 (含10張小費券)</span>
+              <span class="text-ink/80">單號: RHA855634</span>
+            </div>
+            <div class="mt-2 text-[10px] text-coral font-bold bg-coral/5 px-2 py-1.5 rounded-lg border border-coral/10">
+              🚫 本訂單已確認，不可取消。開演前請預留充足通勤時間返回市區。
+            </div>
+            <button onclick="copyText('RHA855634')" class="absolute top-3 right-3 text-xs w-7 h-7 flex items-center justify-center rounded-lg bg-white text-ocean hover:bg-ocean hover:text-white transition shadow-sm border border-ocean/10" title="複製訂單編號"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+        
+        <div class="glass-card rounded-3xl p-5 border border-white flex flex-col justify-between">
+          <div>
+            <h3 class="font-heading font-black text-ink mb-3"><i class="fas fa-edit text-dusk mr-2"></i>自由備忘錄</h3>
+            <textarea id="note1" rows="4" placeholder="記下任何想法... 朋友推薦、臨時變動等" class="w-full bg-white/50 rounded-xl text-sm text-ink font-sans font-bold border border-white p-4 leading-relaxed outline-none" oninput="saveNote('note1', this.value)"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-wishlist" class="view-section max-w-5xl mx-auto">
+    <div class="mb-8">
+      <h2 class="font-heading font-black text-4xl text-ink mb-2 tracking-tight">我的收藏清單 ❤️</h2>
+      <p class="text-ink/60 font-medium">從各天行程中點擊愛心，將想去的景點加入收藏。</p>
+    </div>
+    <div id="wishlist-empty" class="text-center py-20 text-ink/30 glass-card rounded-3xl border border-white">
+      <div class="text-6xl mb-4 opacity-50">💌</div>
+      <p class="font-heading font-bold text-lg">還沒有收藏任何地方</p>
+      <p class="text-sm mt-2 font-medium">前往各天行程，點擊 ♡ 加入收藏</p>
+    </div>
+    <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  </section>
+
+  <section id="view-rainy-backup" class="view-section max-w-5xl mx-auto">
+    <div class="mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-ocean/10 text-ocean rounded-full font-heading text-xs font-bold mb-3 border border-ocean/20">
+        <i class="fas fa-cloud-showers-heavy"></i> Rain or Shine
+      </div>
+      <h2 class="font-heading font-black text-4xl text-ink mb-2 tracking-tight">雨天備案與市區精選 30 選</h2>
+      <p class="text-ink/60 font-medium">不論下雨或大太陽都不掃興！嚴選沖繩 30 間頂級質感選物、室內景品與美食指標。</p>
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto no-scroll mb-6 pb-2 px-1">
+      <button class="rainy-tab px-5 py-2.5 text-xs font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0" onclick="filterRainyGrid('all', this)">全部 30 選</button>
+      <button class="rainy-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="filterRainyGrid('select', this)"><i class="fas fa-store mr-1 text-ocean"></i> 質感選物 (10選)</button>
+      <button class="rainy-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="filterRainyGrid('food', this)"><i class="fas fa-utensils mr-1 text-sand"></i> 美食指標 (10選)</button>
+      <button class="rainy-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="filterRainyGrid('indoor', this)"><i class="fas fa-building mr-1 text-coral"></i> 室內雨備 (10選)</button>
+    </div>
+
+    <div id="rainy-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    </div>
+  </section>
+
+  <section id="view-phrases" class="view-section max-w-5xl mx-auto">
+    <div class="mb-8">
+      <h2 class="font-heading font-black text-4xl text-ink mb-2 tracking-tight">急救日文小卡 🗣️</h2>
+      <p class="text-ink/60 font-medium">點擊喇叭讓手機直接幫你說！點餐、購物、問路必備。</p>
+    </div>
+    <div class="flex gap-2 overflow-x-auto no-scroll mb-6 pb-2 px-1" id="phrases-filters"></div>
+    <div id="phrases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  </section>
+
+  <section id="view-day" class="view-section max-w-5xl mx-auto">
+    <div id="day-header" class="mb-8 pb-6 border-b border-ink/10 flex flex-col md:flex-row gap-6 items-start md:items-center"></div>
+
+    <div id="day-map-container" class="glass-card rounded-3xl overflow-hidden border border-white mb-8 h-48 md:h-64 shadow-sm relative">
+       <div class="absolute inset-0 flex items-center justify-center text-ink/40 font-bold text-sm"><i class="fas fa-spin fa-spinner mr-2"></i>載入地圖中...</div>
+    </div>
+
+    <div class="flex gap-2 mb-8 bg-white/40 p-1.5 rounded-full w-fit border border-white/60 shadow-inner-light backdrop-blur-sm">
+      <button id="tab-itinerary" onclick="switchDayTab('itinerary')" class="px-5 py-2 text-sm font-heading font-bold rounded-full bg-white shadow-sm text-ink transition">📍 行程時間軸</button>
+      <button id="tab-places" onclick="switchDayTab('places')" class="px-5 py-2 text-sm font-heading font-bold rounded-full text-ink/60 hover:text-ink transition">🍜 探索與美食 (20選)</button>
+    </div>
+
+    <div id="day-tab-itinerary" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-1">
+        <div class="glass-card rounded-3xl p-6 border border-white sticky top-4">
+          <h3 class="font-heading font-black text-xl text-ink mb-6"><i class="fas fa-route text-ocean mr-2"></i>今日行程</h3>
+          <div id="day-timeline" class="space-y-6"></div>
+        </div>
+      </div>
+      <div class="lg:col-span-2 space-y-6">
+        <div class="glass-card rounded-3xl p-6 border border-white">
+          <h3 class="font-heading font-black text-xl text-ink mb-4"><i class="fas fa-lightbulb text-sand mr-2"></i>行前小提醒</h3>
+          <div id="day-tips" class="space-y-3 text-sm text-ink/80 font-medium"></div>
+        </div>
+        <div class="glass-card rounded-3xl p-6 border border-white">
+          <h3 class="font-heading font-black text-xl text-ink mb-4"><i class="fas fa-note-sticky text-dusk mr-2"></i>今日備忘錄</h3>
+          <textarea id="day-note" rows="4" placeholder="今天的注意事項、備用選項..." class="w-full bg-white/50 rounded-2xl p-4 text-sm border border-white shadow-inner-light font-sans font-bold leading-relaxed outline-none" oninput="saveDayNote(this.value)"></textarea>
+        </div>
+        <div class="glass-card rounded-3xl p-6 border border-white">
+          <h3 class="font-heading font-black text-xl text-ink mb-4"><i class="fas fa-map-location-dot text-sky mr-2"></i>行程地點一鍵導航</h3>
+          <div id="map-links" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="day-tab-places" class="hidden">
+      <div class="flex flex-wrap gap-2 mb-6 px-1" id="place-filters">
+        <button class="filter-btn filter-active px-4 py-2 rounded-full text-xs font-bold border border-ink/10 transition shadow-sm" data-filter="all">全部</button>
+        <button class="filter-btn bg-white/60 text-ink/60 px-4 py-2 rounded-full text-xs font-bold border border-white hover:bg-white transition shadow-sm" data-filter="food">🍜 美食</button>
+        <button class="filter-btn bg-white/60 text-ink/60 px-4 py-2 rounded-full text-xs font-bold border border-white hover:bg-white transition shadow-sm" data-filter="sight">🏝️ 景點/購物</button>
+      </div>
+      <div id="day-places" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
+    </div>
+  </section>
+
+  <section id="view-search" class="view-section max-w-5xl mx-auto">
+    <div class="mb-8">
+      <h2 class="font-heading font-black text-4xl text-ink tracking-tight">搜尋結果</h2>
+      
+      <div class="mt-4 relative md:hidden">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-ink/40 text-sm"></i>
+        <input id="mobileQuickSearch" type="text" placeholder="搜尋景點、美食..." class="w-full pl-10 pr-4 py-3 text-sm bg-white/60 backdrop-blur-md border border-white shadow-inner-light rounded-2xl font-sans outline-none focus:bg-white transition placeholder:text-ink/40" oninput="handleSearch(this.value, 'mobile')">
+      </div>
+
+      <p class="text-ink/60 font-bold mt-4 bg-white/40 inline-block px-3 py-1 rounded-lg border border-white" id="search-count"></p>
+    </div>
+    <div id="search-results" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+       <div class="col-span-full text-center py-20 text-ink/30 glass-card rounded-3xl border border-white" id="search-empty-state">
+         <div class="text-5xl mb-4 opacity-50">🔍</div>
+         <p class="font-bold text-lg">請輸入關鍵字開始搜尋</p>
+         <p class="text-xs mt-2 font-medium">例如：燒肉、海灘、購物、拉麵</p>
+       </div>
+    </div>
+  </section>
+</main>
+
+<nav id="mobile-nav" class="md:hidden fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-xl border border-white/60 z-50 flex overflow-x-auto no-scroll px-3 py-2 items-center gap-2 rounded-[2rem] shadow-[0_8px_30px_rgb(27,42,48,0.12)] snap-x snap-mandatory pb-safe-adjust">
+  <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all active-mobile" data-target="view-overview">
+    <i class="fas fa-compass text-lg"></i> <span class="text-sm tracking-wide">總覽</span>
+  </button>
+  <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all" data-target="view-checklist">
+    <i class="fas fa-suitcase-rolling text-lg"></i> <span class="text-sm tracking-wide">清單</span>
+  </button>
+  <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all" data-target="view-tools">
+    <i class="fas fa-toolbox text-lg"></i> <span class="text-sm tracking-wide">百寶箱</span>
+  </button>
+  <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all" data-target="view-wishlist">
+    <i class="fas fa-heart text-coral text-lg"></i> <span class="text-sm tracking-wide">收藏</span>
+  </button>
+  <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all" data-target="view-phrases">
+    <i class="fas fa-language text-sky text-lg"></i> <span class="text-sm tracking-wide">日文</span>
+  </button>
+  <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all" data-target="view-rainy-backup">
+    <i class="fas fa-umbrella text-ocean text-lg"></i> <span class="text-sm tracking-wide">雨備</span>
+  </button>
+  
+  <div class="w-px h-8 bg-ink/10 flex-shrink-0 mx-1"></div>
+  <div id="mobile-day-btns" class="flex gap-2"></div>
+</nav>
+
+<style>
+  .pb-safe-adjust { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+</style>
+
+<script>
+// ===================== DATA =====================
+const DAYS_DATA = [
+  { id:'day1', num:'01', date:'7月2日', color:'ocean', hex:'#4A8594',
+    title:'啟程與抵達那霸',
+    subtitle:'出發前往度假天堂！抵達辦理入住後，首日晚沉浸在國際通的熱鬧氛圍。',
+    intro:'抵達沖繩的第一天，重點在於安頓與感受市區活力。包含機場到市區動線，以及國際通周邊不可錯過的美食與宵夜選擇。',
+    tips:[
+      '⚠️ 日本駕駛全面靠左行駛，轉彎時請默念「左小彎、右大彎」，雨天請加倍跟車距離。',
+      '💴 機場設有換匯所，但匯率普遍較差，建議在台灣先換好少量現鈔，其餘刷卡。',
+      '📶 入境那霸機場後，請務必先在航廈內開啟並測試網卡/eSIM，確認網路暢通再過海關。',
+      '🧳 首日若提早抵達或想空手逛街，那霸機場國內線及航廈 2 樓均設有大型投幣式行李置物櫃。',
+      '🚝 單軌電車（Yui Rail）起站為那霸機場，支援使用 IC 卡（如 Suica、ICOCA）直接感應進站。',
+      '🏨 抵達 Hotel Strata Naha 辦理入住時，請準備好所有入住旅客的護照正本以供櫃檯掃描留存。',
+      '🛍️ 國際通許多藥妝店營業至深夜，但退稅櫃檯（Tax-Free）通常會提早休息，購物時請留意時間。',
+      '🇯🇵 日本店家非常注重禮貌，進入居酒屋或鄉土料理店時，請靜候店員前來帶位，勿自行入座。',
+      '💴 部分市區傳統老店或屋台（如屋台村）僅接受現金支付，身上請務必留有足夠的日圓現鈔。',
+      '🌙 沖繩夏日早晚溫差雖小，但室內冷氣普遍強勁，首日散步建議隨身攜帶一件透氣薄外套。'
+    ],
+    itinerary:[
+      {time:'16:15', text:'高雄國際機場 (IT728起飛)', icon:'🛫', q:'高雄國際機場 KHH'},
+      {time:'18:40', text:'那霸機場 (OKA) 抵達', icon:'🛬', q:'那霸機場'},
+      {time:'19:08', text:'Hotel Strata Naha (入住)', icon:'🏨', q:'Hotel Strata Naha'},
+      {time:'19:48', text:'國際通散步購物', icon:'🛍️', q:'國際通 那霸'},
+      {time:'22:27', text:'返回酒店休息', icon:'🌙', q:'Hotel Strata Naha'}
+    ],
+    places:[
+      {name:'傑克牛排館', imgRef:'jack', area:'旭橋', rating:4.4, type:'food', tags:'美式老牌牛排', desc:'沖繩牛排文化的經典代表！充滿濃濃的昭和復古美式風情。', recommend:'特選烤牛排 (Tenderloin)'},
+      {name:'ゆうなんぎい', imgRef:'yunangi', area:'國際通', rating:4.3, type:'food', tags:'沖繩鄉土料理', desc:'開業超過50年的老字號居酒屋，道地家常菜首選。', recommend:'沖繩炒苦瓜、東坡肉'},
+      {name:'暖暮拉麵 牧志店', img:'images/img_9b4f62d7a6.webp', area:'國際通', rating:4.0, type:'food', tags:'豚骨拉麵', desc:'九州拉麵名店，極受台灣旅客歡迎，經常大排長龍。', recommend:'烈火拉麵、半熟蛋芝麻蔥拉麵'},
+      {name:'Blue Seal 國際通店', img:'images/img_6e327f3384.webp', area:'國際通', rating:4.2, type:'food', tags:'冰淇淋', desc:'「出生於美國，成長於沖繩」的標誌性冰淇淋品牌。', recommend:'鹽金楚糕口味、紅芋口味'},
+      {name:'大東麵', img:'images/img_b3682cd810.webp', area:'牧志', rating:4.2, type:'food', tags:'沖繩麵', desc:'麵條極具嚼勁，搭配軟嫩爌肉，許多人心中的市區第一名。', recommend:'大東沖繩麵、大東壽司'},
+      {name:"Zooton's 久茂地店", img:'images/img_1e85364460.webp', area:'久茂地', rating:4.4, type:'food', tags:'手工漢堡', desc:'隱藏在巷弄中的超高評價漢堡店！手打漢堡排多汁美味。', recommend:'自製酪梨起司漢堡'},
+      {name:'Fukugiya 年輪蛋糕', img:'images/img_51c19a5c1a.webp', area:'國際通', rating:4.2, type:'food', tags:'甜點伴手禮', desc:'走在國際通一定會被現烤香氣吸引。使用沖繩黑糖製作。', recommend:'黑糖年輪蛋糕'},
+      {name:'國際通屋台村', img:'images/img_4fbbe7dbc6.webp', area:'國際通', rating:4.0, type:'food', tags:'屋台聚落', desc:'聚集二十多間特色小店的露天美食街，適合宵夜。', recommend:'各式串燒、Orion生啤酒'},
+      {name:'牛排屋88 國際通店', img:'images/img_3608f605f0.webp', area:'國際通', rating:4.2, type:'food', tags:'鐵板牛排', desc:'知名連鎖牛排店，提供多種部位選擇。', recommend:'88特選紐約客牛排'},
+      {name:'C&C Breakfast', img:'images/img_a9f92fc4e3.webp', area:'牧志', rating:4.2, type:'food', tags:'夏威夷早午餐', desc:'舒芙蕾鬆餅與巴西莓果碗，深受歡迎的質感早午餐。', recommend:'夏威夷堅果醬舒芙蕾鬆餅'},
+      {name:'Calbee+ 國際通店', img:'images/img_5785dc7c4e.webp', area:'國際通', rating:4.3, type:'food', tags:'現炸洋芋片', desc:'熱騰騰現炸洋芋片與薯條，還有沖繩限定口味。', recommend:'現炸紅芋薯條佐冰淇淋'},
+      {name:'Jef Burger 壺屋店', img:'images/img_10bdcb7370.webp', area:'壺屋', rating:4.1, type:'food', tags:'限定速食', desc:'沖繩才有的在地速食！招牌苦瓜烘蛋漢堡。', recommend:'苦瓜烘蛋漢堡'},
+      {name:'Ball Donut Park', img:'images/img_9f2323bb6b.webp', area:'國際通', rating:4.3, type:'food', tags:'球型甜甜圈', desc:'現炸小巧球型甜甜圈，淋上檸檬汁與糖粉，清爽不甜膩。', recommend:'檸檬糖霜甜甜圈'},
+      {name:'Kurtos Kalacs', img:'images/img_14ab0c5edd.webp', area:'國際通', rating:4.5, type:'food', tags:'煙囪捲', desc:'少見的東歐傳統甜點，現烤出爐香氣四溢。', recommend:'肉桂煙囪捲'},
+      {name:'三笠食堂', img:'images/img_fcb8454340.webp', area:'松山', rating:4.0, type:'food', tags:'24H家庭餐廳', desc:'在地人愛去的老牌平價食堂，全天候營業，大份量。', recommend:'沖繩肉絲炒麵線'},
+      {name:'壺屋陶器街', img:'images/img_9df5e88b08.webp', area:'壺屋', rating:4.4, type:'sight', tags:'散步景點', desc:'充滿傳統陶器的石板路，隱藏著許多精美陶器咖啡館。', recommend:'挑選特色沖繩陶器'},
+      {name:'tituti OKINAWAN CRAFT', imgRef:'tituti', area:'牧志', rating:4.6, type:'sight', tags:'工藝選物', desc:'在地工藝師共同經營的質感選物店，販售陶器與紅型染。', recommend:'設計款 Yachimun'},
+      {name:'module (モジュール)', img:'images/img_c361b203d1.webp', area:'旭橋', rating:4.5, type:'sight', tags:'質感文具', desc:'那霸市區極具品味的文具與生活雜貨選物店，文具控必訪。', recommend:'沖繩特色設計文具'},
+      {name:'唐吉訶德 國際通店', img:'images/img_37c946ede8.webp', area:'國際通', rating:4.1, type:'sight', tags:'購物', desc:'24小時營業的血拚聖地！從零食到藥妝應有盡有。', recommend:'沖繩限定零食與熱門藥妝'},
+      {name:'琉貿百貨 RYUBO', img:'images/img_dd25d3eb95.webp', area:'縣廳前', rating:4.1, type:'sight', tags:'百貨商場', desc:'那霸市區唯一百貨，地下街有精緻熟食與便當。', recommend:'地下美食街惣菜、文具雜貨'}
+    ]
+  },
+  { id:'day2', num:'02', date:'7月3日', color:'mint', hex:'#72A98F',
+    title:'中北部與美國村（精采夜生活秀）',
+    subtitle:'早晨走訪安良波海灘，體驗青洞潛水，漫遊美國村與 Rycom 血拚，深夜返回市區體驗震撼 showCLUB 演出。',
+    intro:'第二天行程豐富！離開市區感受中部風情，涵蓋海灘漫步、水下體驗與大型商場血拚，午夜前返回那霸市區觀賞熱血澎湃的日本頂級舞台歌舞秀。',
+    tips:[
+      '🤿 參加黑潮潛水（青洞）前一晚嚴禁過度飲酒；當日早餐請以清淡為主，避免因風浪導致反胃。',
+      '🚗 美國村週末及傍晚的免費停車場非常熱門，若核心區客滿，可將車輛停至較外圍的北谷町營停車場。',
+      '🛒 AEON MALL Rycom 佔地極廣且品牌眾多，退稅手續需至 1 樓免稅櫃檯統一辦理，排隊時間較長，請預留充足時間。',
+      '💃 Churasun 6 秀場於 22:30 準時開演（第二場），建議提早 15-20 分鐘抵達現場換卡核銷並安排座位。',
+      '✨ Churasun 6 票價已含 10 張互動小費券，若想給表演者更多支持，可在現場額外兌換專用小費。',
+      '🚗 自駕行經恩納村國道 58 號線時，沿途常有定點測速照相，請嚴格遵守速限（通常為 50-60 km/h）。',
+      '☕ BANTA CAFE 為星野集團經營之絕景咖啡廳，戶外崖邊榻榻米座位非常搶手，建議一抵達先尋找座位再點餐。',
+      '🍲 晚餐 Itoya 阿古豬火鍋極為熱門，若無提前預約，建議在非尖峰時段前去碰碰運氣或提早排隊。',
+      '📱 自駕導航時，若車載導航不熟悉，建議同時開啟 Google Maps 作為輔助，並輸入店家的 MapCode 或電話號碼。',
+      '🌙 深夜自駕返回那霸市區時，市區道路較狹窄且部分路段有單行道限制，請放慢車速並專注路況。'
+    ],
+    itinerary:[
+      {time:'08:30', text:'搭車前往那霸機場', icon:'🚕', q:'那霸機場'},
+      {time:'09:00', text:'Kuruca租車 取車', icon:'🚗', q:'沖繩縣豐見城市我那霸295-4'},
+      {time:'09:42', text:'安良波海灘', icon:'🏖️', q:'安良波海灘 北谷'},
+      {time:'10:19', text:'美浜美國村', icon:'🎡', q:'美浜美國村 北谷'},
+      {time:'11:53', text:'A&W 美浜店午餐', icon:'🍔', q:'A&W 美浜店 沖繩'},
+      {time:'13:23', text:'黑潮潛水｜沖繩青洞', icon:'🤿', q:'黑潮潛水 恩納村'},
+      {time:'13:45', text:'琉球村', icon:'🏯', q:'琉球村 恩納村'},
+      {time:'16:01', text:'BANTA CAFE 夕陽咖啡', icon:'☕', q:'Hoshino Resorts BANTA CAFE'},
+      {time:'17:41', text:'AEON MALL Rycom 購物', icon:'🏬', q:'AEON MALL Okinawa Rycom'},
+      {time:'19:24', text:'Itoya 阿古豬火鍋晚餐', icon:'🍲', q:'Itoya 阿古豬火鍋 沖繩'},
+      {time:'22:00', text:'駕車返回那霸市區 / 放車回酒店', icon:'🚗', q:'Hotel Strata Naha'},
+      {time:'22:30', text:'沖繩 Churasun 6 大型 showCLUB 表演', icon:'✨', q:'Churasun 6 沖縄'}
+    ],
+    places:[
+      {name:'Churasun 6 (ちゅらさん6)', img:'images/img_20cee44c23.webp', area:'那霸市區', rating:4.8, type:'sight', tags:'大型秀場/夜生活', desc:'沖繩天花板級別的性感熱血歌舞秀！高水準燈光舞台與動感鋼管、鋼絲飛行特技，氣氛超級嗨。', recommend:'震撼座位區（含10張互動小費券）'},
+      {name:'Taco Rice Cafe Kijimuna', img:'images/img_f9103f314c.webp', area:'美國村', rating:4.4, type:'food', tags:'塔可飯', desc:'將沖繩美食「塔可飯」加上滑嫩歐姆蛋，超人氣創意料理。', recommend:'酪梨歐姆塔可飯'},
+      {name:'Zhyvago Coffee Works', img:'images/img_be4156bf50.webp', area:'美國村', rating:4.6, type:'food', tags:'海景咖啡', desc:'美國村最具質感的工業風咖啡館，伴隨無敵海景。', recommend:'冰拿鐵、手工巧克力軟餅乾'},
+      {name:'琉球之牛 北谷店', img:'images/img_610b1c29db.webp', area:'美國村', rating:4.4, type:'food', tags:'頂級燒肉', desc:'油花分佈完美的頂級縣產和牛，入口即化，建議提前訂位。', recommend:'頂級縣產和牛套餐'},
+      {name:'A&W 北谷店', img:'images/img_fab42a6503.webp', area:'北谷', rating:4.1, type:'food', tags:'美式速食', desc:'沖繩獨有的美式速食！麥根沙士在店內無限續杯。', recommend:'A&W雙層起司堡、麥根沙士'},
+      {name:'Seaside Cafe Hanon', img:'images/img_d8113d72cb.webp', area:'美國村', rating:4.4, type:'food', tags:'海景鬆餅', desc:'純白希臘風格鬆餅專專賣店，陽台座位直面大海。', recommend:'焦 caramel 香蕉舒芙蕾鬆餅'},
+      {name:'Blue Ocean Steak', img:'images/img_74c74734c1.webp', area:'北谷', rating:4.6, type:'food', tags:'鐵板牛排', desc:'評價極高的高級牛排館，提供高品質和牛與龍蝦，可賞夕陽。', recommend:'黑毛和牛沙朗、蒜香龍蝦'},
+      {name:'海人食堂', img:'images/img_5a97352ffa.webp', area:'讀谷村', rating:4.2, type:'food', tags:'漁港海鮮', desc:'讀谷村都屋漁港旁，產地直銷、便宜大碗的新鮮生魚片。', recommend:'海人丼、炸近海魚定食'},
+      {name:'Timeless Chocolate', img:'images/img_bbaa7ec92d.webp', area:'美國村', rating:4.5, type:'food', tags:'精品巧克力', desc:'沖繩第一家Bean to Bar巧克力，結合黑糖與純可可。', recommend:'黑糖單品巧克力、特濃熱可可'},
+      {name:'The Calif Kitchen', img:'images/img_268d896548.webp', area:'美國村', rating:4.4, type:'food', tags:'加州風餐廳', desc:'純白明亮的加州海岸風格，餐點顏值極高且美味。', recommend:'墨西哥捲餅、夏威夷蒜香蝦'},
+      {name:'濱屋沖繩麵', img:'images/img_14b2310e1e.webp', area:'北谷', rating:4.4, type:'food', tags:'沖繩麵', desc:'超人氣沖繩麵！特色是軟嫩到入口即化的豬軟骨。', recommend:'濱屋豬軟骨沖繩麵'},
+      {name:'Mintama', img:'images/img_80ae065bec.webp', area:'讀谷村', rating:4.5, type:'food', tags:'義式居酒屋', desc:'超人氣小店，將義式料理手法與沖繩在地食材結合。', recommend:'墨魚義大利麵、窯烤披薩'},
+      {name:"Plowman's Lunch Bakery", img:'images/img_b1c0ff4f0d.webp', area:'北中城村', rating:4.5, type:'food', tags:'山林早午餐', desc:'藏於山坡上的秘境麵包店，天然酵母麵包與濃湯極具水準。', recommend:'豐盛早午餐盤、天然酵母麵包'},
+      {name:'現烤冰淇淋菠蘿麵包', img:'images/img_ddee100df3.webp', area:'AEON Rycom', rating:4.1, type:'food', tags:'人氣甜點', desc:'熱呼呼的酥脆菠蘿麵包夾入冰涼香草冰淇淋，逛街點心首選。', recommend:'香草冰淇淋菠蘿麵包'},
+      {name:'串家物語', img:'images/img_874b2cf4ab.webp', area:'AEON Rycom', rating:4.0, type:'food', tags:'炸串吃到飽', desc:'有趣的自助炸串體驗，自己挑選食材並裹粉下鍋油炸。', recommend:'各式肉類與蔬菜炸串'},
+      {name:"Roy's", img:'images/img_15d2232de6.webp', area:'AEON Rycom', rating:4.2, type:'food', tags:'夏威夷料理', desc:'結合日式與西式手法的精緻海島料理。', recommend:'經典夏威夷風味牛排'},
+      {name:'ZHYVAGO COFFEE WORKS', img:'images/img_2a9a279722.webp', area:'北谷', rating:4.3, type:'food', tags:'海景西海岸咖啡', desc:'美國村海沿地標咖啡店，倉庫改建的西海岸工業風，面東海大片海景，沖繩人氣咖啡名店。', recommend:'愛心拉花拿鐵、現烤司康'},
+      {name:'星野 BANTA CAFE', img:'images/img_405434c9bd.webp', area:'讀谷村', rating:4.4, type:'sight', tags:'絕景海濱', desc:'日本國內最大規模海景咖啡廳！依自然岩石海岸而建。', recommend:'泡泡果凍汽水、絕美海景'},
+      {name:'御菓子御殿 讀谷本店', img:'images/img_3edbc6794e.webp', area:'讀谷村', rating:4.3, type:'sight', tags:'紅芋塔首創', desc:'紅芋塔的發祥地！建築宛如小首里城。', recommend:'現做生紅芋塔、紅芋霜淇淋'},
+      {name:'KOJIMA x BicCamera', img:'images/img_8bab847a75.webp', area:'AEON Rycom', rating:4.0, type:'sight', tags:'大型家電', desc:'在Rycom逛商場也能順便買電器！針對觀光客有折扣。', recommend:'美容家電、最新相機'},
+      {name:'D&DEPARTMENT OKINAWA', imgRef:'ddept', area:'宜野灣', rating:4.4, type:'sight', tags:'設計選物', desc:'長效設計選物店。精選沖繩在地長久流傳的生活道具。', recommend:'質感生活器皿'}
+    ]
+  },
+  { id:'day3', num:'03', date:'7月4日', color:'sand', hex:'#D5A87B',
+    title:'北部絕景與煙火',
+    subtitle:'一路向北！許田休息站、古宇利島，下午美麗海水族館，晚上絢爛煙火。',
+    intro:'深入沖繩北部，最清澈的海水(古宇利島)與必訪的美麗海水族館。傍晚留在海洋博公園享受夏日煙火。',
+    tips:[
+      '🎆 煙火大會當日實施大規模交通管制。已預約停車場 A・B 的車主，請導航至「Lawson 海洋博公園前店」轉進町道 16 號線，循專屬指標入場。',
+      '🅿️ 停車場 A・B 於 14:00 正式開放，入場後需憑 VELTRA 憑證換取停車證，並搭乘大會提供的免費接駁車前往會場。',
+      '🐳 美麗海水族館當日人潮眾多，招牌鯨鯊餵食秀通常在 15:00 與 17:00（請以當日官網為準），建議提早 20 分鐘到黑潮之海大水槽前佔位。',
+      '🎆 煙火觀賞區為「棧敷席 A（遊玩濱）」，屬於沙灘地墊席，建議自備防水野餐墊或濕紙巾以便入座。',
+      '🚗 煙火結束後散場人潮可達數萬人，周邊道路將極度擁擠。大會接駁車營運至 23:00，建議在座位上稍作休息、避開第一波離場車潮。',
+      '🏪 道之驛許田休息站是購買北部景點優惠門票（如水族館）與享用在地小吃（如炸鮮奶饅頭）的最佳補給站。',
+      '🏝️ 古宇利大橋兩側海色在上午 11:00 至下午 14:00 陽光直射時最為漸層湛藍，是最佳的拍攝時間。',
+      '🍤 Kouri Shrimp 蒜香蝦常需排隊 30 分鐘以上，可指派一人先下車點餐，其餘人將車停至專屬停車場。',
+      '🧴 北部戶外紫外線極強，海灘完全無遮蔽物，請務必每 2 小時補擦防曬乳，並配戴太陽眼鏡。',
+      '🔋 因當日包含水族館拍照與深夜煙火錄影，手機耗電極快，出門前請務必帶足高容量行動電源。'
+    ],
+    itinerary:[
+      {time:'08:00', text:'那霸出發北上', icon:'🚗', q:'Hotel Strata Naha'},
+      {time:'10:04', text:'道の駅 許田休息站', icon:'🏪', q:'道の駅 許田 開護'},
+      {time:'11:24', text:'古宇利島 (古宇利大橋)', icon:'🏝️', q:'古宇利島'},
+      {time:'14:00', text:'沖繩美麗海水族館', icon:'🐬', q:'沖繩美麗海水族館'},
+      {time:'19:00', text:'海洋博煙火大會 (棧敷席A / 停車場A・B)', icon:'🎆', q:'海洋博公園 臨時駐車場'}
+    ],
+    places:[
+      {name:'Kouri Shrimp', img:'images/img_8705bf91d5.webp', area:'古宇利島', rating:4.4, type:'food', tags:'蒜香蝦', desc:'夏威夷經典蒜香奶油蝦配上白飯，香氣濃郁停不下來。', recommend:'原味蒜蓉蝦飯'},
+      {name:'岸本食堂', img:'images/img_8f2ae9709b.webp', area:'本部町', rating:4.3, type:'food', tags:'百年沖繩麵', desc:'柴灰製作傳統麵條，湯頭有獨特木柴香氣與濃郁鰹魚味。', recommend:'沖繩麵、沖繩炊飯'},
+      {name:'花人逢', img:'images/img_54342f2887.webp', area:'本部町', rating:4.4, type:'food', tags:'海景披薩', desc:'位於半山腰的古民家，吃著披薩俯瞰瀨底島絕美海景。', recommend:'綜合熱烤披薩'},
+      {name:'Captain Kangaroo', img:'images/img_726a0f80e5.webp', area:'名護', rating:4.6, type:'food', tags:'浮誇漢堡', desc:'被網友評為「沖繩最好吃的漢堡」！漢堡肉厚實，配料如山。', recommend:'Sparky 炸洋蔥圈起司漢堡'},
+      {name:'百年古家 大家', img:'images/img_7f57bc537f.webp', area:'名護', rating:4.2, type:'food', tags:'阿古豬', desc:'百年古宅改建，伴隨流水瀑布造景，阿古豬涮涮鍋非常出名。', recommend:'阿古豬特極涮涮鍋'},
+      {name:'Shirasa 食堂', img:'images/img_a97b981230.webp', area:'古宇利島', rating:4.3, type:'food', tags:'海膽蓋飯', desc:'古宇利島盛產海膽，這家老牌食堂提供奢華海膽蓋飯！', recommend:'海膽海葡萄雙拼蓋飯'},
+      {name:'Ocean Blue Cafe', img:'images/img_b690539db2.webp', area:'水族館內', rating:4.2, type:'food', tags:'水族箱咖啡', desc:'位於「黑潮之海」水槽旁，一邊喝咖啡看鯨鯊，極致夢幻。', recommend:'藍色海洋拿鐵'},
+      {name:'名護漁港食堂', img:'images/img_542d2eeb8d.webp', area:'名護漁港', rating:4.1, type:'food', tags:'海鮮定食', desc:'漁會直營！最新鮮、大份量且價格佛心的定食。', recommend:'每日特上海鮮丼'},
+      {name:'Yanbaru Gelato', img:'images/img_cc1508174d.webp', area:'名護', rating:4.4, type:'food', tags:'義式冰淇淋', desc:'曾獲世界大賽殊榮！使用山原產水果製作，果香濃郁。', recommend:'山原香檸口味、西瓜口味'},
+      {name:'Restaurant L Lota', img:'images/img_8674d8b840.webp', area:'古宇利島', rating:4.5, type:'food', tags:'質感海景餐廳', desc:'難得的高級質感法式餐廳，大片落地窗眺望古宇利大橋。', recommend:'香煎鮮魚套餐'},
+      {name:'Flipper 牛排館', img:'images/img_110e6b8a98.webp', area:'名護', rating:4.4, type:'food', tags:'老牌鐵板牛排', desc:'名護在地人極度熱愛的平價老牌牛排館，肉質軟嫩。', recommend:'特選沙朗牛排'},
+      {name:'Nakijin Soba', img:'images/img_992c8ae737.webp', area:'今歸仁村', rating:4.5, type:'food', tags:'古民家沖繩麵', desc:'隱身在傳統古民家中，湯頭清甜淡雅，寧靜鄉村氛圍。', recommend:'特製今歸仁沖繩麵'},
+      {name:'八重食堂', img:'images/img_a1cb295e1b.webp', area:'名護', rating:4.3, type:'food', tags:'茶壺沖繩麵', desc:'高湯裝在茶壺裡讓客人自己倒，麵條是寬扁麵。', recommend:'綜合三層肉沖繩麵'},
+      {name:'宮里そば', img:'images/img_bf2966da3e.webp', area:'名護', rating:4.2, type:'food', tags:'排隊沖繩麵', desc:'名護當地人從小吃到大的名店！', recommend:'排骨沖繩麵、古早味義大利麵'},
+      {name:'A&W 開護店', img:'images/img_09c1801485.webp', area:'名護', rating:4.1, type:'food', tags:'美式速食', desc:'前往北部必經之處的A&W，體驗沖繩獨特美日融合飲食文化。', recommend:'辣醬熱狗堡、漂浮麥根沙士'},
+      {name:'Ringo Cafe', img:'images/img_3bca9506be.webp', area:'瀨底島', rating:4.6, type:'food', tags:'法式馬卡龍', desc:'由法國甜點師傅經營，沖繩食材融入法式馬卡龍中。', recommend:'沖繩香檸馬卡龍'},
+      {name:'哥倫比亞洋食', img:'images/img_b3bb4865b1.webp', area:'名護', rating:4.1, type:'food', tags:'復古洋食', desc:'充滿濃厚昭和風味的老牌洋食餐廳，特大炸蝦定食是經典。', recommend:'特大炸蝦定食'},
+      {name:'前田食堂', img:'images/img_246562f64d.webp', area:'名護', rating:4.1, type:'food', tags:'牛肉豆芽麵', desc:'以「堆疊如山的黑胡椒牛肉炒豆芽」聞名的豪邁沖繩麵。', recommend:'牛肉炒豆芽沖繩麵'},
+      {name:'古宇利海洋塔', img:'images/img_a8f691d0a7.webp', area:'古宇利島', rating:4.1, type:'sight', tags:'展望台', desc:'島上最高的制高點視野，適合享用下午茶並欣賞漸層海色。', recommend:'島南瓜布丁與高空海景'},
+      {name:'唐吉訶德 名護店', img:'images/img_616904a807.webp', area:'名護', rating:4.0, type:'sight', tags:'觀光客免稅店', desc:'北部最大的唐吉訶德！晚上補給零食或買藥妝非常方便。', recommend:'生鮮超市區、熱門零食'}
+    ]
+  },
+  { id:'day4', num:'04', date:'7月5日', color:'coral', hex:'#E2858E',
+    title:'地底奇景與血拚',
+    subtitle:'早上探索壯麗鐘乳石「玉泉洞」，下午前往PARCO CITY享用敘敘苑並盡情購物。',
+    intro:'涵蓋南部大自然奇景與西海岸超大型購物中心。玉泉洞能讓您探索沖繩地底奧秘，隨後前往PARCO CITY品嚐頂級燒肉。',
+    tips:[
+      '🦇 玉泉洞內為天然鐘乳石洞，終年潮濕且地面常有積水、階梯濕滑，請務必穿著防滑效果佳的布鞋或涼鞋。',
+      '📸 玉泉洞內部基於安全與生態保護，全面禁止使用相機閃光燈，建議開啟手機夜景模式拍攝。',
+      '🥩 敘敘苑浦添 PARCO CITY 店極度熱門，雖可現場排隊，但強烈建議提前透過官網預訂面海的景觀座位。',
+      '🛍️ PARCO CITY 免稅門檻為當日同一商家消費滿 ¥5,000（不含稅），部分專櫃需至商場 1 樓免稅櫃檯統一退稅。',
+      '🧥 玉泉洞內溫度長年維持在 18-20°C 左右，與室外夏日高溫溫差大，進入前請穿上隨身攜帶的薄外套。',
+      '🚗 南部著名的海景咖啡廳（如濱邊的茶屋）車位較少，若遇客滿，需在現場登記候位並於車內耐心等候。',
+      '☕ Cave Cafe 位於天然鐘乳石洞內，這裡販售沖繩限定的 35 COFFEE（珊瑚烘焙咖啡），極具特色。',
+      '🐈 天婦羅名店多集中在奧武島，島上貓咪眾多，自駕開車慢行時請特別留意路邊與車底的小動物。',
+      '🛒 PARCO CITY 內部動線寬敞，聚集了大量日系服飾、戶外用品與文具雜貨，建議保留至少 3-4 小時以免逛得太倉促。',
+      '🚗 傍晚從浦添西海岸返回那霸市區的國道 58 號線容易塞車，請提早規劃出發時間以利後續行程。'
+    ],
+    itinerary:[
+      {time:'09:00', text:'那霸出發南下', icon:'🚗', q:'Hotel Strata Naha'},
+      {time:'09:33', text:'玉泉洞 (王國村)', icon:'🦇', q:'玉泉洞 沖繩'},
+      {time:'13:30', text:'敘敘苑 浦添PARCO CITY店', icon:'🥩', q:'敘敘苑 沖繩浦添'},
+      {time:'15:00', text:'SAN-A浦添西海岸 PARCO CITY', icon:'🏬', q:'SAN-A浦添西海岸 PARCO CITY'}
+    ],
+    places:[
+      {name:'敘敘苑 浦添店', img:'images/img_bb8542285a.webp', area:'浦添市', rating:4.5, type:'food', tags:'頂級燒肉', desc:'日本全國知名的高級燒肉店，午間套餐價格親民份量十足。', recommend:'超值午間燒肉套餐'},
+      {name:'oHacorte本店', img:'images/img_ef67b3ded1.webp', area:'浦添市', rating:4.4, type:'food', tags:'水果塔', desc:'隱身在美軍老眷村的超人氣甜點店，新鮮水果塔精緻如藝術品。', recommend:'季節限定水果塔'},
+      {name:'Cafe Kurukuma', img:'images/img_71d26e1eff.webp', area:'南城市', rating:4.4, type:'food', tags:'海景泰式', desc:'南部最著名的無敵海景餐廳！能將太平洋盡收眼底。', recommend:'特製綜合泰式咖哩'},
+      {name:'中本鮮魚天婦羅店', img:'images/img_affd6af509.webp', area:'奧武島', rating:4.2, type:'food', tags:'沖繩天婦羅', desc:'南部奧武島名店，天婦羅麵衣厚實鬆軟，價格極其便宜。', recommend:'炸水雲、炸花枝'},
+      {name:'濱邊的茶屋', img:'images/img_9bbf31e926.webp', area:'南城市', rating:4.4, type:'food', tags:'沙灘咖啡', desc:'沖繩海景咖啡館先驅。漲潮時海水就在窗戶正下方。', recommend:'手作起司蛋糕、扶桑花茶'},
+      {name:'黑糖可麗露 ほうき星', img:'images/img_8269b19042.webp', area:'港川外人住宅', rating:4.5, type:'food', tags:'精點甜點', desc:'本店氣氛復古可愛，黑糖可麗露外酥內軟，打卡必備。', recommend:'多良間島黑糖原味可麗露'},
+      {name:'博多一風堂', img:'images/img_d409ac305d.webp', area:'PARCO CITY', rating:4.1, type:'food', tags:'豚骨拉麵', desc:'在購物商場內想快速吃一碗熱騰騰美食的絕佳選擇。', recommend:'白丸元味、特製赤丸新味'},
+      {name:'糸滿魚市場', img:'images/img_66ca09a031.webp', area:'糸滿市', rating:4.3, type:'food', tags:'海鮮小吃', desc:'南部吃海鮮聖地！販售一盤盤切好的生魚片、焗烤龍蝦。', recommend:'鮮甜干貝串、焗烤明太子龍蝦'},
+      {name:'鶏そば屋 いしぐふー', img:'images/img_47ee913d53.webp', area:'浦添市', rating:4.5, type:'food', tags:'雞白湯沖繩麵', desc:'以極度濃郁鮮甜的「雞白湯」底搭配特製麵條聞名，常大排長龍。', recommend:'特製雞白湯沖繩麵'},
+      {name:'A&W 牧港店', img:'images/img_abd6b6cce8.webp', area:'浦添市', rating:4.3, type:'food', tags:'美式速食', desc:'擁有巨大霓虹招牌與戶外噴水池的旗艦店，濃厚美式復古氛圍。', recommend:'莫札瑞拉起司漢堡'},
+      {name:'大城天婦羅店', img:'images/img_8890e86b82.webp', area:'奧武島', rating:4.3, type:'food', tags:'現炸天婦羅', desc:'奧武島上另一家超人氣天婦羅店，現點現炸。', recommend:'炸鮪魚、炸蔬菜球'},
+      {name:'山之茶屋 樂水', img:'images/img_c6fbdc41f4.webp', area:'南城市', rating:4.5, type:'food', tags:'山林蔬食', desc:'被綠意環繞的木造建築，極致健康的沖繩在地野菜與素食。', recommend:'樂水御膳'},
+      {name:'食堂Karika', img:'images/img_1f5fe111e5.webp', area:'新原海灘', rating:4.4, type:'food', tags:'沙灘咖哩', desc:'完全沒有建築物，只有沙灘上的陽傘與座位，真正海島風情。', recommend:'尼泊爾香料雞肉咖哩'},
+      {name:'沖繩麵 峰 Mine', img:'images/img_d99a5a5f61.webp', area:'南城市', rating:4.6, type:'food', tags:'精緻沖繩麵', desc:'隱藏在南部的高評價名店。湯頭極為講究，擺盤精緻如法式料理。', recommend:'特製三層肉沖繩麵'},
+      {name:'まんぷく食堂', img:'images/img_7594419185.webp', area:'南城市', rating:4.1, type:'food', tags:'牛汁羊肉湯', desc:'想挑戰最深度的沖繩在地滋味，以濃郁山羊湯聞名。', recommend:'沖繩牛汁定食'},
+      {name:'Cafe 風樹', img:'images/img_40a0c5faaa.webp', area:'南城市', rating:4.4, type:'food', tags:'小木屋海景', desc:'位於半山腰的兩層樓原木打造小屋，二樓可以吹海風享用手作洋食。', recommend:'漢堡排套餐'},
+      {name:'天空茶屋', img:'images/img_9d47104734.webp', area:'南城市', rating:4.3, type:'sight', tags:'秘境絕景', desc:'位置隱密，擁有無敵視野可以俯瞰知念半島，靜謐放空秘境。', recommend:'手作紅芋麻糬與熱茶'},
+      {name:'Cave Cafe', img:'images/img_3e99f3e433.webp', area:'南城市', rating:4.3, type:'sight', tags:'鐘乳石咖啡', desc:'位於天然鐘乳石洞內的咖啡廳！氣氛神祕沁涼。', recommend:'35 COFFEE 珊瑚烘焙咖啡'},
+      {name:'PORTRIVER MARKET', imgRef:'portriver', area:'港川外人住宅', rating:4.5, type:'sight', tags:'質感選物', desc:'店主品味極佳，收集了沖繩與世界各地的漂亮餐具、食品與雜貨。', recommend:'手作陶器、精選咖啡豆'},
+      {name:'MUJI 無印良品', img:'images/img_62db7e476c.webp', area:'PARCO CITY', rating:4.5, type:'sight', tags:'生活雜貨', desc:'沖繩最大規模的無印良品！商品齊全，還有無印良品食堂可以看海用餐。', recommend:'沖繩限定商品、Café&Meal'}
+    ]
+  },
+  { id:'day5', num:'05', date:'7月6日', color:'sky', hex:'#95C1D1',
+    title:'市區巡禮與賦歸',
+    subtitle:'早上走訪牧志市場與首里城，品嚐炸豬排後前往機場準備返台。',
+    intro:'最後一天體驗在地市井文化與歷史古蹟。從牧志市場的早晨開始，走訪首里城，最後至機場採購伴手禮，完美句點。',
+    tips:[
+      '⏰ 首里城正殿目前正在進行復原重建工程（預計2026年完工），現場設有透明觀摩步道，可近距離觀看工匠修復過程。',
+      '🦀 第一牧志公設市場 1 樓挑選海鮮並上 2 樓代烹時，店家會收取固定的烹調服務費（每人約 300-500 円不等）。',
+      '🍙 Pork Tamago Onigiri 牧志市場本店清晨即開始排隊，若想節省時間，可多利用官方 App 提前線上預定點餐。',
+      '✈️ 因那霸機場國際線出境審查與免稅品核銷常出現排隊人潮，強烈建議至少在起飛前 2.5 小時抵達機場。',
+      '🚗 Kuruca 租車還車前，請務必至租車公司指定的臨近加油站「將油箱加滿」，並保留加油收據以供還車時查驗。',
+      '🏯 首里城公園位於丘陵上，從停車場走到主建築群需要步行大量階梯與石板路，請穿著舒適好走的鞋子。',
+      '🍱 沖縄とんかつ小やじ 的座位數較少，午餐時段一到很快就會客滿，建議在開店前 10 分鐘前去排隊。',
+      '🛍️ 那霸機場國內線航廈的伴手禮店種類比國際線航廈齊全許多，建議辦理完登機手續後，走聯絡通道過去國內線最後補貨。',
+      '⚠️ 購買如「生紅芋塔」等特殊伴手禮時，請確認是否需要全程冷藏，並可在機場加購保冷袋。',
+      '✈️ 登機前請再次確認手提行李與隨身液體限制（每瓶不超過 100ml，需裝入透明夾鏈袋），將行動電源留在隨身包中。'
+    ],
+    itinerary:[
+      {time:'09:00', text:'Hotel Strata Naha (退房)', icon:'🏨', q:'Hotel Strata Naha'},
+      {time:'09:45', text:'第一牧志公設市場', icon:'🦀', q:'第一牧志公設市場'},
+      {time:'10:56', text:'Pork Tamago Onigiri', icon:'🍙', q:'Pork Tamago Onigiri Makishi Market'},
+      {time:'11:27', text:'沖縄とんかつ小やじ 午餐', icon:'🍱', q:'沖縄とんかつ小やじ那覇店'},
+      {time:'12:52', text:'西來院 (達磨寺)', icon:'⛩️', q:'西來院 那霸'},
+      {time:'13:41', text:'首里城公園', icon:'🏯', q:'首里城'},
+      {time:'16:00', text:'Kuruca租車 還車', icon:'🚗', q:'沖繩縣豐見城市我那霸295-4'},
+      {time:'17:00', text:'那霸機場 (OKA)', icon:'🛫', q:'那霸機場'},
+      {time:'19:45', text:'中華航空 CI133 起飛', icon:'✈️', q:'那霸機場'},
+      {time:'20:30', text:'高雄國際機場 (KHH) 抵達', icon:'🛬', q:'高雄國際機場'}
+    ],
+    places:[
+      {name:'豬肉蛋飯糰 本店', img:'images/img_a31c557916.webp', area:'牧志市場', rating:4.4, type:'food', tags:'沖繩飯糰', desc:'最經典的排隊名店，熱騰騰的午餐肉與厚煎蛋完美結合。', recommend:'炸蝦豬肉蛋飯糰'},
+      {name:'沖縄とんかつ小やじ', imgRef:'koyaji', area:'牧志', rating:4.5, type:'food', tags:'日式炸豬排', desc:'隱身那霸市區的高評價炸豬排專專賣店，肉質軟嫩多汁，麵衣金黃酥脆。', recommend:'特選里肌炸豬排定食'},
+      {name:'首里蕎麥麵', img:'images/img_ed6939218c.webp', area:'首里', rating:4.4, type:'food', tags:'手打麵', desc:'首里城周邊極度受歡迎的手打沖繩麵，每日限量賣完為止！', recommend:'限量首里沖繩麵'},
+      {name:'琉球茶坊', img:'images/img_b58ae58add.webp', area:'首里', rating:4.3, type:'food', tags:'琉球庭園料理', desc:'傳統古民家改建，坐在緣廊面對枯山水庭園吃傳統料理，非常有氣氛。', recommend:'墨魚汁炒麵、琉球定食'},
+      {name:'市場2樓食堂', img:'images/img_cfbef4308d.webp', area:'牧志市場', rating:4.1, type:'food', tags:'海鮮代工', desc:'一樓挑選生猛海鮮後拿到二樓代客烹調，最接地氣的文化。', recommend:'夜光貝、沖繩近海魚'},
+      {name:'大東壽司 機場便當版', img:'images/img_e7947c4940.webp', area:'那霸機場', rating:4.3, type:'food', tags:'機場便當', desc:'常被秒殺的夢幻空弁！醬油醃漬魚肉握壽司，帶上飛機吃超幸福。', recommend:'大東壽司便當'},
+      {name:"Jimmy's 那霸機場店", img:'images/img_521e4ab62e.webp', area:'那霸機場', rating:4.3, type:'food', tags:'美式烘焙', desc:'沖繩老牌美式超市品牌。大蒜麵包與磅蛋糕非常受歡迎。', recommend:'香濃大蒜抹醬麵包、蘋果派'},
+      {name:'山城饅頭', img:'images/img_12e73a28bf.webp', area:'首里', rating:4.2, type:'food', tags:'百年傳統點心', desc:'首里地區超過百年歷史的傳統老字號，外皮薄透Q彈。', recommend:'現蒸山城饅頭'},
+      {name:'Ayagu 食堂', img:'images/img_5b1e8a921a.webp', area:'首里', rating:4.3, type:'food', tags:'大份量食堂', desc:'首里在地人最愛的平價食堂，份量大到驚人，濃濃昭和家庭感。', recommend:'炸魚排定食'},
+      {name:'豬肉蛋飯糰 機場店', img:'images/img_8d30d33d5b.webp', area:'那霸機場', rating:4.3, type:'food', tags:'沖繩飯糰', desc:'上飛機前最後的回味！國內線航廈一樓的超人氣排隊飯糰。', recommend:'明太子美乃滋豬肉蛋飯糰'},
+      {name:'A&W 那霸機場店', img:'images/img_f39b468373.webp', area:'那霸機場', rating:4.2, type:'food', tags:'美式速食', desc:'離開沖繩前，再來一杯冰涼的麥根沙士和圈圈薯條！', recommend:'經典起司漢堡套餐'},
+      {name:'Fukugiya 那霸機場店', img:'images/img_aa9461be62.webp', area:'那霸機場', rating:4.3, type:'food', tags:'年輪蛋糕', desc:'買一盒當天現烤的黑糖年輪蛋糕帶回台灣，最棒的結尾。', recommend:'黑糖年輪蛋糕'},
+      {name:'Royal Coffee Shop', img:'images/img_1c4be9b6ca.webp', area:'那霸機場', rating:4.0, type:'food', tags:'機場洋食', desc:'在國際線候機時的好去處，提供水準穩定的日式洋食與咖啡。', recommend:'經典牛肉黑咖哩飯'},
+      {name:'Sora Terrace', img:'images/img_fc095d053b.webp', area:'那霸機場', rating:4.0, type:'food', tags:'候機輕食', desc:'過完安檢後，可以在這裡喝杯Orion生啤酒，看著飛機等待登機。', recommend:'Orion 生啤酒'},
+      {name:'風月 Fugetsu', img:'images/img_6aeb31ee56.webp', area:'那霸機場', rating:4.1, type:'food', tags:'日式定食', desc:'想在機場安靜吃一頓日式炸豬排或蕎麥麵，這裡是好選擇。', recommend:'炸豬排定食'},
+      {name:'Blue Seal 機場店', img:'images/img_8e333e5085.webp', area:'那霸機場', rating:4.2, type:'food', tags:'冰淇淋', desc:'登機前的最後一支冰淇淋！回味沖繩夏天的味道。', recommend:'沖繩田芋起司蛋糕口味'},
+      {name:'御菓子御殿 機場店', img:'images/img_160ad0ef7c.webp', area:'那霸機場', rating:4.5, type:'sight', tags:'伴手禮', desc:'沖繩無人不知的代表性伴手禮。生紅芋塔是隱藏版美味。', recommend:'生紅芋塔(需冷藏)'},
+      {name:"Royce' 石垣島", img:'images/img_c1293afb6f.webp', area:'機場免稅店', rating:4.6, type:'sight', tags:'限定巧克力', desc:'只有在沖繩才買得到！石垣島海鹽與黑糖的特殊風味。', recommend:'石垣島海鹽生巧克力'},
+      {name:'Coralway', img:'images/img_0ecaff25e2.webp', area:'那霸機場', rating:4.2, type:'sight', tags:'精選伴手禮', desc:'可以買到許多沖繩限定的文創小物、零食，甚至石垣島辣油。', recommend:'邊銀食堂石垣島辣油'},
+      {name:'琉球村 那霸機場店', img:'images/img_cac46036ed.webp', area:'那霸機場', rating:4.1, type:'food', tags:'沖繩麵', desc:'如果在市區還吃不夠，機場內迅速滿足的一碗。', recommend:'綜合三層肉沖繩麵'}
+    ]
+  }
+];
+
+const CHECKLIST_DATA = [
+  { category:'📋 核心證件', items:['護照正本 (效期>6個月)','電子簽證 / VJW 截圖','機票與住宿憑證列印','台灣駕照 + 日文譯本 (租車用)','保險卡 / 醫療證件'] },
+  { category:'⚡ 電子設備', items:['行動電源 (放隨身包)','Type-C / Lightning 充電線','轉接插頭 (A型)','網路卡 / eSIM 已啟用確認','相機與記憶卡'] },
+  { category:'💳 金融支付', items:['少量日幣現鈔','雙幣/海外回饋信用卡','備用現金或第二張卡','確認信用卡限額是否足夠'] },
+  { category:'🧴 健康與衛生', items:['常備藥 (感冒/腸胃/止痛)','防曬乳 SPF50+','防曬帽、太陽眼鏡','個人盥洗用品','口罩與消毒液'] },
+  { category:'👗 衣物行李', items:['透氣輕薄短袖 x5','游泳衣褲 (潛水用)','薄長袖 (冷氣備用)','好走防滑涼鞋','拖鞋 (海灘用)'] },
+  { category:'🎒 旅行雜物', items:['環保購物袋','密封袋 (防水用品)','快乾毛巾','防水袋或防水包','水壺 (保持補水)'] }
+];
+
+const PHRASES_DATA = [
+  { tag: '👋 日常問候', color: 'sky', tw: '你好。', ja: 'こんにちは。', romaji: 'Konnichiwa.', speak: 'こんにちは' },
+  { tag: '👋 日常問候', color: 'sky', tw: '謝謝。', ja: 'ありがとうございます。', romaji: 'Arigatō gozaimasu.', speak: 'ありがとうございます' },
+  { tag: '👋 日常問候', color: 'sky', tw: '對不起 / 不好意思。', ja: 'すみません。', romaji: 'Sumimasen.', speak: 'すみません' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '請問車站在哪裡？', ja: '駅はどこですか？', romaji: 'Eki wa doko desu ka?', speak: '駅はどこですか' },
+  { tag: '🚗 交通問路', color: 'ocean', tw: '請載我到這個地址。', ja: 'この住所までお願いします。', romaji: 'Kono jūsho made onegaishimasu.', speak: 'こちらの住所までお願いします' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '我要辦理入住。', ja: 'チェックインをお願いします。', romaji: 'Chekkuin o onegaishimasu.', speak: 'チェックインをお願いします' },
+  { tag: '🏨 飯店住宿', color: 'sand', tw: '可以寄放行李嗎？', ja: '荷物を預かってもらえますか？', romaji: 'Nimotsu o azukatte moraemasu ka?', speak: '荷物を預かってもらえますか' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '不好意思，請給我菜單。', ja: 'すみません、メニューをお願いします。', romaji: 'Sumimasen, menyū o onegaishimasu.', speak: 'すみません、メニューをお願いします' },
+  { tag: '🍽️ 餐廳點餐', color: 'coral', tw: '請幫我結帳。', ja: 'お会計をお願いします。', romaji: 'Okaikei o onegaishimasu.', speak: 'お会計をお願いします' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '這個可以退稅嗎？', ja: '免税（めんぜい）できますか？', romaji: 'Menzei dekimasu ka?', speak: '免税できますか' },
+  { tag: '🛍️ 購物結帳', color: 'mint', tw: '可以用信用卡嗎？', ja: 'クレジットカードは使えますか？', romaji: 'Kurejitto kādo wa tsukaemasu ka?', speak: 'クレジットカードは使えますか' }
+];
+
+// ===================== RAINY & SELECT 30 DATA =====================
+const IMG_LIBRARY = {
+  'jack': 'images/img_78062e9092.webp',
+  'yunangi': 'images/img_e827caece8.webp',
+  'tituti': 'images/img_8c111797e0.webp',
+  'ddept': 'images/img_c99c7c13fd.webp',
+  'portriver': 'images/img_7635a5e324.webp',
+  'koyaji': 'images/img_d7470b55d3.webp',
+};
+
+const RAINY_BACKUP_DATA = [
+  // 1-10: 質感選物 (select)
+  { name: 'D&DEPARTMENT OKINAWA', imgRef:'ddept', type: 'select', tags: '工業設計/長效選物', area: '宜野灣市', desc: '以「Long Life Design」為理念，挖掘沖繩在地傳承的工藝道具、琉璃、陶器與生活雜貨。', recommend: '沖繩傳統 Yachimun 陶器' },
+  { name: 'tituti OKINAWAN CRAFT', imgRef:'tituti', type: 'select', tags: '現代工藝/紅型染', area: '國際通周邊', desc: '由沖繩在地四位不同領域的工藝家共同經營，將傳統紅型染與織物融入現代設計。', recommend: '設計師款陶製杯器' },
+  { name: 'PORTRIVER MARKET', imgRef:'portriver', type: 'select', tags: '美軍外人住宅/生活雜貨', area: '浦添市', desc: '隱身在港川外人住宅區，店主品味極佳，蒐集了沖繩各地精緻手作餐具與文創伴手禮。', recommend: '手工琉璃杯、在地烘焙咖啡豆' },
+  { name: '樂園百貨店 (Ryukyu Department)', img:'images/img_ae7875a19e.webp', type: 'select', tags: '精品百貨/沖繩在地選品', area: '縣廳前 (琉貿百貨1F)', desc: '精選沖繩最頂級的工藝品、化妝品與有機食品，是室內吹冷氣、雨天吹不到的最佳質感購物點。', recommend: '沖繩精釀琴酒、在地天然香氛' },
+  { name: 'Luft shop', img:'images/img_5b879ff08f.webp', type: 'select', tags: '極簡文具/生活道具', area: '那霸市區', desc: '空間極具設計感的選物小店，販售線條俐落、充滿生活美學的日常器皿與設計師文具。', recommend: '極簡設計不鏽鋼餐具' },
+  { name: '壺屋陶器街選物 (Sprout)', img:'images/img_baaf52cb1c.webp', type: 'select', tags: '複合式選物/陶藝咖啡', area: '壺屋陶器街', desc: '將沖繩傳統陶藝 Yachimun 與現代咖啡選物結合的藝廊空間，下雨天在室內挑選非常愜意。', recommend: '特色手作咖啡濾杯' },
+  { name: 'SuiSavon 首里石鹼 - 國際通概念店', img:'images/img_ed30cc791f.webp', type: 'select', tags: '天然藥妝/手作香皂', area: '國際通', desc: '使用沖繩在地精選植物與水果萃取製作的護膚品牌，香氣充滿濃郁的南方海島度假感。', recommend: '經典爆水琉球白潔顏泥' },
+  { name: 'chahat おきなわ', img:'images/img_3e8214a536.webp', type: 'select', tags: '手作皮革/異國織物', area: '南城市', desc: '充滿波西米亞島嶼風情的異國服飾與手工皮革選物店，其獨特品味吸引大量選物控前來。', recommend: '手工揉製帆布皮革包' },
+  { name: 'mofgmona no zakka', img:'images/img_478c4e4ea8.webp', type: 'select', tags: '山坡上的陶器選物店', area: '宜野灣市', desc: '一整間店擺滿了沖繩數十位陶藝作家的作品，品項極為齊全，宛如一座小型的陶藝博物館。', recommend: '在地新銳作家手繪陶盤' },
+  { name: '玩具ロードワークス (Toy Roadworks)', img:'images/img_a1fba5718a.webp', type: 'select', tags: '傳統玩偶/創意紙偶', area: '那霸市區', desc: '由琉球傳統紙張工藝師經營，將傳統玩偶結合現代幽默、極具惡趣味的獨特選物店。', recommend: '琉球風創意雙六紙牌、手繪紙偶' },
+
+  // 11-20: 美食指標 (food)
+  { name: '敘敘苑 浦添 PARCO CITY 店', img:'images/img_2a7c852fd1.webp', type: 'food', tags: '頂級燒肉/雨天無痛首選', area: '浦添市', desc: '日本頂級燒肉指標，雨天躲在 PARCO CITY 購物商場內，一邊隔著落地窗看雨中海景一邊品嚐和牛。', recommend: '超值午間燒肉套餐' },
+  { name: '琉球茶坊 Ashibiuna', img:'images/img_b58ae58add.webp', type: 'food', tags: '古民家/庭園琉球料理', area: '首里城周邊', desc: '傳統沖繩古民家改建，室內榻榻米座位面對精緻的枯山水庭園，雨天聽著雨落庭院極具詩意。', recommend: '墨魚汁炒麵定食、琉球御膳' },
+  { name: '沖縄とんかつ小やじ', imgRef:'koyaji', type: 'food', tags: '頂級炸豬排/排隊名店', area: '牧志市場周邊', desc: '隱身在那霸市區巷弄，職人精神打造的金黃酥脆炸豬排，肉質飽滿多汁，老饕一致推崇。', recommend: '特選里肌炸豬排定食' },
+  { name: '傑克牛排館 (Jack\'s Steak House)', imgRef:'jack', type: 'food', tags: '美式昭和/24H懷舊風味', area: '旭橋站', desc: '開拓沖繩牛排文化的始祖！美式復古車廂裝潢，就算外面下大雨，室內依舊香氣四溢、熱氣騰騰。', recommend: '特選烤牛排 (Tenderloin)' },
+  { name: 'oHacorte 港川店', img:'images/img_ef67b3ded1.webp', type: 'food', tags: '水果塔專賣/老屋甜點', area: '浦添市', desc: '沖繩精緻水果塔絕對指標，精選時令鮮果搭配酥脆塔皮，雨天在老木屋內享用下午茶極為療癒。', recommend: '綜合水果塔、香檸酸塔' },
+  { name: '黑糖可麗露 ほうき星 (Houkiboshi)', img:'images/img_a111555946.webp', type: 'food', tags: '精品甜點/打卡伴手禮', area: '港川外人住宅', desc: '使用多良間島黑糖製作的迷你可麗露，外皮焦脆內裡Q彈，口味融合沖繩在地食材。', recommend: '黑糖原味、沖繩香檸可麗露' },
+  { name: 'ゆうなんぎい (Yunangi)', imgRef:'yunangi', type: 'food', tags: '50年老字號/沖繩鄉土居酒屋', area: '國際通', desc: '開業半世紀的道地家庭料理居酒屋，其東坡肉與炒苦瓜被譽為市區天花板等級。', recommend: '沖繩東坡肉 (Rafute)、苦瓜炒豆腐' },
+  { name: '雞そば屋 いしぐふー', img:'images/img_7cf2acb42b.webp', type: 'food', tags: '原創雞白湯/蕎麥麵創新', area: '浦添市', desc: '打破傳統鰹魚高湯框架，以極致濃郁的在地原產雞白湯頭搭配特製手打麵，深受在地人喜愛。', recommend: '特製雞白湯沖繩麵' },
+  { name: 'C&C Breakfast Okinawa', img:'images/img_7b6cc3bd32.webp', type: 'food', tags: '夏威夷早午餐/網美舒芙蕾', area: '牧志市場周邊', desc: '打著「旅行中的美味早餐」招牌，精緻的巴西莓果碗與空氣感舒芙蕾鬆餅，為雨天早晨帶來好心情。', recommend: '夏威夷堅果醬舒芙蕾鬆餅' },
+  { name: 'Zhyvago Coffee Works Okinawa', img:'images/img_2a9a279722.webp', type: 'food', tags: '工業風美式/無敵海景咖啡', area: '美國村', desc: '西海岸最酷的西岸美式咖啡館！雨天坐在大片玻璃窗前的沙發位，看著灰色大海聽著黑膠十分有氛圍。', recommend: '手沖單品咖啡、手工重乳酪蛋糕' },
+
+  // 21-30: 室內雨備 (indoor)
+  { name: 'DMM Kariyushi 水族館', img:'images/img_04a5b20d55.webp', type: 'indoor', tags: '影像科技/動態水族館', area: '豐見城市 (iias商場內)', desc: '結合現代投影科技與聲光視覺的全新形態水族館，全室內空調且動線精美，與美麗海風格截然不同。', recommend: '透明玻璃地板水槽俯瞰體驗' },
+  { name: 'SAN-A 浦添西海岸 PARCO CITY', img:'images/img_9187ea8849.webp', type: 'indoor', tags: '沖繩最大商城/全天候血拚', area: '浦添市', desc: '全沖繩最新、品牌最齊全的沿海購物中心。完全不用淋雨，吃喝玩樂、精品服飾與生活家電一站搞定。', recommend: '1樓日系潮流服飾區、免稅服務台' },
+  { name: '永旺夢樂城沖繩來客夢 (AEON MALL Rycom)', img:'images/img_ddee100df3.webp', type: 'indoor', tags: '超大型複合商城/兒童天堂', area: '北中城村', desc: '中部最大巨型購物商場，中庭擁有超大觀賞水族箱，室內店家極多，是中北部最強的雨天避難所。', recommend: 'BIC CAMERA 家電補貨、巨大水族缸看魚' },
+  { name: '沖繩縣立博物館・美術館 (OkiMu)', img:'images/img_79ba7855b3.webp', type: 'indoor', tags: '現代建築/沖繩歷史藝廊', area: '那霸新都心', desc: '仿造琉球傳統城堡（Gusuku）外觀設計的純白巨型建築。內部冷氣舒適，雨天深入探索琉球文化首選。', recommend: '博物館常設展、美術館當期特展' },
+  { name: '玉泉洞 (王國村室內鐘乳石)', img:'images/img_20dd7ebdb5.webp', type: 'indoor', tags: '地底奇景/天然雨備', area: '南城市', desc: '日本三大鐘乳石洞之一。由於整條參觀路線完全位於「地底下」，地表下大雨完全不影響洞內壯麗奇景。', recommend: '青之泉（夢幻藍色鐘乳石水潭）' },
+  { name: '第一牧志公設市場', img:'images/img_85723782bc.webp', type: 'indoor', tags: '在地市井/海鮮代工棚頂市場', area: '國際通周邊', desc: '全新改建完工的現代化棚頂傳統市場，乾淨無異味且完全不淋雨，可在 1 樓選海鮮直接上 2 樓現煮。', recommend: '夜光貝生魚片、清蒸沖繩近海魚' },
+  { name: 'Blue Seal 冰淇淋歷史博物館 (Ice Park)', img:'images/img_9f39de2cfb.webp', type: 'indoor', tags: '觀光工廠/手作DIY體驗', area: '浦添市', desc: '沖繩標誌性冰淇淋品牌的室內主題館，可以吹冷氣了解品牌歷史，還能報名體驗親手製作專屬冰棒。', recommend: '手作客製化冰淇淋棒體驗 (需預約)' },
+  { name: '首里城 繫流館與室內展示區', img:'images/img_8f81cafff9.webp', type: 'indoor', tags: '古蹟修復觀摩/文化講座', area: '首里城公園', desc: '首里城設有完善的室內復原展示館，雨天可沿著室內動線觀摩大木匠如何運用傳統工法重建正殿。', recommend: '正殿工程透明觀摩步道' },
+  { name: 'iias 沖繩豐崎購物中心', img:'images/img_b5033bf9b3.webp', type: 'indoor', tags: '臨海綜合商城/機場周邊', area: '豐見城市', desc: '緊鄰 DMM 水族館的超大型室內購物中心，內部還有室內主題樂園與免稅藥妝，適合排在最後一天或雨天。', recommend: 'Loft 選物店、免稅特販區' },
+  { name: 'HAPiNAHA / 國際通室內街區', img:'images/img_eeb8154411.webp', type: 'indoor', tags: '棚頂商店街/雨天散步', area: '國際通', desc: '國際通核心的分支商店街（如平和通、市場中央通）均設有全覆蓋式的「拱頂天棚」，大雨也能不撐傘逛街。', recommend: '塩屋（沖繩海鹽雪鹽冰淇淋）' }
+];
+
+// ===================== STATE =====================
+let state = {
+  currentView: 'view-overview',
+  currentDayId: null,
+  currentDayTab: 'itinerary',
+  placeFilter: 'all',
+  phrasesFilter: 'all',
+  checklist: JSON.parse(localStorage.getItem('ok_checklist_v3') || '{}'),
+  wishlist: JSON.parse(localStorage.getItem('ok_wishlist_v4') || '[]'),
+  notes: JSON.parse(localStorage.getItem('ok_notes_v3') || '{}'),
+  dayNotes: JSON.parse(localStorage.getItem('ok_daynotes_v3') || '{}'),
+  exchangeRate: { JPY_TWD: 0.21 }
+};
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', () => {
+  buildNavigation();
+  setupNavClicks();
+  initOverview();
+  renderChecklist();
+  initNotes();
+  renderPhrases();
+  renderWishlist();
+  initRainyBackupGrid();
+  setupPWA();
+  
+  document.querySelector('.sidebar-btn[data-target="view-overview"]')?.classList.add('active-sidebar');
+  document.querySelector('.mobile-btn[data-target="view-overview"]')?.classList.add('active-mobile');
+});
+
+function buildNavigation() {
+  const sidebarDays = document.getElementById('sidebar-days');
+  const mobileDays = document.getElementById('mobile-day-btns');
+  
+  DAYS_DATA.forEach(day => {
+    const sb = document.createElement('button');
+    sb.className = 'nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60 mb-1';
+    sb.dataset.target = 'view-day';
+    sb.dataset.day = day.id;
+    sb.innerHTML = `<div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-sm" style="background:${day.hex}">D${day.num.replace('0','')}</div><div><div class="font-heading font-bold text-sm text-ink">${day.date}</div><div class="text-[10px] truncate text-ink/50 font-bold">${day.title.split('與')[0]}</div></div>`;
+    sidebarDays.appendChild(sb);
+    
+    const mb = document.createElement('button');
+    mb.className = 'nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-1.5 px-4 py-3 rounded-full text-ink/50 font-bold transition-all';
+    mb.dataset.target = 'view-day';
+    mb.dataset.day = day.id;
+    mb.innerHTML = `<span class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black text-white shadow-sm" style="background:${day.hex}">D${day.num.replace('0','')}</span><span class="text-sm tracking-tight">${day.date.replace('月','/')}</span>`;
+    mobileDays.appendChild(mb);
+  });
+}
+
+function setupNavClicks() {
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const tgt = e.currentTarget.dataset.target;
+      const dayId = e.currentTarget.dataset.day;
+      
+      document.querySelectorAll('.sidebar-btn').forEach(b => {
+        b.classList.remove('active-sidebar');
+        b.classList.add('text-ink/60');
+      });
+      document.querySelectorAll('.mobile-btn').forEach(b => {
+        b.classList.remove('active-mobile');
+        b.classList.add('text-ink/50');
+      });
+      
+      const matches = document.querySelectorAll(`.nav-btn[data-target="${tgt}"]${dayId?`[data-day="${dayId}"]`:':not([data-day])'}`);
+      matches.forEach(b => {
+        if(b.classList.contains('sidebar-btn')) { b.classList.add('active-sidebar'); b.classList.remove('text-ink/60'); }
+        if(b.classList.contains('mobile-btn')) { 
+          b.classList.add('active-mobile'); 
+          b.classList.remove('text-ink/50'); 
+          b.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"});
+        }
+      });
+      
+      switchView(tgt, dayId);
+    });
+  });
+}
+
+function switchView(target, dayId = null) {
+  document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+  document.getElementById(target)?.classList.add('active');
+  state.currentView = target;
+  
+  if(target === 'view-day' && dayId) {
+    state.currentDayId = dayId;
+    state.placeFilter = 'all';
+    state.currentDayTab = 'itinerary';
+    renderDayView(dayId);
+  }
+  
+  document.getElementById('mainContent').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+function initOverview() {
+  const target = new Date('2026-07-02T00:00:00+08:00').getTime();
+  const tick = () => {
+    const d = Math.max(0, Math.ceil((target - Date.now()) / 86400000));
+    document.getElementById('countdown-display').textContent = d > 0 ? `${d} Days` : '出發！';
+  };
+  tick();
+  setInterval(tick, 60000);
+  
+  fetchWeatherAndMarine();
+  fetchCurrency();
+}
+
+async function fetchWeatherAndMarine() {
+  try {
+    const [wr, mr] = await Promise.all([
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=26.2124&longitude=127.6809&daily=temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_sum,precipitation_probability_max,sunrise,sunset&timezone=Asia%2FTokyo'),
+      fetch('https://marine-api.open-meteo.com/v1/marine?latitude=26.2124&longitude=127.6809&daily=wave_height_max&timezone=Asia%2FTokyo')
+    ]);
+    const wd = await wr.json();
+    const md = await mr.json();
+    renderWeatherChart(wd.daily);
+    renderEnvironmentData(wd.daily);
+    renderMarineData(md.daily);
+    applyWeatherTheme(wd.daily);
+  } catch(e) {
+    document.getElementById('marine-data').innerHTML = '<span class="text-coral text-xs font-bold">無法取得資料，請檢查網路</span>';
+  }
+}
+
+function applyWeatherTheme(dailyData) {
+  const precip = dailyData.precipitation_sum && dailyData.precipitation_sum[0] ? dailyData.precipitation_sum[0] : 0;
+  if (precip > 2.0) {
+    document.body.classList.add('theme-rainy');
+  } else {
+    document.body.classList.remove('theme-rainy');
+  }
+}
+
+function renderEnvironmentData(data) {
+  if(data.precipitation_probability_max && data.precipitation_probability_max.length > 0) {
+    document.getElementById('rain-prob').textContent = data.precipitation_probability_max[0] + '%';
+  }
+  if(data.uv_index_max && data.uv_index_max.length > 0) {
+    document.getElementById('uv-index').textContent = data.uv_index_max[0].toFixed(1);
+  }
+  if(data.sunset && data.sunset.length > 0) {
+    const sunsetTime = new Date(data.sunset[0]).toLocaleTimeString('ja-JP', {hour: '2-digit', minute:'2-digit', hour12: false});
+    document.getElementById('sunset-time').textContent = sunsetTime;
+  }
+}
+
+function renderWeatherChart(data) {
+  const ctx = document.getElementById('weatherChart').getContext('2d');
+  const dates = data.time.map(d => d.slice(5).replace('-','/'));
+  
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [
+        { label:'最高溫 (°C)', data:data.temperature_2m_max, borderColor:'#E2858E', backgroundColor:'rgba(226, 133, 142, 0.1)', borderWidth:3, tension:0.4, fill:true, pointBackgroundColor:'#fff', pointBorderColor:'#E2858E', pointRadius:4 },
+        { label:'最低溫 (°C)', data:data.temperature_2m_min, borderColor:'#4A8594', borderDash:[5,5], borderWidth:2, tension:0.4, pointBackgroundColor:'#fff', pointBorderColor:'#4A8594', pointRadius:3 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{ position:'bottom', labels:{ font:{family:"'Noto Sans TC',sans-serif",size:11, weight:'bold'}, boxWidth:12, padding:16 } },
+        tooltip:{ mode:'index', intersect:false, backgroundColor:'rgba(27,42,48,0.9)', titleFont:{family:"'JetBrains Mono'", size:13}, bodyFont:{family:"'JetBrains Mono'", size:12}, padding:12, cornerRadius:8 }
+      },
+      scales: {
+        y:{ suggestedMin:24, suggestedMax:38, grid:{ color:'rgba(27,42,48,0.05)' }, ticks:{font:{family:"'JetBrains Mono'", size:10}} },
+        x:{ grid:{ display:false }, ticks:{font:{family:"'JetBrains Mono'", size:10, weight:'bold'}} }
+      }
+    }
+  });
+}
+
+function renderMarineData(data) {
+  const container = document.getElementById('marine-data');
+  let html = '';
+  for(let i=0; i<Math.min(7, data.time.length); i++) {
+    const date = data.time[i].slice(5).replace('-','/');
+    const wave = data.wave_height_max[i];
+    const icon = wave < 1.0 ? '🤿' : wave > 1.5 ? '⚠️' : '🌊';
+    const color = wave < 1.0 ? '#72A98F' : wave > 1.5 ? '#E2858E' : '#4A8594';
+    html += `<div class="flex flex-col items-center min-w-[64px] bg-white/50 px-2 py-3 rounded-2xl border border-white/60 shadow-sm flex-shrink-0">
+      <span class="text-[10px] font-mono font-bold text-ink/40 mb-1.5">${date}</span>
+      <span class="text-xl mb-1.5">${icon}</span>
+      <span class="font-mono font-black text-xs" style="color:${color}">${wave ? wave.toFixed(1)+'m' : '-'}</span>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+async function fetchCurrency() {
+  try {
+    const res = await fetch('https://api.exchangerate-api.com/v4/latest/JPY');
+    const data = await res.json();
+    state.exchangeRate.JPY_TWD = data.rates.TWD;
+    
+    const updated = new Date().toLocaleTimeString('zh-TW', {hour:'2-digit', minute:'2-digit'});
+    document.getElementById('rateUpdate').innerHTML = `<i class="fas fa-sync-alt mr-1"></i> ${updated}`;
+    updateCurrency();
+  } catch(e) {
+    document.getElementById('rateUpdate').textContent = '無法取得匯率';
+  }
+}
+
+function updateCurrency() {
+  const jpyInput = document.getElementById('jpyInput');
+  if(!jpyInput) return;
+  const jpy = parseFloat(jpyInput.value) || 0;
+  const twd = Math.round(jpy * state.exchangeRate.JPY_TWD);
+  document.getElementById('twdOutput').textContent = twd.toLocaleString();
+}
+
+document.getElementById('jpyInput')?.addEventListener('input', updateCurrency);
+
+window.switchToolTab = (btn, id) => {
+  document.querySelectorAll('.tool-tab').forEach(b => {
+    b.classList.remove('bg-ink', 'text-white', 'shadow-md');
+    b.classList.add('bg-white/60', 'text-ink/60');
+  });
+  btn.classList.add('bg-ink', 'text-white', 'shadow-md');
+  btn.classList.remove('bg-white/60', 'text-ink/60');
+  
+  ['size','info'].forEach(n => {
+    document.getElementById(`tool-${n}`)?.classList.toggle('hidden', n !== id);
+  });
+};
+
+function renderChecklist() {
+  const container = document.getElementById('checklist-container');
+  container.innerHTML = '';
+  let total = 0, checked = 0;
+  
+  CHECKLIST_DATA.forEach((cat, ci) => {
+    const card = document.createElement('div');
+    card.className = 'glass-card border border-white rounded-3xl p-6';
+    
+    let itemsHtml = '';
+    cat.items.forEach((item, ii) => {
+      total++;
+      const id = `chk-${ci}-${ii}`;
+      const isChecked = !!state.checklist[id];
+      if(isChecked) checked++;
+      itemsHtml += `<label class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-white/40 cursor-pointer transition ${isChecked?'checked-label':''}">
+        <input type="checkbox" class="mt-0.5 flex-shrink-0 accent-mint" data-id="${id}" ${isChecked?'checked':''} onchange="handleCheck(this)">
+        <span class="text-sm font-sans font-bold text-ink/80 pt-px">${item}</span>
+      </label>`;
+    });
+    
+    card.innerHTML = `<h3 class="font-heading font-black text-base text-ink mb-4 pb-2 border-b border-ink/5">${cat.category}</h3><div class="space-y-1">${itemsHtml}</div>`;
+    container.appendChild(card);
+  });
+  
+  updateProgress(checked, total);
+}
+
+window.handleCheck = (cb) => {
+  state.checklist[cb.dataset.id] = cb.checked;
+  localStorage.setItem('ok_checklist_v3', JSON.stringify(state.checklist));
+  cb.parentElement.classList.toggle('checked-label', cb.checked);
+  const total = document.querySelectorAll('#checklist-container input[type=checkbox]').length;
+  const checked = document.querySelectorAll('#checklist-container input[type=checkbox]:checked').length;
+  updateProgress(checked, total);
+};
+
+function updateProgress(checked, total) {
+  const pct = total ? Math.round(checked/total*100) : 0;
+  document.getElementById('progress-bar').style.width = `${pct}%`;
+  document.getElementById('progress-text').textContent = `${pct}%`;
+}
+
+function initNotes() {
+  const el = document.getElementById('note1');
+  if(el) el.value = state.notes['note1'] || '';
+}
+
+window.saveNote = (id, val) => {
+  state.notes[id] = val;
+  localStorage.setItem('ok_notes_v3', JSON.stringify(state.notes));
+};
+
+window.saveDayNote = (val) => {
+  if(!state.currentDayId) return;
+  state.dayNotes[state.currentDayId] = val;
+  localStorage.setItem('ok_daynotes_v3', JSON.stringify(state.dayNotes));
+};
+
+window.toggleWishlist = (dayId, placeIndex) => {
+  const day = DAYS_DATA.find(d => d.id === dayId);
+  if(!day) return;
+  const place = day.places[placeIndex];
+  const key = `${dayId}-${placeIndex}`;
+  
+  const existingIndex = state.wishlist.findIndex(w => w.key === key);
+  
+  if(existingIndex >= 0) {
+    state.wishlist.splice(existingIndex, 1);
+    showToast(`已移除「${place.name}」`);
+  } else {
+    state.wishlist.push({ 
+      key, 
+      dayId, 
+      placeIndex, 
+      name: place.name, 
+      area: place.area, 
+      tags: place.tags, 
+      dayNum: day.num, 
+      recommend: place.recommend,
+      desc: place.desc,
+      img: place.img || '',
+      hex: day.hex
+    });
+    showToast(`已收藏「${place.name}」❤️`);
+  }
+  
+  localStorage.setItem('ok_wishlist_v4', JSON.stringify(state.wishlist));
+  syncWishlistButtons(key);
+  renderWishlist();
+  
+  if(state.currentView === 'view-day' && state.currentDayId === dayId) {
+    renderPlaces(day);
+  } else if(state.currentView === 'view-search') {
+    const desktopInput = document.getElementById('quickSearch');
+    if(desktopInput && desktopInput.value.trim()) {
+      performSearch(desktopInput.value.trim());
+    }
+  }
+};
+
+function syncWishlistButtons(key) {
+  const isWished = state.wishlist.some(w => w.key === key);
+  const btns = document.querySelectorAll(`[data-wish="${key}"]`);
+  
+  btns.forEach(btn => {
+    btn.innerHTML = `<i class="${isWished ? 'fas' : 'far'} fa-heart ${isWished ? 'text-sm' : 'text-xs'}"></i>`;
+    if (isWished) {
+      btn.classList.add('text-coral', 'border-coral/30', 'bg-coral/10');
+      btn.classList.remove('text-ink/30', 'hover:bg-coral/10', 'hover:text-coral', 'border-white', 'bg-white');
+    } else {
+      btn.classList.remove('text-coral', 'border-coral/30', 'bg-coral/10');
+      btn.classList.add('text-ink/30', 'hover:bg-coral/10', 'hover:text-coral', 'border-white', 'bg-white');
+    }
+  });
+}
+
+function renderWishlist() {
+  const grid = document.getElementById('wishlist-grid');
+  const empty = document.getElementById('wishlist-empty');
+  
+  if(!grid || !empty) return;
+
+  if(!state.wishlist.length) {
+    empty.style.display = 'block';
+    grid.innerHTML = '';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  grid.innerHTML = state.wishlist.map(w => {
+    return `<div class="glass-card rounded-3xl p-5 border border-white relative group">
+      <button onclick="toggleWishlist('${w.dayId}', ${w.placeIndex})" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-coral/10 flex items-center justify-center text-coral shadow-sm border border-coral/30 hover:bg-coral hover:text-white transition"><i class="fas fa-heart text-sm"></i></button>
+      ${placeImageBlock(w, w.hex)}
+      <span class="text-[9px] font-black px-2 py-1 rounded-md mb-3 inline-block uppercase tracking-wider text-white shadow-sm" style="background:${w.hex}">Day ${w.dayNum}</span>
+      <h4 class="font-heading font-black text-lg text-ink mb-1 pr-8 leading-tight">${w.name}</h4>
+      <div class="text-[11px] font-bold text-ink/40 mb-3"><i class="fas fa-map-pin mr-1"></i>${w.area} · ${w.tags}</div>
+      <div class="bg-white/50 rounded-xl p-3 text-xs text-ink/80 font-bold mb-4 border border-white shadow-inner-light leading-relaxed"><i class="fas fa-star text-sand mr-1.5"></i>${w.recommend}</div>
+      <a href="http://maps.google.com/?q=${encodeURIComponent(w.name+' '+w.area+' 沖繩')}" target="_blank" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-ink text-white text-xs font-bold hover:bg-ink/80 transition shadow-md">
+        <i class="fas fa-map-location-dot"></i> 路線導航
+      </a>
+    </div>`;
+  }).join('');
+}
+
+function renderPhrases() {
+  const filtersContainer = document.getElementById('phrases-filters');
+  const grid = document.getElementById('phrases-grid');
+  
+  const tags = [...new Set(PHRASES_DATA.map(p => p.tag))];
+  filtersContainer.innerHTML = `
+    <button class="px-5 py-2 text-xs font-bold rounded-full flex-shrink-0 transition shadow-sm border border-white ${state.phrasesFilter === 'all' ? 'bg-ink text-white' : 'bg-white/60 text-ink/60 hover:bg-white'}" onclick="setPhrasesFilter('all')">全部</button>
+    ${tags.map(tag => `
+      <button class="px-5 py-2 text-xs font-bold rounded-full flex-shrink-0 transition shadow-sm border border-white ${state.phrasesFilter === tag ? 'bg-ink text-white' : 'bg-white/60 text-ink/60 hover:bg-white'}" onclick="setPhrasesFilter('${tag}')">${tag}</button>
+    `).join('')}
+  `;
+
+  const filtered = state.phrasesFilter === 'all' ? PHRASES_DATA : PHRASES_DATA.filter(p => p.tag === state.phrasesFilter);
+  grid.innerHTML = filtered.map(p => `
+    <div class="glass-card rounded-3xl p-6 border border-white relative group transition duration-300 hover:shadow-float hover:-translate-y-1">
+      <button class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white text-${p.color} shadow-sm border border-white flex items-center justify-center hover:bg-${p.color} hover:text-white transition cursor-pointer group-hover:scale-110" onclick="speakJapanese('${p.speak}')" title="朗讀日文">
+        <i class="fas fa-volume-up"></i>
+      </button>
+      <div class="text-[10px] font-black text-${p.color} bg-${p.color}/10 px-2 py-1 rounded-md inline-block mb-3 uppercase tracking-wider">${p.tag}</div>
+      <h4 class="font-sans font-black text-ink text-lg mb-2">${p.tw}</h4>
+      <div class="text-${p.color} font-bold text-base mb-1">${p.ja}</div>
+      <div class="font-mono text-[11px] font-bold text-ink/30 uppercase tracking-widest">${p.romaji}</div>
+    </div>
+  `).join('');
+}
+
+window.setPhrasesFilter = (tag) => {
+  state.phrasesFilter = tag;
+  renderPhrases();
+};
+
+window.speakJapanese = (text) => {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel(); 
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ja-JP';
+    utterance.rate = 0.85; 
+    window.speechSynthesis.speak(utterance);
+  } else {
+    showToast('您的裝置不支援語音朗讀功能');
+  }
+};
+
+// ===================== RAINY LOGIC =====================
+function initRainyBackupGrid() {
+  const grid = document.getElementById('rainy-grid');
+  if(!grid) return;
+  renderRainyItems(RAINY_BACKUP_DATA);
+}
+
+function renderRainyItems(data) {
+  const grid = document.getElementById('rainy-grid');
+  if(!grid) return;
+  
+  grid.innerHTML = data.map((p, idx) => {
+    let tagColor = 'ocean';
+    if(p.type === 'food') tagColor = 'sand';
+    if(p.type === 'indoor') tagColor = 'coral';
+    
+    const mapUrl = `http://maps.google.com/?q=${encodeURIComponent(p.name + ' ' + p.area + ' 沖繩')}`;
+    
+    return `<div class="glass-card rounded-3xl p-5 hover:shadow-float border border-white transition-all duration-300 flex flex-col group transform hover:-translate-y-1">
+      ${placeImageBlock(p, '#4A8DB7')}
+      <div class="flex justify-between items-start mb-3">
+        <div class="flex-1 min-w-0 pr-3">
+          <div class="text-[9px] font-black uppercase tracking-widest mb-1.5 text-ink/40"><i class="fas fa-map-pin mr-1 opacity-70"></i>${p.area}</div>
+          <h4 class="font-heading font-black text-lg text-ink leading-tight mb-2">${p.name}</h4>
+          <span class="inline-block text-[9px] font-black uppercase tracking-wider bg-${tagColor}/10 text-${tagColor} px-2 py-1 rounded-md border border-${tagColor}/20">${p.tags}</span>
+        </div>
+        <div class="flex items-center gap-1.5 flex-shrink-0 flex-col">
+          <div class="bg-white/80 border border-white shadow-inner-light text-ink/40 font-mono font-black text-[10px] px-2 py-1 rounded-lg flex items-center gap-0.5">
+            雨備 <i class="fas fa-umbrella text-ocean text-[8px] pb-px"></i>
+          </div>
+        </div>
+      </div>
+      <p class="font-serif text-xs text-ink/70 mb-4 flex-1 leading-relaxed font-medium">${p.desc}</p>
+      <div class="bg-white/50 border border-white shadow-inner-light p-3 rounded-2xl mb-4">
+        <div class="text-[9px] font-black uppercase tracking-widest mb-1 text-ocean opacity-70"> must try / select </div>
+        <div class="text-xs font-sans font-bold text-ink leading-relaxed">${p.recommend}</div>
+      </div>
+      <a href="${mapUrl}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-ink text-white text-xs font-bold hover:bg-ink/80 transition shadow-md group-hover:shadow-lg">
+        <i class="fas fa-location-arrow"></i> Google Maps
+      </a>
+    </div>`;
+  }).join('');
+}
+
+window.filterRainyGrid = (type, btn) => {
+  document.querySelectorAll('.rainy-tab').forEach(b => {
+    b.className = 'rainy-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0';
+  });
+  btn.className = 'rainy-tab px-5 py-2.5 text-xs font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0';
+
+  if(type === 'all') {
+    renderRainyItems(RAINY_BACKUP_DATA);
+  } else {
+    const filtered = RAINY_BACKUP_DATA.filter(p => p.type === type);
+    renderRainyItems(filtered);
+  }
+};
+
+function renderDayView(dayId) {
+  const day = DAYS_DATA.find(d => d.id === dayId);
+  if(!day) return;
+  
+  document.getElementById('day-header').innerHTML = `
+    <div class="w-20 h-20 text-white rounded-3xl flex flex-col items-center justify-center flex-shrink-0 transform rotate-3 shadow-[0_8px_20px_rgba(0,0,0,0.15)] border border-white/20" style="background: linear-gradient(135deg, ${day.hex} 0%, ${day.hex}dd 100%)">
+      <span class="font-heading font-black text-3xl leading-none tracking-tighter">${day.num}</span>
+      <span class="font-mono text-[10px] font-bold tracking-widest opacity-90 mt-0.5">DAY</span>
+    </div>
+    <div>
+      <div class="font-mono font-black text-xs mb-1 uppercase tracking-widest px-2 py-0.5 rounded bg-white/50 inline-block border border-white" style="color:${day.hex}">${day.date}</div>
+      <h2 class="font-heading font-black text-3xl md:text-4xl text-ink tracking-tight mb-2">${day.title}</h2>
+      <p class="font-serif text-ink/70 text-sm font-medium leading-relaxed max-w-2xl">${day.intro}</p>
+    </div>`;
+
+  const mapContainer = document.getElementById('day-map-container');
+  if(mapContainer) {
+    const mapQuery = day.itinerary.length > 0 ? day.itinerary[2].q : 'Okinawa'; // 使用中部主要節點做預覽
+    mapContainer.innerHTML = `<iframe width="100%" height="100%" frameborder="0" style="border:0;" loading="lazy" src="https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&t=&z=11&ie=UTF8&iwloc=&output=embed"></iframe>`;
+  }
+  
+  const tl = document.getElementById('day-timeline');
+  tl.innerHTML = day.itinerary.map(it => `
+    <div class="timeline-item relative pl-12 pb-2">
+      <div class="timeline-dot"></div>
+      <div class="absolute left-0 top-0 w-9 h-9 bg-white border-2 rounded-full flex items-center justify-center shadow-sm z-10 text-sm" style="border-color:${day.hex}">${it.icon}</div>
+      <div class="bg-white/60 border border-white p-4 rounded-2xl shadow-sm hover:bg-white transition-colors duration-300 group">
+        <div class="font-mono font-black text-xs mb-1" style="color:${day.hex}">${it.time}</div>
+        <div class="font-sans font-black text-sm text-ink mb-2">${it.text}</div>
+        <a href="http://maps.google.com/?q=${encodeURIComponent(it.q)}" target="_blank" class="inline-flex items-center gap-1.5 text-[10px] font-bold text-ink/40 bg-white px-2 py-1 rounded-lg border border-ink/5 hover:text-ink hover:border-ink/20 transition">
+          <i class="fas fa-location-arrow text-[9px]"></i> 導航
+        </a>
+      </div>
+    </div>`).join('');
+  
+  const tipsEl = document.getElementById('day-tips');
+  if(day.tips) {
+    tipsEl.innerHTML = day.tips.map(t => `<div class="flex items-start gap-2.5 bg-white/50 rounded-xl px-4 py-3 text-xs border border-white shadow-inner-light leading-relaxed"><i class="fas fa-check-circle text-sand mt-0.5 opacity-70"></i> ${t}</div>`).join('');
+  }
+  
+  const dnEl = document.getElementById('day-note');
+  if(dnEl) dnEl.value = state.dayNotes[dayId] || '';
+  
+  const mapLinks = document.getElementById('map-links');
+  mapLinks.innerHTML = day.itinerary.map((it,i) => `
+    <a href="http://maps.google.com/?q=${encodeURIComponent(it.q)}" target="_blank"
+      class="flex items-center gap-3 px-4 py-3 bg-white/50 hover:bg-white border border-white rounded-2xl transition text-sm font-bold text-ink shadow-inner-light group">
+      <div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center border border-ink/5 group-hover:scale-110 transition"><span class="text-sm">${it.icon}</span></div>
+      <div class="flex-1">
+        <div class="text-[10px] font-mono font-black opacity-60" style="color:${day.hex}">${it.time}</div>
+        <div class="text-xs font-sans">${it.text}</div>
+      </div>
+      <div class="w-6 h-6 rounded-full bg-ink/5 flex items-center justify-center group-hover:bg-ink group-hover:text-white transition"><i class="fas fa-angle-right text-[10px]"></i></div>
+    </a>`).join('');
+  
+  setupPlaceFilters(day);
+  renderPlaces(day);
+  switchDayTab('itinerary');
+}
+
+function setupPlaceFilters(day) {
+  const btns = document.querySelectorAll('#place-filters .filter-btn');
+  btns.forEach(btn => {
+    btn.onclick = e => {
+      btns.forEach(b => {
+        b.classList.remove('filter-active');
+        b.classList.add('bg-white/60','text-ink/60');
+      });
+      e.currentTarget.classList.add('filter-active');
+      e.currentTarget.classList.remove('bg-white/60','text-ink/60');
+      state.placeFilter = e.currentTarget.dataset.filter;
+      renderPlaces(day);
+    };
+  });
+}
+
+// ===================== 店家照片共用區塊 =====================
+// 取圖優先序: p.img (自帶 Base64/網址) > p.imgRef (指向 IMG_LIBRARY 的共享鍵)
+// 重複店家用 imgRef 共享同一張圖,圖片只存一份,檔案不會因重複而膨脹。
+// 沒有任何圖時自動顯示帶店名首字的優雅佔位塊,畫面不開天窗。
+function resolvePlaceImg(p) {
+  if (p.img) return p.img;
+  if (p.imgRef && typeof IMG_LIBRARY !== 'undefined' && IMG_LIBRARY[p.imgRef]) return IMG_LIBRARY[p.imgRef];
+  return '';
+}
+function placeImageBlock(p, accentHex) {
+  const initial = (p.name || '?').trim().charAt(0);
+  const fallback = `<div class="place-photo-fallback">
+      <span class="ph-initial">${initial}</span>
+      <span class="ph-label">${p.type === 'food' ? 'Food' : (p.type === 'indoor' ? 'Indoor' : 'Spot')}</span>
+    </div>`;
+  const imgSrc = resolvePlaceImg(p);
+  if (imgSrc) {
+    // 圖片載入完成才淡入；載入失敗則自動退回佔位塊
+    const safeImg = String(imgSrc).replace(/"/g, '&quot;');
+    return `<div class="place-photo">
+      ${fallback}
+      <img src="${safeImg}" alt="${(p.name||'').replace(/"/g,'&quot;')}" loading="lazy"
+        onload="this.classList.add('loaded')"
+        onerror="this.style.display='none'">
+    </div>`;
+  }
+  return `<div class="place-photo">${fallback}</div>`;
+}
+
+function renderPlaces(day) {
+  const container = document.getElementById('day-places');
+  const filtered = state.placeFilter === 'all' ? day.places : day.places.filter(p => p.type === state.placeFilter);
+  
+  if(!filtered.length) { 
+    container.innerHTML = '<div class="col-span-2 text-center py-12 text-ink/30 glass-card rounded-3xl border border-white">沒有符合分類的項目</div>'; 
+    return; 
+  }
+  
+  container.innerHTML = filtered.map((p, i) => {
+    const origIdx = day.places.indexOf(p);
+    const key = `${day.id}-${origIdx}`;
+    const isWished = state.wishlist.some(w => w.key === key);
+    const tagColor = p.type === 'food' ? 'sand' : 'ocean';
+    const mapUrl = `http://maps.google.com/?q=${encodeURIComponent(p.name+' '+p.area+' 沖繩')}`;
+    
+    return `<div class="glass-card rounded-3xl p-5 hover:shadow-float border border-white transition-all duration-300 flex flex-col group transform hover:-translate-y-1">
+      ${placeImageBlock(p, day.hex)}
+      <div class="flex justify-between items-start mb-3">
+        <div class="flex-1 min-w-0 pr-3">
+          <div class="text-[9px] font-black uppercase tracking-widest mb-1.5" style="color:${day.hex}"><i class="fas fa-map-pin mr-1 opacity-70"></i>${p.area}</div>
+          <h4 class="font-heading font-black text-lg text-ink leading-tight mb-2">${p.name}</h4>
+          <span class="inline-block text-[9px] font-black uppercase tracking-wider bg-${tagColor}/10 text-${tagColor} px-2 py-1 rounded-md border border-${tagColor}/20">${p.tags}</span>
+        </div>
+        <div class="flex items-center gap-1.5 flex-shrink-0 flex-col">
+          <button data-wish="${key}" onclick="toggleWishlist('${day.id}', ${origIdx})" class="w-9 h-9 flex items-center justify-center rounded-full transition shadow-sm border ${isWished?'text-coral border-coral/30 bg-coral/10':'text-ink/30 hover:bg-coral/10 hover:text-coral bg-white border-white'}">
+            <i class="${isWished?'fas':'far'} fa-heart ${isWished?'text-sm':'text-xs'}"></i>
+          </button>
+          <div class="bg-white/80 border border-white shadow-inner-light text-ink font-mono font-black text-[10px] px-2 py-1 rounded-lg flex items-center gap-0.5 mt-1">
+            ${p.rating}<i class="fas fa-star text-sand text-[8px] pb-px"></i>
+          </div>
+        </div>
+      </div>
+      <p class="font-serif text-xs text-ink/70 mb-4 flex-1 leading-relaxed font-medium">${p.desc}</p>
+      <div class="bg-white/50 border border-white shadow-inner-light p-3 rounded-2xl mb-4">
+        <div class="text-[9px] font-black uppercase tracking-widest mb-1 opacity-70" style="color:${day.hex}">Must Try / Do</div>
+        <div class="text-xs font-sans font-bold text-ink leading-relaxed">${p.recommend}</div>
+      </div>
+      <a href="${mapUrl}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-ink text-white text-xs font-bold hover:bg-ink/80 transition shadow-md group-hover:shadow-lg">
+        <i class="fas fa-location-arrow"></i> Google Maps
+      </a>
+    </div>`;
+  }).join('');
+}
+
+window.switchDayTab = (tab) => {
+  state.currentDayTab = tab;
+  document.querySelectorAll('[id^="day-tab-"]').forEach(el => el.classList.add('hidden'));
+  document.getElementById(`day-tab-${tab}`)?.classList.remove('hidden');
+  
+  ['itinerary','places'].forEach(t => {
+    const btn = document.getElementById(`tab-${t}`);
+    if(!btn) return;
+    btn.classList.toggle('bg-white', t===tab);
+    btn.classList.toggle('shadow-sm', t===tab);
+    btn.classList.toggle('text-ink', t===tab);
+    btn.classList.toggle('text-ink/60', t!==tab);
+  });
+};
+
+window.openMobileSearch = () => {
+  switchView('view-search');
+  document.querySelectorAll('.sidebar-btn, .mobile-btn').forEach(b => {
+    b.classList.remove('active-sidebar', 'active-mobile');
+    if(b.classList.contains('sidebar-btn')) b.classList.add('text-ink/60');
+    if(b.classList.contains('mobile-btn')) b.classList.add('text-ink/50');
+  });
+
+  setTimeout(() => {
+    const mobileInput = document.getElementById('mobileQuickSearch');
+    if (mobileInput) mobileInput.focus();
+  }, 100);
+};
+
+let searchTimeout;
+window.handleSearch = (val, source = 'desktop') => {
+  clearTimeout(searchTimeout);
+  
+  if (source === 'desktop') {
+     const mobileInput = document.getElementById('mobileQuickSearch');
+     if(mobileInput) mobileInput.value = val;
+  } else {
+     const desktopInput = document.getElementById('quickSearch');
+     if(desktopInput) desktopInput.value = val;
+  }
+
+  if(state.currentView !== 'view-search') {
+      document.querySelectorAll('.sidebar-btn, .mobile-btn').forEach(b => {
+        b.classList.remove('active-sidebar', 'active-mobile');
+        if(b.classList.contains('sidebar-btn')) b.classList.add('text-ink/60');
+        if(b.classList.contains('mobile-btn')) b.classList.add('text-ink/50');
+      });
+      switchView('view-search');
+  }
+  
+  searchTimeout = setTimeout(() => performSearch(val.trim()), 300);
+};
+
+function performSearch(query) {
+  const container = document.getElementById('search-results');
+  const countDisplay = document.getElementById('search-count');
+  
+  if(!query) {
+    countDisplay.textContent = '';
+    container.innerHTML = `
+       <div class="col-span-full text-center py-20 text-ink/30 glass-card rounded-3xl border border-white" id="search-empty-state">
+         <div class="text-5xl mb-4 opacity-50">🔍</div>
+         <p class="font-bold text-lg">請輸入關鍵字開始搜尋</p>
+         <p class="text-xs mt-2 font-medium">例如：燒肉、海灘、購物、拉麵</p>
+       </div>`;
+    return;
+  }
+
+  const q = query.toLowerCase();
+  const results = [];
+  
+  DAYS_DATA.forEach(day => {
+    day.places.forEach((p, i) => {
+      if(p.name.toLowerCase().includes(q) || p.area.toLowerCase().includes(q) || p.tags.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.recommend.toLowerCase().includes(q)) {
+        results.push({ ...p, dayId:day.id, dayNum:day.num, dayDate:day.date, dayHex:day.hex, origIdx:i });
+      }
+    });
+  });
+  
+  countDisplay.textContent = `找到 ${results.length} 個結果，關鍵字：「${query}」`;
+  
+  if(!results.length) {
+    container.innerHTML = '<div class="col-span-full text-center py-20 text-ink/30 glass-card rounded-3xl border border-white"><div class="text-5xl mb-4 opacity-50">😕</div><p class="font-bold text-lg">找不到相關地點或美食</p><p class="text-xs mt-2 font-medium">試試看其他關鍵字</p></div>';
+  } else {
+    container.innerHTML = results.map(p => {
+      const key = `${p.dayId}-${p.origIdx}`;
+      const isWished = state.wishlist.some(w => w.key === key);
+      const mapUrl = `http://maps.google.com/?q=${encodeURIComponent(p.name+' '+p.area+' 沖繩')}`;
+      return `<div class="glass-card rounded-3xl p-5 border border-white shadow-sm flex flex-col group transform transition hover:-translate-y-1 hover:shadow-float">
+        ${placeImageBlock(p, p.dayHex)}
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-[9px] font-black px-2 py-1 rounded-md text-white shadow-sm uppercase tracking-wider" style="background:${p.dayHex}">Day ${p.dayNum} · ${p.dayDate}</span>
+          <button data-wish="${key}" onclick="toggleWishlist('${p.dayId}', ${p.origIdx})" class="w-8 h-8 rounded-full flex items-center justify-center transition border shadow-sm ${isWished?'text-coral border-coral/30 bg-coral/10':'text-ink/30 hover:bg-coral/10 hover:text-coral bg-white border-white'}"><i class="${isWished?'fas':'far'} fa-heart ${isWished?'text-sm':'text-xs'}"></i></button>
+        </div>
+        <h4 class="font-heading font-black text-lg text-ink mb-1 leading-tight">${p.name}</h4>
+        <div class="text-[10px] font-bold text-ink/40 mb-3"><i class="fas fa-map-pin mr-1"></i>${p.area} · ${p.tags}</div>
+        <p class="text-xs text-ink/70 flex-1 mb-4 font-serif leading-relaxed font-medium">${p.desc}</p>
+        <a href="${mapUrl}" target="_blank" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-ink text-white text-xs font-bold hover:bg-ink/80 transition shadow-md">
+          <i class="fas fa-location-arrow"></i> Google Maps
+        </a>
+      </div>`;
+    }).join('');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+window.copyText = (text) => {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.position = "fixed";
+  textArea.style.left = "-9999px";
+  textArea.style.top = "0";
+  document.body.appendChild(textArea);
+  textArea.select();
+  try { document.execCommand('copy') ? showToast('已複製到剪貼簿！') : showToast('複製失敗'); } 
+  catch (err) { showToast('複製失敗，請手動複製'); }
+  document.body.removeChild(textArea);
+};
+
+// ===================== PWA SUPPORT =====================
+function setupPWA() {
+  try {
+    const manifest = {
+      name: "Okinawa 2026 Itinerary",
+      short_name: "Okinawa",
+      display: "standalone",
+      background_color: "#fcfbf9",
+      theme_color: "#4A8594",
+      start_url: ".",
+      icons: [{
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%234A8594' rx='20'/%3E%3Ctext x='50' y='65' fill='white' font-size='50' text-anchor='middle' font-family='sans-serif'%3E🏖️%3C/text%3E%3C/svg%3E",
+        sizes: "192x192",
+        type: "image/svg+xml"
+      }]
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const manifestUrl = URL.createObjectURL(manifestBlob);
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestUrl;
+    document.head.appendChild(link);
+
+    const swCode = `
+      const CACHE_NAME = 'okinawa-v2';
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          fetch(e.request).catch(() => caches.match(e.request))
+        );
+      });
+    `;
+    const swBlob = new Blob([swCode], {type: 'application/javascript'});
+    const swUrl = URL.createObjectURL(swBlob);
+    
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(swUrl).then(reg => {
+        console.log('PWA Service Worker 註冊成功');
+      }).catch(err => {
+        console.warn('PWA 載入受限:', err);
+      });
+    }
+  } catch (error) {
+    console.warn('PWA 設置被攔截 (環境限制):', error);
+  }
+}
+</script>
+</body>
+</html>
