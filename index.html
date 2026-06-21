@@ -492,12 +492,14 @@ tailwind.config = {
             <div class="text-ink/60 text-xs mt-3 font-bold flex items-center gap-1.5"><i class="far fa-calendar-alt text-ocean"></i> 7/3 (五) 第二場表演 22:30 開演</div>
             <div class="text-ink/50 text-[11px] mt-2 border-t border-ink/5 pt-2 flex justify-between items-center font-mono font-bold">
               <span>座位：6 x 震撼座位 (含10張小費券)</span>
-              <span class="text-ink/80">單號: RHA855634</span>
+              <span class="flex items-center gap-1.5">
+                <span class="text-ink/80">單號: RHA855634</span>
+                <button onclick="copyText('RHA855634')" class="text-[10px] w-6 h-6 flex items-center justify-center rounded-md bg-white text-ocean hover:bg-ocean hover:text-white transition shadow-sm border border-ocean/10" title="複製訂單編號"><i class="fas fa-copy"></i></button>
+              </span>
             </div>
             <div class="mt-2 text-[10px] text-coral font-bold bg-coral/5 px-2 py-1.5 rounded-lg border border-coral/10">
               🚫 本訂單已確認，不可取消。開演前請預留充足通勤時間返回市區。
             </div>
-            <button onclick="copyText('RHA855634')" class="absolute top-3 right-3 text-xs w-7 h-7 flex items-center justify-center rounded-lg bg-white text-ocean hover:bg-ocean hover:text-white transition shadow-sm border border-ocean/10" title="複製訂單編號"><i class="fas fa-copy"></i></button>
           </div>
         </div>
         
