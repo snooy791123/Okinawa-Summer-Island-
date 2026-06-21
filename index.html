@@ -156,6 +156,33 @@ tailwind.config = {
     letter-spacing: 0.15em;
     color: rgba(43,43,43,0.22);
   }
+  /* ===== 行程點照片(時間軸/導航用,較扁的比例) ===== */
+  .itin-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
+  }
+  .itin-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .itin-photo img.loaded { opacity: 1; }
+  /* 導航卡片裡的小縮圖(左側方形) */
+  .itin-thumb {
+    width: 48px; height: 48px; border-radius: 0.6rem;
+    overflow: hidden; flex-shrink: 0; position: relative;
+    background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
+  }
+  .itin-thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .itin-thumb img.loaded { opacity: 1; }
 </style>
 </head>
 
@@ -640,10 +667,10 @@ const DAYS_DATA = [
       '🌙 沖繩夏日早晚溫差雖小，但室內冷氣普遍強勁，首日散步建議隨身攜帶一件透氣薄外套。'
     ],
     itinerary:[
-      {time:'16:15', text:'高雄國際機場 (IT728起飛)', icon:'🛫', q:'高雄國際機場 KHH'},
-      {time:'18:40', text:'那霸機場 (OKA) 抵達', icon:'🛬', q:'那霸機場'},
-      {time:'19:08', text:'Hotel Strata Naha (入住)', icon:'🏨', q:'Hotel Strata Naha'},
-      {time:'19:48', text:'國際通散步購物', icon:'🛍️', q:'國際通 那霸'},
+      {time:'16:15', text:'高雄國際機場 (IT728起飛)', icon:'🛫', q:'高雄國際機場 KHH', img:'images/img_f9151aba81.webp'},
+      {time:'18:40', text:'那霸機場 (OKA) 抵達', icon:'🛬', q:'那霸機場', img:'images/img_ce3d861b31.webp'},
+      {time:'19:08', text:'Hotel Strata Naha (入住)', icon:'🏨', q:'Hotel Strata Naha', img:'images/img_c416863e9a.webp'},
+      {time:'19:48', text:'國際通散步購物', icon:'🛍️', q:'國際通 那霸', img:'images/img_4fbbe7dbc6.webp'},
       {time:'22:27', text:'返回酒店休息', icon:'🌙', q:'Hotel Strata Naha'}
     ],
     places:[
@@ -687,17 +714,17 @@ const DAYS_DATA = [
     ],
     itinerary:[
       {time:'08:30', text:'搭車前往那霸機場', icon:'🚕', q:'那霸機場'},
-      {time:'09:00', text:'Kuruca租車 取車', icon:'🚗', q:'沖繩縣豐見城市我那霸295-4'},
-      {time:'09:42', text:'安良波海灘', icon:'🏖️', q:'安良波海灘 北谷'},
-      {time:'10:19', text:'美浜美國村', icon:'🎡', q:'美浜美國村 北谷'},
-      {time:'11:53', text:'A&W 美浜店午餐', icon:'🍔', q:'A&W 美浜店 沖繩'},
-      {time:'13:23', text:'黑潮潛水｜沖繩青洞', icon:'🤿', q:'黑潮潛水 恩納村'},
-      {time:'13:45', text:'琉球村', icon:'🏯', q:'琉球村 恩納村'},
-      {time:'16:01', text:'BANTA CAFE 夕陽咖啡', icon:'☕', q:'Hoshino Resorts BANTA CAFE'},
-      {time:'17:41', text:'AEON MALL Rycom 購物', icon:'🏬', q:'AEON MALL Okinawa Rycom'},
-      {time:'19:24', text:'Itoya 阿古豬火鍋晚餐', icon:'🍲', q:'Itoya 阿古豬火鍋 沖繩'},
+      {time:'09:00', text:'Kuruca租車 取車', icon:'🚗', q:'沖繩縣豐見城市我那霸295-4', img:'images/img_cc54cec34c.webp'},
+      {time:'09:42', text:'安良波海灘', icon:'🏖️', q:'安良波海灘 北谷', img:'images/img_234997a5f5.webp'},
+      {time:'10:19', text:'美浜美國村', icon:'🎡', q:'美浜美國村 北谷', img:'images/img_c95f4b2adb.webp'},
+      {time:'11:53', text:'A&W 美浜店午餐', icon:'🍔', q:'A&W 美浜店 沖繩', img:'images/img_fab42a6503.webp'},
+      {time:'13:23', text:'黑潮潛水｜沖繩青洞', icon:'🤿', q:'黑潮潛水 恩納村', img:'images/img_a3c7fd3cc6.webp'},
+      {time:'13:45', text:'琉球村', icon:'🏯', q:'琉球村 恩納村', img:'images/img_cac46036ed.webp'},
+      {time:'16:01', text:'BANTA CAFE 夕陽咖啡', icon:'☕', q:'Hoshino Resorts BANTA CAFE', img:'images/img_405434c9bd.webp'},
+      {time:'17:41', text:'AEON MALL Rycom 購物', icon:'🏬', q:'AEON MALL Okinawa Rycom', img:'images/img_ddee100df3.webp'},
+      {time:'19:24', text:'Itoya 阿古豬火鍋晚餐', icon:'🍲', q:'Itoya 阿古豬火鍋 沖繩', img:'images/img_44f5aee350.webp'},
       {time:'22:00', text:'駕車返回那霸市區 / 放車回酒店', icon:'🚗', q:'Hotel Strata Naha'},
-      {time:'22:30', text:'沖繩 Churasun 6 大型 showCLUB 表演', icon:'✨', q:'Churasun 6 沖縄'}
+      {time:'22:30', text:'沖繩 Churasun 6 大型 showCLUB 表演', icon:'✨', q:'Churasun 6 沖縄', img:'images/img_20cee44c23.webp'}
     ],
     places:[
       {name:'Churasun 6 (ちゅらさん6)', img:'images/img_20cee44c23.webp', area:'那霸市區', rating:4.8, type:'sight', tags:'大型秀場/夜生活', desc:'沖繩天花板級別的性感熱血歌舞秀！高水準燈光舞台與動感鋼管、鋼絲飛行特技，氣氛超級嗨。', recommend:'震撼座位區（含10張互動小費券）'},
@@ -741,10 +768,10 @@ const DAYS_DATA = [
     ],
     itinerary:[
       {time:'08:00', text:'那霸出發北上', icon:'🚗', q:'Hotel Strata Naha'},
-      {time:'10:04', text:'道の駅 許田休息站', icon:'🏪', q:'道の駅 許田 開護'},
-      {time:'11:24', text:'古宇利島 (古宇利大橋)', icon:'🏝️', q:'古宇利島'},
-      {time:'14:00', text:'沖繩美麗海水族館', icon:'🐬', q:'沖繩美麗海水族館'},
-      {time:'19:00', text:'海洋博煙火大會 (棧敷席A / 停車場A・B)', icon:'🎆', q:'海洋博公園 臨時駐車場'}
+      {time:'10:04', text:'道の駅 許田休息站', icon:'🏪', q:'道の駅 許田 開護', img:'images/img_7f08f95b60.webp'},
+      {time:'11:24', text:'古宇利島 (古宇利大橋)', icon:'🏝️', q:'古宇利島', img:'images/img_6adfab16da.webp'},
+      {time:'14:00', text:'沖繩美麗海水族館', icon:'🐬', q:'沖繩美麗海水族館', img:'images/img_a3e30234ab.webp'},
+      {time:'19:00', text:'海洋博煙火大會 (棧敷席A / 停車場A・B)', icon:'🎆', q:'海洋博公園 臨時駐車場', img:'images/img_997aa481b1.webp'}
     ],
     places:[
       {name:'Kouri Shrimp', img:'images/img_8705bf91d5.webp', area:'古宇利島', rating:4.4, type:'food', tags:'蒜香蝦', desc:'夏威夷經典蒜香奶油蝦配上白飯，香氣濃郁停不下來。', recommend:'原味蒜蓉蝦飯'},
@@ -787,9 +814,9 @@ const DAYS_DATA = [
     ],
     itinerary:[
       {time:'09:00', text:'那霸出發南下', icon:'🚗', q:'Hotel Strata Naha'},
-      {time:'09:33', text:'玉泉洞 (王國村)', icon:'🦇', q:'玉泉洞 沖繩'},
-      {time:'13:30', text:'敘敘苑 浦添PARCO CITY店', icon:'🥩', q:'敘敘苑 沖繩浦添'},
-      {time:'15:00', text:'SAN-A浦添西海岸 PARCO CITY', icon:'🏬', q:'SAN-A浦添西海岸 PARCO CITY'}
+      {time:'09:33', text:'玉泉洞 (王國村)', icon:'🦇', q:'玉泉洞 沖繩', img:'images/img_20dd7ebdb5.webp'},
+      {time:'13:30', text:'敘敘苑 浦添PARCO CITY店', icon:'🥩', q:'敘敘苑 沖繩浦添', img:'images/img_bb8542285a.webp'},
+      {time:'15:00', text:'SAN-A浦添西海岸 PARCO CITY', icon:'🏬', q:'SAN-A浦添西海岸 PARCO CITY', img:'images/img_9187ea8849.webp'}
     ],
     places:[
       {name:'敘敘苑 浦添店', img:'images/img_bb8542285a.webp', area:'浦添市', rating:4.5, type:'food', tags:'頂級燒肉', desc:'日本全國知名的高級燒肉店，午間套餐價格親民份量十足。', recommend:'超值午間燒肉套餐'},
@@ -831,16 +858,16 @@ const DAYS_DATA = [
       '✈️ 登機前請再次確認手提行李與隨身液體限制（每瓶不超過 100ml，需裝入透明夾鏈袋），將行動電源留在隨身包中。'
     ],
     itinerary:[
-      {time:'09:00', text:'Hotel Strata Naha (退房)', icon:'🏨', q:'Hotel Strata Naha'},
-      {time:'09:45', text:'第一牧志公設市場', icon:'🦀', q:'第一牧志公設市場'},
-      {time:'10:56', text:'Pork Tamago Onigiri', icon:'🍙', q:'Pork Tamago Onigiri Makishi Market'},
-      {time:'11:27', text:'沖縄とんかつ小やじ 午餐', icon:'🍱', q:'沖縄とんかつ小やじ那覇店'},
-      {time:'12:52', text:'西來院 (達磨寺)', icon:'⛩️', q:'西來院 那霸'},
-      {time:'13:41', text:'首里城公園', icon:'🏯', q:'首里城'},
-      {time:'16:00', text:'Kuruca租車 還車', icon:'🚗', q:'沖繩縣豐見城市我那霸295-4'},
-      {time:'17:00', text:'那霸機場 (OKA)', icon:'🛫', q:'那霸機場'},
+      {time:'09:00', text:'Hotel Strata Naha (退房)', icon:'🏨', q:'Hotel Strata Naha', img:'images/img_c416863e9a.webp'},
+      {time:'09:45', text:'第一牧志公設市場', icon:'🦀', q:'第一牧志公設市場', img:'images/img_85723782bc.webp'},
+      {time:'10:56', text:'Pork Tamago Onigiri', icon:'🍙', q:'Pork Tamago Onigiri Makishi Market', img:'images/img_a31c557916.webp'},
+      {time:'11:27', text:'沖縄とんかつ小やじ 午餐', icon:'🍱', q:'沖縄とんかつ小やじ那覇店', img:'images/img_d7470b55d3.webp'},
+      {time:'12:52', text:'西來院 (達磨寺)', icon:'⛩️', q:'西來院 那霸', img:'images/img_aed81dfbbb.webp'},
+      {time:'13:41', text:'首里城公園', icon:'🏯', q:'首里城', img:'images/img_8f81cafff9.webp'},
+      {time:'16:00', text:'Kuruca租車 還車', icon:'🚗', q:'沖繩縣豐見城市我那霸295-4', img:'images/img_cc54cec34c.webp'},
+      {time:'17:00', text:'那霸機場 (OKA)', icon:'🛫', q:'那霸機場', img:'images/img_ce3d861b31.webp'},
       {time:'19:45', text:'中華航空 CI133 起飛', icon:'✈️', q:'那霸機場'},
-      {time:'20:30', text:'高雄國際機場 (KHH) 抵達', icon:'🛬', q:'高雄國際機場'}
+      {time:'20:30', text:'高雄國際機場 (KHH) 抵達', icon:'🛬', q:'高雄國際機場', img:'images/img_f9151aba81.webp'}
     ],
     places:[
       {name:'豬肉蛋飯糰 本店', img:'images/img_a31c557916.webp', area:'牧志市場', rating:4.4, type:'food', tags:'沖繩飯糰', desc:'最經典的排隊名店，熱騰騰的午餐肉與厚煎蛋完美結合。', recommend:'炸蝦豬肉蛋飯糰'},
@@ -1048,20 +1075,34 @@ function initOverview() {
   fetchCurrency();
 }
 
+async function fetchWithRetry(url, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      if (i === retries) throw e;
+      await new Promise(r => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+}
+
 async function fetchWeatherAndMarine() {
+  // 天氣與海浪獨立處理：其一失敗不影響另一個
   try {
-    const [wr, mr] = await Promise.all([
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=26.2124&longitude=127.6809&daily=temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_sum,precipitation_probability_max,sunrise,sunset&timezone=Asia%2FTokyo'),
-      fetch('https://marine-api.open-meteo.com/v1/marine?latitude=26.2124&longitude=127.6809&daily=wave_height_max&timezone=Asia%2FTokyo')
-    ]);
-    const wd = await wr.json();
-    const md = await mr.json();
+    const wd = await fetchWithRetry('https://api.open-meteo.com/v1/forecast?latitude=26.2124&longitude=127.6809&daily=temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_sum,precipitation_probability_max,sunrise,sunset&timezone=Asia%2FTokyo');
     renderWeatherChart(wd.daily);
     renderEnvironmentData(wd.daily);
-    renderMarineData(md.daily);
     applyWeatherTheme(wd.daily);
   } catch(e) {
-    document.getElementById('marine-data').innerHTML = '<span class="text-coral text-xs font-bold">無法取得資料，請檢查網路</span>';
+    console.warn('天氣資料載入失敗', e);
+  }
+  try {
+    const md = await fetchWithRetry('https://marine-api.open-meteo.com/v1/marine?latitude=26.2124&longitude=127.6809&daily=wave_height_max&timezone=Asia%2FTokyo');
+    renderMarineData(md.daily);
+  } catch(e) {
+    document.getElementById('marine-data').innerHTML = '<span class="text-coral text-xs font-bold">無法取得海浪資料，請稍後再試</span>';
   }
 }
 
@@ -1133,8 +1174,7 @@ function renderMarineData(data) {
 
 async function fetchCurrency() {
   try {
-    const res = await fetch('https://api.exchangerate-api.com/v4/latest/JPY');
-    const data = await res.json();
+    const data = await fetchWithRetry('https://open.er-api.com/v6/latest/JPY');
     state.exchangeRate.JPY_TWD = data.rates.TWD;
     
     const updated = new Date().toLocaleTimeString('zh-TW', {hour:'2-digit', minute:'2-digit'});
@@ -1441,6 +1481,7 @@ function renderDayView(dayId) {
       <div class="timeline-dot"></div>
       <div class="absolute left-0 top-0 w-9 h-9 bg-white border-2 rounded-full flex items-center justify-center shadow-sm z-10 text-sm" style="border-color:${day.hex}">${it.icon}</div>
       <div class="bg-white/60 border border-white p-4 rounded-2xl shadow-sm hover:bg-white transition-colors duration-300 group">
+        ${it.img ? `<div class="itin-photo"><img src="${it.img}" alt="${(it.text||'').replace(/"/g,'&quot;')}" loading="lazy" onload="this.classList.add('loaded')" onerror="this.parentElement.style.display='none'"></div>` : ''}
         <div class="font-mono font-black text-xs mb-1" style="color:${day.hex}">${it.time}</div>
         <div class="font-sans font-black text-sm text-ink mb-2">${it.text}</div>
         <a href="http://maps.google.com/?q=${encodeURIComponent(it.q)}" target="_blank" class="inline-flex items-center gap-1.5 text-[10px] font-bold text-ink/40 bg-white px-2 py-1 rounded-lg border border-ink/5 hover:text-ink hover:border-ink/20 transition">
@@ -1461,7 +1502,7 @@ function renderDayView(dayId) {
   mapLinks.innerHTML = day.itinerary.map((it,i) => `
     <a href="http://maps.google.com/?q=${encodeURIComponent(it.q)}" target="_blank"
       class="flex items-center gap-3 px-4 py-3 bg-white/50 hover:bg-white border border-white rounded-2xl transition text-sm font-bold text-ink shadow-inner-light group">
-      <div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center border border-ink/5 group-hover:scale-110 transition"><span class="text-sm">${it.icon}</span></div>
+      ${it.img ? `<div class="itin-thumb"><img src="${it.img}" alt="" loading="lazy" onload="this.classList.add('loaded')" onerror="this.parentElement.style.display='none'"></div>` : `<div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center border border-ink/5 group-hover:scale-110 transition"><span class="text-sm">${it.icon}</span></div>`}
       <div class="flex-1">
         <div class="text-[10px] font-mono font-black opacity-60" style="color:${day.hex}">${it.time}</div>
         <div class="text-xs font-sans">${it.text}</div>
