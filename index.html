@@ -563,11 +563,16 @@ tailwind.config = {
     <div class="mb-8">
       <span class="inline-block text-[10px] font-black uppercase tracking-widest bg-coral/10 text-coral px-3 py-1.5 rounded-full border border-coral/20 mb-3">Konbini Gourmet</span>
       <h2 class="font-serif text-4xl text-ink mb-2 tracking-tight" style="font-weight:800">日本超商美食 🏪</h2>
-      <p class="text-ink/60 font-medium">FamilyMart 必吃必買精選 20 項 — 炸雞、霜淇淋、飯糰、甜點，便利商店掃貨清單。<span class="text-ink/40 text-xs">（價格為日本參考售價，依店鋪與時期可能變動）</span></p>
+      <p class="text-ink/60 font-medium">FamilyMart 必吃必買 ＋ LAWSON 沖繩在地限定 — 炸雞、飯糰、甜點、沖繩名物，便利商店掃貨清單。<span class="text-ink/40 text-xs">（價格為日本參考售價，依店鋪與時期可能變動）</span></p>
+    </div>
+    <div class="flex gap-2 mb-4">
+      <button class="konbini-brand px-6 py-3 text-sm font-black rounded-2xl bg-ink text-white shadow-md transition flex-1 sm:flex-none" onclick="filterKonbiniBrand('all', this)">全部</button>
+      <button class="konbini-brand px-6 py-3 text-sm font-black rounded-2xl bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-1 sm:flex-none" onclick="filterKonbiniBrand('FamilyMart', this)">FamilyMart</button>
+      <button class="konbini-brand px-6 py-3 text-sm font-black rounded-2xl bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-1 sm:flex-none" onclick="filterKonbiniBrand('LAWSON', this)">LAWSON</button>
     </div>
     <div class="relative mb-5">
       <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-ink/30 text-sm"></i>
-      <input type="text" id="konbini-search" oninput="setKonbiniSearch(this.value)" placeholder="搜尋商品（例如：炸雞、ファミチキ、咖哩）…" class="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-white/60 border border-white shadow-inner-light text-sm font-bold text-ink placeholder:text-ink/30 focus:outline-none focus:bg-white focus:shadow-float transition">
+      <input type="text" id="konbini-search" oninput="setKonbiniSearch(this.value)" placeholder="搜尋商品（例如：炸雞、塔可飯、紅芋、泡盛）…" class="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-white/60 border border-white shadow-inner-light text-sm font-bold text-ink placeholder:text-ink/30 focus:outline-none focus:bg-white focus:shadow-float transition">
     </div>
     <div class="flex gap-2 overflow-x-auto no-scroll mb-6 pb-2 px-1" id="konbini-filters">
       <button class="konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0" onclick="filterKonbini('all', this)">全部 20 項</button>
@@ -1098,26 +1103,42 @@ const RAINY_BACKUP_DATA = [
 ];
 
 const KONBINI_DATA = [
-  { rank: 1, name: 'ファミチキ', tw: '炸雞 Famichiki', price: '¥223', cat: '招牌', desc: 'FamilyMart 代名詞，日本炸雞銷量冠軍級，多汁香酥的殿堂級美味。', img: 'images/konbini_4b31008e.webp' },
-  { rank: 2, name: 'たべる牧場ミルク', tw: '牧場牛奶冰淇淋', price: '¥298', cat: '飲料甜點', desc: '日本網友公認必吃霜淇淋，濃郁牛奶香，2026 年持續熱賣。', img: 'images/konbini_a5f42fbc.webp' },
-  { rank: 3, name: 'ファミマ・ザ・クレープ', tw: 'Famima 可麗餅', price: '¥298', cat: '飲料甜點', desc: 'Famima 招牌甜點系列，奶油與鮮奶油口感綿密。', img: 'images/konbini_881eb9d4.webp' },
-  { rank: 4, name: 'ミルクカスタードシュー', tw: '牛奶卡士達泡芙', price: '¥165', cat: '飲料甜點', desc: '日本本土爆款，雜誌官評選人氣甜點，入口即化。', img: 'images/konbini_1c0381b1.webp' },
-  { rank: 5, name: '手巻シーチキンマヨネーズ', tw: '鮪魚美乃滋手卷飯糰', price: '¥135', cat: '飯糰熟食', desc: '2026 飯糰類冠軍，經典不敗的人氣口味。', img: 'images/konbini_b6b9d774.webp' },
-  { rank: 6, name: '直巻焼しゃけ', tw: '直卷烤鮭魚飯糰', price: '¥165', cat: '飯糰熟食', desc: '日本人氣常銷第一，鹽烤鮭魚的純粹美味。', img: 'images/konbini_b3c9e2e3.webp' },
-  { rank: 7, name: '炭火焼きとり (もも・たれ)', tw: '炭火烤雞串(腿肉・醬燒)', price: '¥176', cat: '飯糰熟食', desc: '店內現烤製作，超人氣高溫熱賣商品。', img: 'images/konbini_8e88af90.webp' },
-  { rank: 8, name: 'ファミコロ', tw: '可樂餅', price: '¥128', cat: '飯糰熟食', desc: '芋頭香濃綿密，平價銅板美食代表。', img: 'images/konbini_63aee7c4.webp' },
-  { rank: 9, name: 'スパイシーチキン', tw: '辣味炸雞', price: '¥165', cat: '招牌', desc: '日本土產商品，與 Famichiki 並列招牌人氣。', img: 'images/konbini_8e3a02f3.webp' },
-  { rank: 10, name: '鮭はらみおむすび', tw: '鮭魚腹身飯糰', price: '¥195', cat: '飯糰熟食', desc: '鮭魚腹肉油脂滿足，高品質食材的奢華感。', img: 'images/konbini_3155531d.webp' },
-  { rank: 11, name: 'ファミマルポテトチップス', tw: '洋芋片(鹽味)', price: '¥108', cat: '點心', desc: 'Famimaru 自有品牌人氣零食，經典原味。', img: 'images/konbini_5a2a2e92.webp' },
-  { rank: 12, name: 'ファミマルプレミアムカレー(中辛)', tw: '金牌咖哩調理包(中辣)', price: '¥298', cat: '點心', desc: '日本網友大推，CP 值爆棚的常溫即食咖哩。', img: 'images/konbini_5150269e.webp' },
-  { rank: 13, name: 'ファミマルバターチキンカレー', tw: '奶油雞肉咖哩調理包', price: '¥298', cat: '點心', desc: '濃郁香料口感，常溫熱賣即食系列。', img: 'images/konbini_a12f4638.webp' },
-  { rank: 14, name: '天使のチーズケーキ', tw: '天使起司蛋糕', price: '¥276', cat: '飲料甜點', desc: '2026 甜點門檻提升，入口即化的濃厚乳酪。', img: 'images/konbini_5d37440b.webp' },
-  { rank: 15, name: '冷やして食べるくりーむメロンパン', tw: '冷藏奶油菠蘿麵包', price: '¥138', cat: '點心', desc: 'FamilyMart 限定，冰過更好吃，奶油爆漿。', img: 'images/konbini_4dc73841.webp' },
-  { rank: 16, name: 'ブラックサンダーモザイクチョコクレープ', tw: '雷神巧克力可麗餅', price: '¥230', cat: '飲料甜點', desc: '聯名系列爆款，巧克力控必收。', img: 'images/konbini_e24f3b1a.webp' },
-  { rank: 17, name: 'バニラヨーグルトクリームワッフル', tw: '香草優格奶油鬆餅', price: '¥166', cat: '飲料甜點', desc: '日本女生討論度超高，濃厚不膩口。', img: 'images/konbini_00a6ca13.webp' },
-  { rank: 18, name: 'FAMIMA CAFE アイスコーヒー', tw: 'FAMIMA CAFE 冰咖啡', price: '¥180', cat: '飲料甜點', desc: '超商咖啡界霸主，平價香醇現萃。', img: 'images/konbini_397f13ee.webp' },
-  { rank: 19, name: 'アールグレイ香る紅茶カヌレ', tw: '伯爵茶可麗露', price: '¥198', cat: '飲料甜點', desc: '2026 Afternoon Tea 聯名，伯爵茶香優雅。', img: 'images/konbini_24108ba6.webp' },
-  { rank: 20, name: '純濃監修 濃厚旨みラーメン', tw: '純濃監修濃厚拉麵', price: '¥278', cat: '點心', desc: '日本拉麵店監製，濃厚湯頭即食杯麵。', img: 'images/konbini_252bc7a2.webp' },
+  { rank: 1, brand: 'FamilyMart', name: 'ファミチキ', tw: '炸雞 Famichiki', price: '¥223', cat: '招牌', desc: 'FamilyMart 代名詞，日本炸雞銷量冠軍級，多汁香酥的殿堂級美味。', img: 'images/konbini_4b31008e.webp' },
+  { rank: 2, brand: 'FamilyMart', name: 'たべる牧場ミルク', tw: '牧場牛奶冰淇淋', price: '¥298', cat: '飲料甜點', desc: '日本網友公認必吃霜淇淋，濃郁牛奶香，2026 年持續熱賣。', img: 'images/konbini_a5f42fbc.webp' },
+  { rank: 3, brand: 'FamilyMart', name: 'ファミマ・ザ・クレープ', tw: 'Famima 可麗餅', price: '¥298', cat: '飲料甜點', desc: 'Famima 招牌甜點系列，奶油與鮮奶油口感綿密。', img: 'images/konbini_881eb9d4.webp' },
+  { rank: 4, brand: 'FamilyMart', name: 'ミルクカスタードシュー', tw: '牛奶卡士達泡芙', price: '¥165', cat: '飲料甜點', desc: '日本本土爆款，雜誌官評選人氣甜點，入口即化。', img: 'images/konbini_1c0381b1.webp' },
+  { rank: 5, brand: 'FamilyMart', name: '手巻シーチキンマヨネーズ', tw: '鮪魚美乃滋手卷飯糰', price: '¥135', cat: '飯糰熟食', desc: '2026 飯糰類冠軍，經典不敗的人氣口味。', img: 'images/konbini_b6b9d774.webp' },
+  { rank: 6, brand: 'FamilyMart', name: '直巻焼しゃけ', tw: '直卷烤鮭魚飯糰', price: '¥165', cat: '飯糰熟食', desc: '日本人氣常銷第一，鹽烤鮭魚的純粹美味。', img: 'images/konbini_b3c9e2e3.webp' },
+  { rank: 7, brand: 'FamilyMart', name: '炭火焼きとり (もも・たれ)', tw: '炭火烤雞串(腿肉・醬燒)', price: '¥176', cat: '飯糰熟食', desc: '店內現烤製作，超人氣高溫熱賣商品。', img: 'images/konbini_8e88af90.webp' },
+  { rank: 8, brand: 'FamilyMart', name: 'ファミコロ', tw: '可樂餅', price: '¥128', cat: '飯糰熟食', desc: '芋頭香濃綿密，平價銅板美食代表。', img: 'images/konbini_63aee7c4.webp' },
+  { rank: 9, brand: 'FamilyMart', name: 'スパイシーチキン', tw: '辣味炸雞', price: '¥165', cat: '招牌', desc: '日本土產商品，與 Famichiki 並列招牌人氣。', img: 'images/konbini_8e3a02f3.webp' },
+  { rank: 10, brand: 'FamilyMart', name: '鮭はらみおむすび', tw: '鮭魚腹身飯糰', price: '¥195', cat: '飯糰熟食', desc: '鮭魚腹肉油脂滿足，高品質食材的奢華感。', img: 'images/konbini_3155531d.webp' },
+  { rank: 11, brand: 'FamilyMart', name: 'ファミマルポテトチップス', tw: '洋芋片(鹽味)', price: '¥108', cat: '點心', desc: 'Famimaru 自有品牌人氣零食，經典原味。', img: 'images/konbini_5a2a2e92.webp' },
+  { rank: 12, brand: 'FamilyMart', name: 'ファミマルプレミアムカレー(中辛)', tw: '金牌咖哩調理包(中辣)', price: '¥298', cat: '點心', desc: '日本網友大推，CP 值爆棚的常溫即食咖哩。', img: 'images/konbini_5150269e.webp' },
+  { rank: 13, brand: 'FamilyMart', name: 'ファミマルバターチキンカレー', tw: '奶油雞肉咖哩調理包', price: '¥298', cat: '點心', desc: '濃郁香料口感，常溫熱賣即食系列。', img: 'images/konbini_a12f4638.webp' },
+  { rank: 14, brand: 'FamilyMart', name: '天使のチーズケーキ', tw: '天使起司蛋糕', price: '¥276', cat: '飲料甜點', desc: '2026 甜點門檻提升，入口即化的濃厚乳酪。', img: 'images/konbini_5d37440b.webp' },
+  { rank: 15, brand: 'FamilyMart', name: '冷やして食べるくりーむメロンパン', tw: '冷藏奶油菠蘿麵包', price: '¥138', cat: '點心', desc: 'FamilyMart 限定，冰過更好吃，奶油爆漿。', img: 'images/konbini_4dc73841.webp' },
+  { rank: 16, brand: 'FamilyMart', name: 'ブラックサンダーモザイクチョコクレープ', tw: '雷神巧克力可麗餅', price: '¥230', cat: '飲料甜點', desc: '聯名系列爆款，巧克力控必收。', img: 'images/konbini_e24f3b1a.webp' },
+  { rank: 17, brand: 'FamilyMart', name: 'バニラヨーグルトクリームワッフル', tw: '香草優格奶油鬆餅', price: '¥166', cat: '飲料甜點', desc: '日本女生討論度超高，濃厚不膩口。', img: 'images/konbini_00a6ca13.webp' },
+  { rank: 18, brand: 'FamilyMart', name: 'FAMIMA CAFE アイスコーヒー', tw: 'FAMIMA CAFE 冰咖啡', price: '¥180', cat: '飲料甜點', desc: '超商咖啡界霸主，平價香醇現萃。', img: 'images/konbini_397f13ee.webp' },
+  { rank: 19, brand: 'FamilyMart', name: 'アールグレイ香る紅茶カヌレ', tw: '伯爵茶可麗露', price: '¥198', cat: '飲料甜點', desc: '2026 Afternoon Tea 聯名，伯爵茶香優雅。', img: 'images/konbini_24108ba6.webp' },
+  { rank: 20, brand: 'FamilyMart', name: '純濃監修 濃厚旨みラーメン', tw: '純濃監修濃厚拉麵', price: '¥278', cat: '點心', desc: '日本拉麵店監製，濃厚湯頭即食杯麵。', img: 'images/konbini_252bc7a2.webp' },
+  { rank: 21, brand: 'LAWSON', name: '紅芋ロールケーキ', tw: '紅芋生乳卷 (Uchi Café)', price: '¥289', cat: '飲料甜點', desc: 'Uchi Café 系列，沖繩縣產紅芋餡，綿密生乳卷，沖繩限定甜點。', img: 'images/lawson_38ec2ffa.webp' },
+  { rank: 22, brand: 'LAWSON', name: '紅芋ロールバウム', tw: '紅芋年輪蛋糕', price: '¥178', cat: '飲料甜點', desc: '沖繩縣產紅芋粉製作，層層年輪口感，伴手禮人氣款。', img: 'images/lawson_984e0523.webp' },
+  { rank: 23, brand: 'LAWSON', name: 'ふわもちロール黒糖', tw: '沖繩黑糖蛋糕捲', price: '¥175', cat: '飲料甜點', desc: '沖繩縣產黑糖風味，蓬鬆又彈牙的蛋糕捲。', img: 'images/lawson_6a04a7e4.webp' },
+  { rank: 24, brand: 'LAWSON', name: '沖縄ぜんざいミルクプリン', tw: '沖繩紅豆牛奶布丁', price: '¥298', cat: '飲料甜點', desc: '沖繩風善哉(紅豆)結合滑順牛奶布丁，冰涼消暑。', img: 'images/lawson_96be5460.webp' },
+  { rank: 25, brand: 'LAWSON', name: 'ポーク玉子おにぎり', tw: '豬肉蛋飯糰', price: '¥322', cat: '飯糰熟食', desc: '沖繩限定，午餐肉＋煎蛋的經典組合，沖繩soul food。', img: 'images/lawson_2dfcb75a.webp' },
+  { rank: 26, brand: 'LAWSON', name: 'じゅーしー', tw: '大顆雜炊飯糰', price: '¥194', cat: '飯糰熟食', desc: '沖繩限定，琉球風炊飯(じゅーしー)的大份量飯糰。', img: 'images/lawson_8e3bbdc9.webp' },
+  { rank: 27, brand: 'LAWSON', name: '沖縄そば', tw: '沖繩蕎麥麵 (杯麵)', price: '¥246', cat: '點心', desc: '一明星×沖繩そば，柴魚昆布與豚骨清爽湯頭的杯麵。', img: 'images/lawson_7d0ecc11.webp' },
+  { rank: 28, brand: 'LAWSON', name: '成分無調整3.6牛乳', tw: '沖繩100 純鮮奶 946ml', price: '¥321', cat: '飲料甜點', desc: '生乳100%無調整，沖繩在地鮮奶，大容量家庭號。', img: 'images/lawson_dd44fda5.webp' },
+  { rank: 29, brand: 'LAWSON', name: '泡盛×珈琲 BLACK', tw: '泡盛黑咖啡', price: '¥298', cat: '飲料甜點', desc: '沖繩限定，泡盛風味黑咖啡，無糖微醺成人風味。', img: 'images/lawson_84b425ca.webp' },
+  { rank: 30, brand: 'LAWSON', name: 'さんぴん茶', tw: '茉莉花茶 (さんぴん茶)', price: '¥151', cat: '飲料甜點', desc: '沖繩限定，琉球家喻戶曉的茉莉花茶，清香解膩。', img: 'images/lawson_1a300022.webp' },
+  { rank: 31, brand: 'LAWSON', name: 'タコライス', tw: '塔可飯', price: '¥594', cat: '飯糰熟食', desc: '沖繩名物塔可飯，生菜＋絞肉＋起司＋莎莎醬，附辣醬。', img: 'images/lawson_df224798.webp' },
+  { rank: 32, brand: 'LAWSON', name: 'うちなー弁当', tw: '沖繩風味便當', price: '¥646', cat: '飯糰熟食', desc: '沖繩風味家常菜便當，多樣配菜一次滿足。', img: 'images/lawson_fd632485.webp' },
+  { rank: 33, brand: 'LAWSON', name: 'スパムフライチーズ', tw: '炸起司午餐肉', price: '¥138', cat: '飯糰熟食', desc: 'まちかど廚房現做，午餐肉夾起司酥炸，邪惡又涮嘴。', img: 'images/lawson_426ebee0.webp' },
+  { rank: 34, brand: 'LAWSON', name: '黄金チキン 骨つき', tw: '帶骨棒棒雞腿', price: '¥346', cat: '飯糰熟食', desc: '店內現炸，黑胡椒風味帶骨炸雞腿，份量十足。', img: 'images/lawson_bd0227f4.webp' },
+  { rank: 35, brand: 'LAWSON', name: '紅いもあん餅', tw: '紅芋餡大福', price: '¥175', cat: '飲料甜點', desc: '沖繩縣產紅芋餡包麻糬，軟糯香甜的和菓子。', img: 'images/lawson_83efc696.webp' },
+  { rank: 36, brand: 'LAWSON', name: '紅いも餡みたらし餅', tw: '紅芋餡御手洗糰子', price: '¥165', cat: '飲料甜點', desc: '沖繩縣產紅芋餡，搭配御手洗醬油糰子的創意和菓子。', img: 'images/lawson_fe9c3685.webp' },
 ];
 
 // ===================== STATE =====================
@@ -1129,6 +1150,7 @@ let state = {
   phrasesFilter: 'all',
   phrasesSearch: '',
   konbiniFilter: 'all',
+  konbiniBrand: 'all',
   konbiniSearch: '',
   checklist: JSON.parse(localStorage.getItem('ok_checklist_v3') || '{}'),
   wishlist: JSON.parse(localStorage.getItem('ok_wishlist_v4') || '[]'),
@@ -1671,13 +1693,15 @@ function renderKonbiniItems(data) {
     const photo = p.img
       ? `<div class="place-photo"><img src="${p.img}" alt="${(p.tw||'').replace(/"/g,'&quot;')}" loading="lazy" onload="this.classList.add('loaded')" onerror="this.parentElement.style.display='none'"></div>`
       : '';
+    const isLawson = p.brand === 'LAWSON';
+    const brandTag = isLawson
+      ? `<span class="inline-block text-[9px] font-black uppercase tracking-wider bg-sky/15 text-sky px-2 py-1 rounded-md border border-sky/20">LAWSON</span>`
+      : `<div class="w-9 h-9 rounded-xl bg-${color}/15 border border-${color}/20 flex items-center justify-center flex-shrink-0"><span class="font-mono font-black text-sm text-${color}">${p.rank}</span></div>`;
     return `<div class="glass-card rounded-3xl p-5 hover:shadow-float border border-white transition-all duration-300 flex flex-col group transform hover:-translate-y-1">
       ${photo}
       <div class="flex justify-between items-start mb-3">
         <div class="flex items-center gap-2.5 flex-1 min-w-0">
-          <div class="w-9 h-9 rounded-xl bg-${color}/15 border border-${color}/20 flex items-center justify-center flex-shrink-0">
-            <span class="font-mono font-black text-sm text-${color}">${p.rank}</span>
-          </div>
+          ${brandTag}
           <span class="inline-block text-[9px] font-black uppercase tracking-wider bg-${color}/10 text-${color} px-2 py-1 rounded-md border border-${color}/20">${p.cat}</span>
         </div>
         <span class="font-mono font-black text-sm text-ink bg-white/70 border border-white shadow-inner-light px-2.5 py-1 rounded-lg flex-shrink-0">${p.price}</span>
@@ -1691,17 +1715,29 @@ function renderKonbiniItems(data) {
 
 function applyKonbiniFilters() {
   const q = (state.konbiniSearch || '').trim().toLowerCase();
-  let filtered = state.konbiniFilter === 'all' ? KONBINI_DATA : KONBINI_DATA.filter(p => p.cat === state.konbiniFilter);
+  let filtered = KONBINI_DATA;
+  if(state.konbiniBrand !== 'all') filtered = filtered.filter(p => p.brand === state.konbiniBrand);
+  if(state.konbiniFilter !== 'all') filtered = filtered.filter(p => p.cat === state.konbiniFilter);
   if(q) {
     filtered = filtered.filter(p =>
       p.name.toLowerCase().includes(q) ||
       p.tw.toLowerCase().includes(q) ||
       p.desc.toLowerCase().includes(q) ||
-      p.cat.toLowerCase().includes(q)
+      p.cat.toLowerCase().includes(q) ||
+      (p.brand||'').toLowerCase().includes(q)
     );
   }
   renderKonbiniItems(filtered);
 }
+
+window.filterKonbiniBrand = (brand, btn) => {
+  document.querySelectorAll('.konbini-brand').forEach(b => {
+    b.className = 'konbini-brand px-6 py-3 text-sm font-black rounded-2xl bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-1 sm:flex-none';
+  });
+  btn.className = 'konbini-brand px-6 py-3 text-sm font-black rounded-2xl bg-ink text-white shadow-md transition flex-1 sm:flex-none';
+  state.konbiniBrand = brand;
+  applyKonbiniFilters();
+};
 
 window.filterKonbini = (cat, btn) => {
   document.querySelectorAll('.konbini-tab').forEach(b => {
