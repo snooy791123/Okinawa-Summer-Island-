@@ -234,6 +234,9 @@ tailwind.config = {
     <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-rainy-backup">
       <div class="w-7 h-7 rounded-full bg-ocean/20 flex items-center justify-center"><i class="fas fa-umbrella text-ocean text-xs"></i></div> 雨天備案與精選30選
     </button>
+    <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-konbini">
+      <div class="w-7 h-7 rounded-full bg-coral/20 flex items-center justify-center"><i class="fas fa-store text-coral text-xs"></i></div> 日本超商美食
+    </button>
     <button class="nav-btn sidebar-btn w-full text-left px-4 py-3 rounded-2xl hover:bg-white/60 transition-all flex items-center gap-3 text-ink/60" data-target="view-phrases">
       <div class="w-7 h-7 rounded-full bg-sky/20 flex items-center justify-center"><i class="fas fa-language text-sky text-xs"></i></div> 實用日文小卡
     </button>
@@ -556,6 +559,27 @@ tailwind.config = {
     </div>
   </section>
 
+  <section id="view-konbini" class="view-section max-w-5xl mx-auto">
+    <div class="mb-8">
+      <span class="inline-block text-[10px] font-black uppercase tracking-widest bg-coral/10 text-coral px-3 py-1.5 rounded-full border border-coral/20 mb-3">Konbini Gourmet</span>
+      <h2 class="font-serif text-4xl text-ink mb-2 tracking-tight" style="font-weight:800">日本超商美食 🏪</h2>
+      <p class="text-ink/60 font-medium">FamilyMart 必吃必買精選 20 項 — 炸雞、霜淇淋、飯糰、甜點，便利商店掃貨清單。<span class="text-ink/40 text-xs">（價格為日本參考售價，依店鋪與時期可能變動）</span></p>
+    </div>
+    <div class="relative mb-5">
+      <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-ink/30 text-sm"></i>
+      <input type="text" id="konbini-search" oninput="setKonbiniSearch(this.value)" placeholder="搜尋商品（例如：炸雞、ファミチキ、咖哩）…" class="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-white/60 border border-white shadow-inner-light text-sm font-bold text-ink placeholder:text-ink/30 focus:outline-none focus:bg-white focus:shadow-float transition">
+    </div>
+    <div class="flex gap-2 overflow-x-auto no-scroll mb-6 pb-2 px-1" id="konbini-filters">
+      <button class="konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0" onclick="filterKonbini('all', this)">全部 20 項</button>
+      <button class="konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="filterKonbini('招牌', this)"><i class="fas fa-crown mr-1 text-sand"></i> 招牌</button>
+      <button class="konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="filterKonbini('飯糰熟食', this)"><i class="fas fa-drumstick-bite mr-1 text-coral"></i> 飯糰熟食</button>
+      <button class="konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="filterKonbini('點心', this)"><i class="fas fa-cookie-bite mr-1 text-ocean"></i> 點心</button>
+      <button class="konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="filterKonbini('飲料甜點', this)"><i class="fas fa-ice-cream mr-1 text-mint"></i> 飲料甜點</button>
+    </div>
+    <div id="konbini-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    </div>
+  </section>
+
   <section id="view-phrases" class="view-section max-w-5xl mx-auto">
     <div class="mb-8">
       <h2 class="font-serif text-4xl text-ink mb-2 tracking-tight" style="font-weight:800">急救日文小卡 🗣️</h2>
@@ -653,6 +677,9 @@ tailwind.config = {
   </button>
   <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all" data-target="view-rainy-backup">
     <i class="fas fa-umbrella text-ocean text-lg"></i> <span class="text-sm tracking-wide">雨備</span>
+  </button>
+  <button class="nav-btn mobile-btn snap-center flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-ink/50 font-bold transition-all" data-target="view-konbini">
+    <i class="fas fa-store text-coral text-lg"></i> <span class="text-sm tracking-wide">超商</span>
   </button>
   
   <div class="w-px h-8 bg-ink/10 flex-shrink-0 mx-1"></div>
@@ -1070,6 +1097,29 @@ const RAINY_BACKUP_DATA = [
   { name: 'HAPiNAHA / 國際通室內街區', img:'images/img_eeb8154411.webp', type: 'indoor', tags: '棚頂商店街/雨天散步', area: '國際通', desc: '國際通核心的分支商店街（如平和通、市場中央通）均設有全覆蓋式的「拱頂天棚」，大雨也能不撐傘逛街。', recommend: '塩屋（沖繩海鹽雪鹽冰淇淋）' }
 ];
 
+const KONBINI_DATA = [
+  { rank: 1, name: 'ファミチキ', tw: '炸雞 Famichiki', price: '¥223', cat: '招牌', desc: 'FamilyMart 代名詞，日本炸雞銷量冠軍級，多汁香酥的殿堂級美味。', img: 'images/konbini_4b31008e.webp' },
+  { rank: 2, name: 'たべる牧場ミルク', tw: '牧場牛奶冰淇淋', price: '¥298', cat: '飲料甜點', desc: '日本網友公認必吃霜淇淋，濃郁牛奶香，2026 年持續熱賣。', img: 'images/konbini_a5f42fbc.webp' },
+  { rank: 3, name: 'ファミマ・ザ・クレープ', tw: 'Famima 可麗餅', price: '¥298', cat: '飲料甜點', desc: 'Famima 招牌甜點系列，奶油與鮮奶油口感綿密。', img: 'images/konbini_881eb9d4.webp' },
+  { rank: 4, name: 'ミルクカスタードシュー', tw: '牛奶卡士達泡芙', price: '¥165', cat: '飲料甜點', desc: '日本本土爆款，雜誌官評選人氣甜點，入口即化。', img: 'images/konbini_1c0381b1.webp' },
+  { rank: 5, name: '手巻シーチキンマヨネーズ', tw: '鮪魚美乃滋手卷飯糰', price: '¥135', cat: '飯糰熟食', desc: '2026 飯糰類冠軍，經典不敗的人氣口味。', img: 'images/konbini_b6b9d774.webp' },
+  { rank: 6, name: '直巻焼しゃけ', tw: '直卷烤鮭魚飯糰', price: '¥165', cat: '飯糰熟食', desc: '日本人氣常銷第一，鹽烤鮭魚的純粹美味。', img: 'images/konbini_b3c9e2e3.webp' },
+  { rank: 7, name: '炭火焼きとり (もも・たれ)', tw: '炭火烤雞串(腿肉・醬燒)', price: '¥176', cat: '飯糰熟食', desc: '店內現烤製作，超人氣高溫熱賣商品。', img: 'images/konbini_8e88af90.webp' },
+  { rank: 8, name: 'ファミコロ', tw: '可樂餅', price: '¥128', cat: '飯糰熟食', desc: '芋頭香濃綿密，平價銅板美食代表。', img: 'images/konbini_63aee7c4.webp' },
+  { rank: 9, name: 'スパイシーチキン', tw: '辣味炸雞', price: '¥165', cat: '招牌', desc: '日本土產商品，與 Famichiki 並列招牌人氣。', img: 'images/konbini_8e3a02f3.webp' },
+  { rank: 10, name: '鮭はらみおむすび', tw: '鮭魚腹身飯糰', price: '¥195', cat: '飯糰熟食', desc: '鮭魚腹肉油脂滿足，高品質食材的奢華感。', img: 'images/konbini_3155531d.webp' },
+  { rank: 11, name: 'ファミマルポテトチップス', tw: '洋芋片(鹽味)', price: '¥108', cat: '點心', desc: 'Famimaru 自有品牌人氣零食，經典原味。', img: 'images/konbini_5a2a2e92.webp' },
+  { rank: 12, name: 'ファミマルプレミアムカレー(中辛)', tw: '金牌咖哩調理包(中辣)', price: '¥298', cat: '點心', desc: '日本網友大推，CP 值爆棚的常溫即食咖哩。', img: 'images/konbini_5150269e.webp' },
+  { rank: 13, name: 'ファミマルバターチキンカレー', tw: '奶油雞肉咖哩調理包', price: '¥298', cat: '點心', desc: '濃郁香料口感，常溫熱賣即食系列。', img: 'images/konbini_a12f4638.webp' },
+  { rank: 14, name: '天使のチーズケーキ', tw: '天使起司蛋糕', price: '¥276', cat: '飲料甜點', desc: '2026 甜點門檻提升，入口即化的濃厚乳酪。', img: 'images/konbini_5d37440b.webp' },
+  { rank: 15, name: '冷やして食べるくりーむメロンパン', tw: '冷藏奶油菠蘿麵包', price: '¥138', cat: '點心', desc: 'FamilyMart 限定，冰過更好吃，奶油爆漿。', img: 'images/konbini_4dc73841.webp' },
+  { rank: 16, name: 'ブラックサンダーモザイクチョコクレープ', tw: '雷神巧克力可麗餅', price: '¥230', cat: '飲料甜點', desc: '聯名系列爆款，巧克力控必收。', img: 'images/konbini_e24f3b1a.webp' },
+  { rank: 17, name: 'バニラヨーグルトクリームワッフル', tw: '香草優格奶油鬆餅', price: '¥166', cat: '飲料甜點', desc: '日本女生討論度超高，濃厚不膩口。', img: 'images/konbini_00a6ca13.webp' },
+  { rank: 18, name: 'FAMIMA CAFE アイスコーヒー', tw: 'FAMIMA CAFE 冰咖啡', price: '¥180', cat: '飲料甜點', desc: '超商咖啡界霸主，平價香醇現萃。', img: 'images/konbini_397f13ee.webp' },
+  { rank: 19, name: 'アールグレイ香る紅茶カヌレ', tw: '伯爵茶可麗露', price: '¥198', cat: '飲料甜點', desc: '2026 Afternoon Tea 聯名，伯爵茶香優雅。', img: 'images/konbini_24108ba6.webp' },
+  { rank: 20, name: '純濃監修 濃厚旨みラーメン', tw: '純濃監修濃厚拉麵', price: '¥278', cat: '點心', desc: '日本拉麵店監製，濃厚湯頭即食杯麵。', img: 'images/konbini_252bc7a2.webp' },
+];
+
 // ===================== STATE =====================
 let state = {
   currentView: 'view-overview',
@@ -1078,6 +1128,8 @@ let state = {
   placeFilter: 'all',
   phrasesFilter: 'all',
   phrasesSearch: '',
+  konbiniFilter: 'all',
+  konbiniSearch: '',
   checklist: JSON.parse(localStorage.getItem('ok_checklist_v3') || '{}'),
   wishlist: JSON.parse(localStorage.getItem('ok_wishlist_v4') || '[]'),
   notes: JSON.parse(localStorage.getItem('ok_notes_v3') || '{}'),
@@ -1096,6 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPhrases();
   renderWishlist();
   initRainyBackupGrid();
+  initKonbiniGrid();
   setupPWA();
   
   document.querySelector('.sidebar-btn[data-target="view-overview"]')?.classList.add('active-sidebar');
@@ -1596,6 +1649,72 @@ window.filterRainyGrid = (type, btn) => {
     const filtered = RAINY_BACKUP_DATA.filter(p => p.type === type);
     renderRainyItems(filtered);
   }
+};
+
+function initKonbiniGrid() {
+  const grid = document.getElementById('konbini-grid');
+  if(!grid) return;
+  renderKonbiniItems(KONBINI_DATA);
+}
+
+const KONBINI_CAT_COLOR = { '招牌':'sand', '飯糰熟食':'coral', '點心':'ocean', '飲料甜點':'mint' };
+
+function renderKonbiniItems(data) {
+  const grid = document.getElementById('konbini-grid');
+  if(!grid) return;
+  if(data.length === 0) {
+    grid.innerHTML = `<div class="col-span-full text-center py-16 text-ink/40 font-bold"><i class="fas fa-search text-3xl mb-3 opacity-50"></i><br>找不到「${state.konbiniSearch}」相關的商品<br><span class="text-xs font-medium">試試其他關鍵字，或點上方分類瀏覽</span></div>`;
+    return;
+  }
+  grid.innerHTML = data.map(p => {
+    const color = KONBINI_CAT_COLOR[p.cat] || 'ocean';
+    const photo = p.img
+      ? `<div class="place-photo"><img src="${p.img}" alt="${(p.tw||'').replace(/"/g,'&quot;')}" loading="lazy" onload="this.classList.add('loaded')" onerror="this.parentElement.style.display='none'"></div>`
+      : '';
+    return `<div class="glass-card rounded-3xl p-5 hover:shadow-float border border-white transition-all duration-300 flex flex-col group transform hover:-translate-y-1">
+      ${photo}
+      <div class="flex justify-between items-start mb-3">
+        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+          <div class="w-9 h-9 rounded-xl bg-${color}/15 border border-${color}/20 flex items-center justify-center flex-shrink-0">
+            <span class="font-mono font-black text-sm text-${color}">${p.rank}</span>
+          </div>
+          <span class="inline-block text-[9px] font-black uppercase tracking-wider bg-${color}/10 text-${color} px-2 py-1 rounded-md border border-${color}/20">${p.cat}</span>
+        </div>
+        <span class="font-mono font-black text-sm text-ink bg-white/70 border border-white shadow-inner-light px-2.5 py-1 rounded-lg flex-shrink-0">${p.price}</span>
+      </div>
+      <h4 class="font-heading font-black text-base text-ink leading-tight mb-1">${p.name}</h4>
+      <div class="text-xs font-bold text-${color} mb-2.5">${p.tw}</div>
+      <p class="font-serif text-xs text-ink/70 leading-relaxed font-medium flex-1">${p.desc}</p>
+    </div>`;
+  }).join('');
+}
+
+function applyKonbiniFilters() {
+  const q = (state.konbiniSearch || '').trim().toLowerCase();
+  let filtered = state.konbiniFilter === 'all' ? KONBINI_DATA : KONBINI_DATA.filter(p => p.cat === state.konbiniFilter);
+  if(q) {
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.tw.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q) ||
+      p.cat.toLowerCase().includes(q)
+    );
+  }
+  renderKonbiniItems(filtered);
+}
+
+window.filterKonbini = (cat, btn) => {
+  document.querySelectorAll('.konbini-tab').forEach(b => {
+    b.className = 'konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0';
+  });
+  btn.className = 'konbini-tab px-5 py-2.5 text-xs font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0';
+  state.konbiniFilter = cat;
+  applyKonbiniFilters();
+};
+
+window.setKonbiniSearch = (val) => {
+  state.konbiniSearch = val;
+  applyKonbiniFilters();
 };
 
 function renderDayView(dayId) {
