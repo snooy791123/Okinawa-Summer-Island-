@@ -2199,7 +2199,10 @@ function performSearch(query) {
   DAYS_DATA.forEach(day => {
     day.places.forEach((p, i) => {
       if(p.name.toLowerCase().includes(q) || p.area.toLowerCase().includes(q) || p.tags.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.recommend.toLowerCase().includes(q)) {
-        results.push({ type:'place', ...p, dayId:day.id, dayNum:day.num, dayDate:day.date, dayHex:day.hex, origIdx:i });
+        // 注意：p 物件本身有自己的 type 欄位（food/indoor/sight），
+        // ...p 必須放在前面，讓後面的 type:'place' 覆蓋回搜尋分類標記，
+        // 否則會被 p.type 蓋掉，導致 renderSearchCard 判斷失敗、卡片渲染成空白
+        results.push({ ...p, type:'place', dayId:day.id, dayNum:day.num, dayDate:day.date, dayHex:day.hex, origIdx:i });
       }
     });
   });
