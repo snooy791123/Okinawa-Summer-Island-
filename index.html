@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!-- 明確宣告本站僅支援淺色主題，避免部分瀏覽器/App 內建瀏覽器（如 LINE WebView）
+     偵測到裝置系統為深色模式時，自動幫網頁套用強制深色配色，導致文字與背景對比消失 -->
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
 <title>Okinawa 2026 | 沖繩夏日海島紀行</title>
 
 <!-- PWA 設定 -->
@@ -67,6 +71,12 @@ tailwind.config = {
     -webkit-text-fill-color: #1b2a30;
   }
   input::placeholder, textarea::placeholder { -webkit-text-fill-color: rgba(27,42,48,0.4); }
+
+  /* 全站分頁/篩選按鈕的「未選中」狀態，統一使用 bg-white/60 + text-ink/60 這組樣式
+     （百寶箱分頁、雨備分類、超商品牌/分類、日文小卡篩選、行程探索篩選、搜尋分類…）。
+     這裡直接寫死文字顏色（不依賴 Tailwind 透明度變數運算），
+     避免在部分 App 內建瀏覽器（如 LINE WebView）中因深色模式判斷而文字消失。 */
+  .bg-white\/60.text-ink\/60 { color: rgba(27,42,48,0.65) !important; -webkit-text-fill-color: rgba(27,42,48,0.65); }
   
   /* 動態琉璃海島背景 */
   body { 
