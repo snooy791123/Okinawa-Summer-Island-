@@ -88,6 +88,16 @@ tailwind.config = {
   /* Timeline 樣式 */
   .timeline-dot::before { content:''; position:absolute; left:1.1rem; top:2.5rem; bottom:-1rem; width:2px; border-left:2px dashed rgba(74, 133, 148, 0.25); }
   .timeline-item:last-child .timeline-dot::before { display:none; }
+
+  /* 目前接近的行程點標示 */
+  .timeline-current > div:last-child { box-shadow: 0 0 0 2px #72A98F, 0 8px 24px -6px rgba(114,169,143,0.35) !important; background: rgba(114,169,143,0.08) !important; }
+  .timeline-now-badge { display:inline-flex; align-items:center; gap:4px; background:#72A98F; color:#fff; font-size:10px; font-weight:800; padding:3px 10px; border-radius:999px; margin-bottom:8px; letter-spacing:0.05em; animation:pulseBadge 2s ease-in-out infinite; }
+  @keyframes pulseBadge { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+
+  /* 準備度儀表環 */
+  .ring-chart-wrap { position:relative; width:96px; height:96px; flex-shrink:0; }
+  .ring-chart-wrap canvas { position:relative; z-index:1; }
+  .ring-chart-label { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:2; pointer-events:none; }
   
   input[type=checkbox] { accent-color: #72A98F; cursor:pointer; width: 1.25rem; height: 1.25rem; border-radius: 4px; border: 1px solid rgba(74,133,148,0.3); transition: all 0.2s;}
   .checked-label span { text-decoration:line-through; opacity:0.35; }
@@ -280,6 +290,30 @@ tailwind.config = {
         <div class="w-12 h-12 rounded-full bg-sand/10 flex items-center justify-center text-sand mb-2 group-hover:scale-110 group-hover:bg-sand group-hover:text-white transition duration-300 shadow-sm"><i class="fas fa-language text-lg"></i></div>
         <div class="text-xs font-bold text-ink mt-1">Google 翻譯</div>
       </a>
+    </div>
+
+    <div class="glass-card rounded-3xl p-6 border border-white mb-6">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-10 h-10 rounded-full bg-mint/10 flex items-center justify-center text-mint"><i class="fas fa-chart-pie text-lg"></i></div>
+        <div>
+          <h3 class="font-heading font-black text-lg text-ink">旅程準備度</h3>
+          <p class="text-[10px] font-bold text-ink/40 mt-0.5">打包、收藏與行程進度，一目了然</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="flex flex-col items-center gap-2">
+          <div class="ring-chart-wrap"><canvas id="ringPacking"></canvas><div class="ring-chart-label"><span class="font-mono font-black text-base text-ink" id="ringPackingText">0%</span></div></div>
+          <span class="text-[11px] sm:text-xs font-bold text-ink/60 text-center">打包進度</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <div class="ring-chart-wrap"><canvas id="ringWishlist"></canvas><div class="ring-chart-label"><span class="font-mono font-black text-base text-ink" id="ringWishlistText">0</span></div></div>
+          <span class="text-[11px] sm:text-xs font-bold text-ink/60 text-center">收藏景點</span>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <div class="ring-chart-wrap"><canvas id="ringTrip"></canvas><div class="ring-chart-label"><span class="font-mono font-black text-base text-ink" id="ringTripText">0%</span></div></div>
+          <span class="text-[11px] sm:text-xs font-bold text-ink/60 text-center">行程進度</span>
+        </div>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -653,6 +687,8 @@ tailwind.config = {
       </div>
 
       <p class="text-ink/60 font-bold mt-4 bg-white/40 inline-block px-3 py-1 rounded-lg border border-white" id="search-count"></p>
+
+      <div id="search-category-filters" class="flex gap-2 overflow-x-auto no-scroll mt-4 pb-1"></div>
     </div>
     <div id="search-results" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
        <div class="col-span-full text-center py-20 text-ink/30 glass-card rounded-3xl border border-white" id="search-empty-state">
@@ -1167,6 +1203,8 @@ let state = {
   konbiniFilter: 'all',
   konbiniBrand: 'all',
   konbiniSearch: '',
+  searchQuery: '',
+  searchCategory: 'all',
   checklist: JSON.parse(localStorage.getItem('ok_checklist_v3') || '{}'),
   wishlist: JSON.parse(localStorage.getItem('ok_wishlist_v4') || '[]'),
   notes: JSON.parse(localStorage.getItem('ok_notes_v3') || '{}'),
@@ -1188,8 +1226,27 @@ document.addEventListener('DOMContentLoaded', () => {
   initKonbiniGrid();
   setupPWA();
   
-  document.querySelector('.sidebar-btn[data-target="view-overview"]')?.classList.add('active-sidebar');
-  document.querySelector('.mobile-btn[data-target="view-overview"]')?.classList.add('active-mobile');
+  const todayDayId = getTodayDayId();
+  if (todayDayId) {
+    switchView('view-day', todayDayId);
+    applyNavActiveState('view-day', todayDayId);
+    showToast && showToast('已自動為你切換到今天的行程 🏝️');
+  } else {
+    document.querySelector('.sidebar-btn[data-target="view-overview"]')?.classList.add('active-sidebar');
+    document.querySelector('.mobile-btn[data-target="view-overview"]')?.classList.add('active-mobile');
+  }
+
+  renderReadinessRings();
+
+  // 每分鐘刷新一次「目前接近」的行程點標示，以及行程進度環（僅在瀏覽今天的行程頁時）
+  setInterval(() => {
+    const t = getTodayDayId();
+    if (t && state.currentView === 'view-day' && state.currentDayId === t) {
+      const day = DAYS_DATA.find(d => d.id === t);
+      if (day) highlightCurrentItineraryItem(day, { scroll: false });
+    }
+    renderReadinessRings();
+  }, 60000);
 });
 
 function renderGreeting() {
@@ -1238,24 +1295,7 @@ function setupNavClicks() {
       const tgt = e.currentTarget.dataset.target;
       const dayId = e.currentTarget.dataset.day;
       
-      document.querySelectorAll('.sidebar-btn').forEach(b => {
-        b.classList.remove('active-sidebar');
-        b.classList.add('text-ink/60');
-      });
-      document.querySelectorAll('.mobile-btn').forEach(b => {
-        b.classList.remove('active-mobile');
-        b.classList.add('text-ink/50');
-      });
-      
-      const matches = document.querySelectorAll(`.nav-btn[data-target="${tgt}"]${dayId?`[data-day="${dayId}"]`:':not([data-day])'}`);
-      matches.forEach(b => {
-        if(b.classList.contains('sidebar-btn')) { b.classList.add('active-sidebar'); b.classList.remove('text-ink/60'); }
-        if(b.classList.contains('mobile-btn')) { 
-          b.classList.add('active-mobile'); 
-          b.classList.remove('text-ink/50'); 
-          b.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"});
-        }
-      });
+      applyNavActiveState(tgt, dayId);
       
       switchView(tgt, dayId);
     });
@@ -1273,9 +1313,143 @@ function switchView(target, dayId = null) {
     state.currentDayTab = 'itinerary';
     renderDayView(dayId);
   }
+
+  if(target === 'view-overview') {
+    renderReadinessRings();
+  }
   
   document.getElementById('mainContent').scrollTop = 0;
   window.scrollTo(0, 0);
+}
+
+// ===================== 行程當日自動定位 =====================
+// 取得日本當地時間（行程以沖繩當地時間為準，不受使用者裝置時區影響）
+function getJapanNow() {
+  const jpString = new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' });
+  return new Date(jpString);
+}
+
+// 若今天落在 7/2–7/6 範圍內，回傳對應的 dayId；否則回傳 null
+function getTodayDayId() {
+  const jp = getJapanNow();
+  const y = jp.getFullYear(), m = jp.getMonth() + 1, d = jp.getDate();
+  if (y === 2026 && m === 7 && d >= 2 && d <= 6) {
+    return 'day' + (d - 1);
+  }
+  return null;
+}
+
+// 計算整體行程進度（以出發日 0:00 到最後一天結束的時間比例）
+function getTripProgressPercent() {
+  const start = new Date('2026-07-02T00:00:00+09:00').getTime();
+  const end = new Date('2026-07-07T00:00:00+09:00').getTime();
+  const now = Date.now();
+  if (now <= start) return 0;
+  if (now >= end) return 100;
+  return Math.round((now - start) / (end - start) * 100);
+}
+
+// ===================== 準備度儀表環（Chart.js 甜甜圈）=====================
+let readinessCharts = {};
+function drawRing(canvasId, pct, color) {
+  const ctx = document.getElementById(canvasId)?.getContext('2d');
+  if (!ctx) return;
+  if (readinessCharts[canvasId]) readinessCharts[canvasId].destroy();
+  readinessCharts[canvasId] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [pct, Math.max(0, 100 - pct)],
+        backgroundColor: [color, 'rgba(27,42,48,0.06)'],
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      cutout: '78%',
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { animateRotate: true, duration: 700 }
+    }
+  });
+}
+
+function renderReadinessRings() {
+  if (!document.getElementById('ringPacking')) return;
+
+  const totalChk = CHECKLIST_DATA.reduce((s, c) => s + c.items.length, 0);
+  const checkedChk = Object.values(state.checklist).filter(Boolean).length;
+  const packingPct = totalChk ? Math.round(checkedChk / totalChk * 100) : 0;
+  drawRing('ringPacking', packingPct, '#72A98F');
+  document.getElementById('ringPackingText').textContent = `${packingPct}%`;
+
+  const totalPlaces = DAYS_DATA.reduce((s, d) => s + d.places.length, 0);
+  const wishCount = state.wishlist.length;
+  const wishPct = totalPlaces ? Math.round(wishCount / totalPlaces * 100) : 0;
+  drawRing('ringWishlist', wishPct, '#E2858E');
+  document.getElementById('ringWishlistText').textContent = `${wishCount}`;
+
+  const tripPct = getTripProgressPercent();
+  drawRing('ringTrip', tripPct, '#4A8594');
+  document.getElementById('ringTripText').textContent = `${tripPct}%`;
+}
+
+// 套用導覽列的 active 樣式（與 setupNavClicks 內邏輯一致，供自動跳轉共用）
+function applyNavActiveState(tgt, dayId) {
+  document.querySelectorAll('.sidebar-btn').forEach(b => {
+    b.classList.remove('active-sidebar');
+    b.classList.add('text-ink/60');
+  });
+  document.querySelectorAll('.mobile-btn').forEach(b => {
+    b.classList.remove('active-mobile');
+    b.classList.add('text-ink/50');
+  });
+  const matches = document.querySelectorAll(`.nav-btn[data-target="${tgt}"]${dayId?`[data-day="${dayId}"]`:':not([data-day])'}`);
+  matches.forEach(b => {
+    if(b.classList.contains('sidebar-btn')) { b.classList.add('active-sidebar'); b.classList.remove('text-ink/60'); }
+    if(b.classList.contains('mobile-btn')) {
+      b.classList.add('active-mobile');
+      b.classList.remove('text-ink/50');
+      b.scrollIntoView({behavior: "smooth", block: "nearest", inline: "center"});
+    }
+  });
+}
+
+// 標示時間軸上「目前接近」的行程點（僅在瀏覽的是今天的行程頁時顯示）
+function highlightCurrentItineraryItem(day, opts = {}) {
+  const { scroll = true } = opts;
+  const tlEl = document.getElementById('day-timeline');
+  if (!tlEl) return;
+  const items = tlEl.querySelectorAll('.timeline-item');
+  items.forEach(el => {
+    el.classList.remove('timeline-current');
+    const badge = el.querySelector('.timeline-now-badge');
+    if (badge) badge.remove();
+  });
+
+  if (day.id !== getTodayDayId()) return;
+
+  const jp = getJapanNow();
+  const nowMinutes = jp.getHours() * 60 + jp.getMinutes();
+  let currentIdx = 0;
+  day.itinerary.forEach((it, i) => {
+    const [h, mm] = it.time.split(':').map(Number);
+    if (h * 60 + mm <= nowMinutes) currentIdx = i;
+  });
+
+  const target = items[currentIdx];
+  if (!target) return;
+  target.classList.add('timeline-current');
+  const card = target.querySelector('.bg-white\\/60');
+  if (card) {
+    const badge = document.createElement('div');
+    badge.className = 'timeline-now-badge';
+    badge.innerHTML = '<i class="fas fa-location-dot"></i> 現在接近';
+    card.prepend(badge);
+  }
+  if (scroll) {
+    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 350);
+  }
 }
 
 function initOverview() {
@@ -1459,6 +1633,7 @@ window.handleCheck = (cb) => {
   const total = document.querySelectorAll('#checklist-container input[type=checkbox]').length;
   const checked = document.querySelectorAll('#checklist-container input[type=checkbox]:checked').length;
   updateProgress(checked, total);
+  renderReadinessRings();
 };
 
 function updateProgress(checked, total) {
@@ -1514,6 +1689,7 @@ window.toggleWishlist = (dayId, placeIndex) => {
   localStorage.setItem('ok_wishlist_v4', JSON.stringify(state.wishlist));
   syncWishlistButtons(key);
   renderWishlist();
+  renderReadinessRings();
   
   if(state.currentView === 'view-day' && state.currentDayId === dayId) {
     renderPlaces(day);
@@ -1791,7 +1967,7 @@ function renderDayView(dayId) {
   
   const tl = document.getElementById('day-timeline');
   tl.innerHTML = day.itinerary.map(it => `
-    <div class="timeline-item relative pl-12 pb-2">
+    <div class="timeline-item relative pl-12 pb-2" data-time="${it.time}">
       <div class="timeline-dot"></div>
       <div class="absolute left-0 top-0 w-9 h-9 bg-white border-2 rounded-full flex items-center justify-center shadow-sm z-10 text-sm" style="border-color:${day.hex}">${it.icon}</div>
       <div class="bg-white/60 border border-white p-4 rounded-2xl shadow-sm hover:bg-white transition-colors duration-300 group">
@@ -1803,6 +1979,8 @@ function renderDayView(dayId) {
         </a>
       </div>
     </div>`).join('');
+
+  highlightCurrentItineraryItem(day);
   
   const tipsEl = document.getElementById('day-tips');
   if(day.tips) {
@@ -1972,56 +2150,175 @@ window.handleSearch = (val, source = 'desktop') => {
   searchTimeout = setTimeout(() => performSearch(val.trim()), 300);
 };
 
+let lastSearchResults = [];
+
 function performSearch(query) {
   const container = document.getElementById('search-results');
   const countDisplay = document.getElementById('search-count');
-  
+  const filtersEl = document.getElementById('search-category-filters');
+
+  state.searchQuery = query;
+
   if(!query) {
     countDisplay.textContent = '';
+    if (filtersEl) filtersEl.innerHTML = '';
+    lastSearchResults = [];
     container.innerHTML = `
        <div class="col-span-full text-center py-20 text-ink/30 glass-card rounded-3xl border border-white" id="search-empty-state">
          <div class="text-5xl mb-4 opacity-50">🔍</div>
          <p class="font-bold text-lg">請輸入關鍵字開始搜尋</p>
-         <p class="text-xs mt-2 font-medium">例如：燒肉、海灘、購物、拉麵</p>
+         <p class="text-xs mt-2 font-medium">例如：燒肉、海灘、購物、拉麵、日文、飯糰</p>
        </div>`;
     return;
   }
 
   const q = query.toLowerCase();
   const results = [];
-  
+
+  // 1. 店家美食
   DAYS_DATA.forEach(day => {
     day.places.forEach((p, i) => {
       if(p.name.toLowerCase().includes(q) || p.area.toLowerCase().includes(q) || p.tags.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.recommend.toLowerCase().includes(q)) {
-        results.push({ ...p, dayId:day.id, dayNum:day.num, dayDate:day.date, dayHex:day.hex, origIdx:i });
+        results.push({ type:'place', ...p, dayId:day.id, dayNum:day.num, dayDate:day.date, dayHex:day.hex, origIdx:i });
       }
     });
   });
-  
-  countDisplay.textContent = `找到 ${results.length} 個結果，關鍵字：「${query}」`;
-  
-  if(!results.length) {
-    container.innerHTML = '<div class="col-span-full text-center py-20 text-ink/30 glass-card rounded-3xl border border-white"><div class="text-5xl mb-4 opacity-50">😕</div><p class="font-bold text-lg">找不到相關地點或美食</p><p class="text-xs mt-2 font-medium">試試看其他關鍵字</p></div>';
-  } else {
-    container.innerHTML = results.map(p => {
-      const key = `${p.dayId}-${p.origIdx}`;
-      const isWished = state.wishlist.some(w => w.key === key);
-      const mapUrl = `http://maps.google.com/?q=${encodeURIComponent(p.name+' '+p.area+' 沖繩')}`;
-      return `<div class="glass-card rounded-3xl p-5 border border-white shadow-sm flex flex-col group transform transition hover:-translate-y-1 hover:shadow-float">
-        ${placeImageBlock(p, p.dayHex)}
+
+  // 2. 景點行程
+  DAYS_DATA.forEach(day => {
+    day.itinerary.forEach(it => {
+      if(it.text.toLowerCase().includes(q) || (it.q||'').toLowerCase().includes(q)) {
+        results.push({ type:'itinerary', ...it, dayId:day.id, dayNum:day.num, dayDate:day.date, dayHex:day.hex });
+      }
+    });
+  });
+
+  // 3. 日文小卡
+  PHRASES_DATA.forEach((p, i) => {
+    if(p.tw.toLowerCase().includes(q) || p.ja.toLowerCase().includes(q) || p.romaji.toLowerCase().includes(q) || p.tag.toLowerCase().includes(q)) {
+      results.push({ type:'phrase', ...p, origIdx:i });
+    }
+  });
+
+  // 4. 超商美食
+  KONBINI_DATA.forEach((k, i) => {
+    if(k.name.toLowerCase().includes(q) || k.tw.toLowerCase().includes(q) || k.desc.toLowerCase().includes(q) || k.cat.toLowerCase().includes(q) || k.brand.toLowerCase().includes(q)) {
+      results.push({ type:'konbini', ...k, origIdx:i });
+    }
+  });
+
+  lastSearchResults = results;
+  if (!results.length) state.searchCategory = 'all';
+  else if (!results.some(r => r.type === state.searchCategory)) state.searchCategory = 'all';
+
+  renderSearchCategoryFilters();
+  renderSearchResults();
+}
+
+function renderSearchCategoryFilters() {
+  const filtersEl = document.getElementById('search-category-filters');
+  if (!filtersEl) return;
+  if (!lastSearchResults.length) { filtersEl.innerHTML = ''; return; }
+
+  const cats = [
+    { key:'all', label:'全部', icon:'' },
+    { key:'place', label:'店家美食', icon:'🍽️' },
+    { key:'itinerary', label:'景點行程', icon:'🗺️' },
+    { key:'phrase', label:'日文小卡', icon:'💬' },
+    { key:'konbini', label:'超商美食', icon:'🏪' },
+  ];
+
+  filtersEl.innerHTML = cats.map(c => {
+    const count = c.key === 'all' ? lastSearchResults.length : lastSearchResults.filter(r => r.type === c.key).length;
+    if (c.key !== 'all' && count === 0) return '';
+    return `<button class="px-4 py-2 text-xs font-bold rounded-full flex-shrink-0 transition shadow-sm border border-white ${state.searchCategory===c.key?'bg-ink text-white':'bg-white/60 text-ink/60 hover:bg-white'}" onclick="setSearchCategory('${c.key}')">${c.icon?c.icon+' ':''}${c.label} (${count})</button>`;
+  }).join('');
+}
+
+window.setSearchCategory = (cat) => {
+  state.searchCategory = cat;
+  renderSearchCategoryFilters();
+  renderSearchResults();
+};
+
+function renderSearchResults() {
+  const container = document.getElementById('search-results');
+  const countDisplay = document.getElementById('search-count');
+  const query = state.searchQuery;
+
+  const filtered = state.searchCategory === 'all' ? lastSearchResults : lastSearchResults.filter(r => r.type === state.searchCategory);
+
+  countDisplay.textContent = `找到 ${filtered.length} 個結果，關鍵字：「${query}」`;
+
+  if(!filtered.length) {
+    container.innerHTML = '<div class="col-span-full text-center py-20 text-ink/30 glass-card rounded-3xl border border-white"><div class="text-5xl mb-4 opacity-50">😕</div><p class="font-bold text-lg">找不到相關內容</p><p class="text-xs mt-2 font-medium">試試看其他關鍵字或分類</p></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(r => renderSearchCard(r)).join('');
+}
+
+function renderSearchCard(r) {
+  if (r.type === 'place') {
+    const key = `${r.dayId}-${r.origIdx}`;
+    const isWished = state.wishlist.some(w => w.key === key);
+    const mapUrl = `http://maps.google.com/?q=${encodeURIComponent(r.name+' '+r.area+' 沖繩')}`;
+    return `<div class="glass-card rounded-3xl p-5 border border-white shadow-sm flex flex-col group transform transition hover:-translate-y-1 hover:shadow-float">
+        ${placeImageBlock(r, r.dayHex)}
         <div class="flex justify-between items-start mb-3">
-          <span class="text-[9px] font-black px-2 py-1 rounded-md text-white shadow-sm uppercase tracking-wider" style="background:${p.dayHex}">Day ${p.dayNum} · ${p.dayDate}</span>
-          <button data-wish="${key}" onclick="toggleWishlist('${p.dayId}', ${p.origIdx})" class="w-8 h-8 rounded-full flex items-center justify-center transition border shadow-sm ${isWished?'text-coral border-coral/30 bg-coral/10':'text-ink/30 hover:bg-coral/10 hover:text-coral bg-white border-white'}"><i class="${isWished?'fas':'far'} fa-heart ${isWished?'text-sm':'text-xs'}"></i></button>
+          <span class="text-[9px] font-black px-2 py-1 rounded-md text-white shadow-sm uppercase tracking-wider" style="background:${r.dayHex}">🍽️ Day ${r.dayNum} · ${r.dayDate}</span>
+          <button data-wish="${key}" onclick="toggleWishlist('${r.dayId}', ${r.origIdx})" class="w-8 h-8 rounded-full flex items-center justify-center transition border shadow-sm ${isWished?'text-coral border-coral/30 bg-coral/10':'text-ink/30 hover:bg-coral/10 hover:text-coral bg-white border-white'}"><i class="${isWished?'fas':'far'} fa-heart ${isWished?'text-sm':'text-xs'}"></i></button>
         </div>
-        <h4 class="font-heading font-black text-lg text-ink mb-1 leading-tight">${p.name}</h4>
-        <div class="text-[10px] font-bold text-ink/40 mb-3"><i class="fas fa-map-pin mr-1"></i>${p.area} · ${p.tags}</div>
-        <p class="text-xs text-ink/70 flex-1 mb-4 font-serif leading-relaxed font-medium">${p.desc}</p>
+        <h4 class="font-heading font-black text-lg text-ink mb-1 leading-tight">${r.name}</h4>
+        <div class="text-[10px] font-bold text-ink/40 mb-3"><i class="fas fa-map-pin mr-1"></i>${r.area} · ${r.tags}</div>
+        <p class="text-xs text-ink/70 flex-1 mb-4 font-serif leading-relaxed font-medium">${r.desc}</p>
         <a href="${mapUrl}" target="_blank" class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-ink text-white text-xs font-bold hover:bg-ink/80 transition shadow-md">
           <i class="fas fa-location-arrow"></i> Google Maps
         </a>
       </div>`;
-    }).join('');
   }
+
+  if (r.type === 'itinerary') {
+    const mapUrl = `http://maps.google.com/?q=${encodeURIComponent(r.q)}`;
+    return `<div class="glass-card rounded-3xl p-5 border border-white shadow-sm flex flex-col group transform transition hover:-translate-y-1 hover:shadow-float">
+        ${r.img ? `<div class="itin-photo mb-3"><img src="${r.img}" alt="" loading="lazy" onload="this.classList.add('loaded')" onerror="this.parentElement.style.display='none'"></div>` : ''}
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-[9px] font-black px-2 py-1 rounded-md text-white shadow-sm uppercase tracking-wider" style="background:${r.dayHex}">🗺️ Day ${r.dayNum} · ${r.dayDate}</span>
+          <span class="text-[10px] font-mono font-bold text-ink/40">${r.time}</span>
+        </div>
+        <h4 class="font-heading font-black text-lg text-ink mb-3 leading-tight">${r.icon||''} ${r.text}</h4>
+        <a href="${mapUrl}" target="_blank" class="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-ink text-white text-xs font-bold hover:bg-ink/80 transition shadow-md">
+          <i class="fas fa-location-arrow"></i> Google Maps
+        </a>
+      </div>`;
+  }
+
+  if (r.type === 'phrase') {
+    return `<div class="glass-card rounded-3xl p-6 border border-white relative group transition duration-300 hover:shadow-float hover:-translate-y-1">
+        <button class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white text-${r.color} shadow-sm border border-white flex items-center justify-center hover:bg-${r.color} hover:text-white transition cursor-pointer group-hover:scale-110" onclick="speakJapanese('${r.speak}')" title="朗讀日文">
+          <i class="fas fa-volume-up"></i>
+        </button>
+        <div class="text-[10px] font-black text-${r.color} bg-${r.color}/10 px-2 py-1 rounded-md inline-block mb-3 uppercase tracking-wider">💬 ${r.tag}</div>
+        <h4 class="font-sans font-black text-ink text-lg mb-2">${r.tw}</h4>
+        <div class="text-${r.color} font-bold text-base mb-1">${r.ja}</div>
+        <div class="font-mono text-[11px] font-bold text-ink/30 uppercase tracking-widest">${r.romaji}</div>
+      </div>`;
+  }
+
+  if (r.type === 'konbini') {
+    return `<div class="glass-card rounded-3xl p-5 border border-white shadow-sm flex flex-col group transform transition hover:-translate-y-1 hover:shadow-float">
+        ${r.img ? `<div class="itin-photo mb-3"><img src="${r.img}" alt="" loading="lazy" onload="this.classList.add('loaded')" onerror="this.parentElement.style.display='none'"></div>` : ''}
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-[9px] font-black px-2 py-1 rounded-md text-white shadow-sm uppercase tracking-wider" style="background:${r.brand==='FamilyMart'?'#4A8594':'#72A98F'}">🏪 ${r.brand}</span>
+          <span class="text-xs font-mono font-black text-ink/60">${r.price}</span>
+        </div>
+        <h4 class="font-heading font-black text-lg text-ink mb-1 leading-tight">${r.tw}</h4>
+        <div class="text-[10px] font-bold text-ink/40 mb-3">${r.name} · ${r.cat}</div>
+        <p class="text-xs text-ink/70 flex-1 font-serif leading-relaxed font-medium">${r.desc}</p>
+      </div>`;
+  }
+
+  return '';
 }
 
 function showToast(msg) {
@@ -2052,17 +2349,25 @@ function setupPWA() {
       navigator.serviceWorker.register('sw.js')
         .then(reg => {
           console.log('✅ PWA Service Worker 註冊成功,離線可用');
-          // 偵測到新版本時提示
+          // 偵測到新版本時提示，並提供一鍵更新按鈕
           reg.addEventListener('updatefound', () => {
             const nw = reg.installing;
             nw && nw.addEventListener('statechange', () => {
               if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                showToast && showToast('已有新版本，重新整理即可更新 🔄');
+                showUpdateBanner(reg);
               }
             });
           });
         })
         .catch(err => console.warn('PWA Service Worker 註冊失敗:', err));
+
+      // 新 Service Worker 接管後，自動重新整理一次以套用新內容
+      let refreshed = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshed) return;
+        refreshed = true;
+        window.location.reload();
+      });
     });
   }
 
@@ -2080,6 +2385,25 @@ function setupPWA() {
     if (btn) btn.remove();
     showToast && showToast('已安裝到裝置！可從主畫面開啟 🏝️');
   });
+}
+
+// 顯示「發現新版本」提示卡，點擊後通知 SW 跳過等待並自動重新整理
+function showUpdateBanner(reg) {
+  if (document.getElementById('pwa-update-btn')) return;
+  const btn = document.createElement('button');
+  btn.id = 'pwa-update-btn';
+  btn.className = 'fixed z-50 bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 glass-card border border-white shadow-float px-5 py-3 rounded-2xl flex items-center gap-2 text-sm font-bold text-ink hover:scale-105 transition-transform';
+  btn.innerHTML = '<i class="fas fa-rotate text-ocean"></i> 發現新版本，點此立即更新';
+  btn.onclick = () => {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin text-ocean"></i> 更新中...';
+    if (reg.waiting) {
+      reg.waiting.postMessage('SKIP_WAITING');
+    } else {
+      window.location.reload();
+    }
+  };
+  document.body.appendChild(btn);
 }
 
 function showInstallButton(promptEvent) {
