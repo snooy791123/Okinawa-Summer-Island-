@@ -34,6 +34,7 @@ tailwind.config = {
         sand: '#D5A87B',
         coral: '#E2858E', 
         sky: '#95C1D1', 
+        dusk: '#7C7A99',
         glass: 'rgba(255, 255, 255, 0.65)',
         glassBorder: 'rgba(255, 255, 255, 0.5)',
       },
@@ -54,8 +55,18 @@ tailwind.config = {
 </script>
 
 <style>
-  :root { -webkit-tap-highlight-color: transparent; }
+  :root { -webkit-tap-highlight-color: transparent; color-scheme: light; }
   * { box-sizing: border-box; }
+
+  /* 防護：本網站僅設計淺色主題。若裝置開啟系統深色模式，
+     瀏覽器可能自動幫未明確指定顏色的表單元素套用深色配色（白字），
+     導致文字疊在淺色卡片背景上而「消失」。這裡強制表單文字維持深色，
+     並加上 -webkit-text-fill-color 因應 iOS Safari 的已知渲染差異。 */
+  input, textarea, select {
+    color: #1b2a30 !important;
+    -webkit-text-fill-color: #1b2a30;
+  }
+  input::placeholder, textarea::placeholder { -webkit-text-fill-color: rgba(27,42,48,0.4); }
   
   /* 動態琉璃海島背景 */
   body { 
@@ -224,7 +235,7 @@ tailwind.config = {
   
   <div class="relative mb-6">
     <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-ink/40 text-sm"></i>
-    <input id="quickSearch" type="text" placeholder="搜尋景點、美食..." class="w-full pl-10 pr-4 py-3 text-sm bg-white/60 backdrop-blur-md border border-white shadow-inner-light rounded-2xl font-sans outline-none focus:bg-white transition placeholder:text-ink/40" oninput="handleSearch(this.value)">
+    <input id="quickSearch" type="text" placeholder="搜尋景點、美食..." class="w-full pl-10 pr-4 py-3 text-sm bg-white/60 backdrop-blur-md border border-white shadow-inner-light rounded-2xl font-sans text-ink outline-none focus:bg-white transition placeholder:text-ink/40" oninput="handleSearch(this.value)">
   </div>
 
   <div class="space-y-1 font-heading text-sm font-medium text-ink/70">
@@ -658,7 +669,7 @@ tailwind.config = {
         </div>
         <div class="glass-card rounded-3xl p-6 border border-white">
           <h3 class="font-heading font-black text-xl text-ink mb-4"><i class="fas fa-note-sticky text-dusk mr-2"></i>今日備忘錄</h3>
-          <textarea id="day-note" rows="4" placeholder="今天的注意事項、備用選項..." class="w-full bg-white/50 rounded-2xl p-4 text-sm border border-white shadow-inner-light font-sans font-bold leading-relaxed outline-none" oninput="saveDayNote(this.value)"></textarea>
+          <textarea id="day-note" rows="4" placeholder="今天的注意事項、備用選項..." class="w-full bg-white/50 rounded-2xl p-4 text-sm text-ink border border-white shadow-inner-light font-sans font-bold leading-relaxed outline-none" oninput="saveDayNote(this.value)"></textarea>
         </div>
         <div class="glass-card rounded-3xl p-6 border border-white">
           <h3 class="font-heading font-black text-xl text-ink mb-4"><i class="fas fa-map-location-dot text-sky mr-2"></i>行程地點一鍵導航</h3>
@@ -683,7 +694,7 @@ tailwind.config = {
       
       <div class="mt-4 relative md:hidden">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-ink/40 text-sm"></i>
-        <input id="mobileQuickSearch" type="text" placeholder="搜尋景點、美食..." class="w-full pl-10 pr-4 py-3 text-sm bg-white/60 backdrop-blur-md border border-white shadow-inner-light rounded-2xl font-sans outline-none focus:bg-white transition placeholder:text-ink/40" oninput="handleSearch(this.value, 'mobile')">
+        <input id="mobileQuickSearch" type="text" placeholder="搜尋景點、美食..." class="w-full pl-10 pr-4 py-3 text-sm bg-white/60 backdrop-blur-md border border-white shadow-inner-light rounded-2xl font-sans text-ink outline-none focus:bg-white transition placeholder:text-ink/40" oninput="handleSearch(this.value, 'mobile')">
       </div>
 
       <p class="text-ink/60 font-bold mt-4 bg-white/40 inline-block px-3 py-1 rounded-lg border border-white" id="search-count"></p>
@@ -1234,18 +1245,17 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     document.querySelector('.sidebar-btn[data-target="view-overview"]')?.classList.add('active-sidebar');
     document.querySelector('.mobile-btn[data-target="view-overview"]')?.classList.add('active-mobile');
+    renderReadinessRings();
   }
 
-  renderReadinessRings();
-
-  // 每分鐘刷新一次「目前接近」的行程點標示，以及行程進度環（僅在瀏覽今天的行程頁時）
+  // 每分鐘刷新一次「目前接近」的行程點標示，以及（若正瀏覽總覽頁）行程進度環
   setInterval(() => {
     const t = getTodayDayId();
     if (t && state.currentView === 'view-day' && state.currentDayId === t) {
       const day = DAYS_DATA.find(d => d.id === t);
       if (day) highlightCurrentItineraryItem(day, { scroll: false });
     }
-    renderReadinessRings();
+    if (state.currentView === 'view-overview') renderReadinessRings();
   }, 60000);
 });
 
