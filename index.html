@@ -446,11 +446,11 @@ tailwind.config = {
     </div>
 
     <div class="flex gap-2 overflow-x-auto no-scroll mb-6 pb-2 px-1">
-      <button class="tool-tab px-5 py-3 text-sm font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0" onclick="switchToolTab(this, 'size')"><i class="fas fa-ruler-combined mr-2"></i>尺寸對照表</button>
-      <button class="tool-tab px-5 py-3 text-sm font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="switchToolTab(this, 'info')"><i class="fas fa-ticket-alt mr-2"></i>票券與備忘</button>
+      <button class="tool-tab px-5 py-3 text-sm font-bold rounded-full bg-ink text-white shadow-md transition flex-shrink-0" onclick="switchToolTab(this, 'info')"><i class="fas fa-ticket-alt mr-2"></i>票券與備忘</button>
+      <button class="tool-tab px-5 py-3 text-sm font-bold rounded-full bg-white/60 text-ink/60 hover:bg-white border border-white transition flex-shrink-0" onclick="switchToolTab(this, 'size')"><i class="fas fa-ruler-combined mr-2"></i>尺寸對照表</button>
     </div>
 
-    <div id="tool-size" class="tool-content active glass-card border border-white rounded-3xl p-6 lg:p-8">
+    <div id="tool-size" class="tool-content hidden glass-card border border-white rounded-3xl p-6 lg:p-8">
       <div class="flex items-center gap-3 mb-6">
         <div class="w-10 h-10 rounded-full bg-sky/10 flex items-center justify-center text-sky"><i class="fas fa-ruler-combined text-lg"></i></div>
         <div>
@@ -495,7 +495,7 @@ tailwind.config = {
       </div>
     </div>
 
-    <div id="tool-info" class="tool-content hidden space-y-6">
+    <div id="tool-info" class="tool-content active space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <div class="glass-card rounded-3xl p-5 border border-white">
           <h3 class="font-heading font-black text-ink mb-3"><i class="fas fa-hotel text-ocean mr-2"></i>住宿資訊</h3>
