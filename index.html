@@ -578,6 +578,39 @@ tailwind.config = {
           </div>
         </div>
       </div>
+
+      <div class="glass-card rounded-3xl p-5 border border-white">
+        <h3 class="font-heading font-black text-ink mb-1"><i class="fas fa-people-group text-mint mr-2"></i>分帳計算機</h3>
+        <p class="text-[10px] font-bold text-ink/40 mb-4">輸入總金額，自動平分並換算台幣（使用上方即時匯率）</p>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <label class="text-[10px] font-black text-ink/40 uppercase tracking-wider block mb-1.5">總金額 (¥)</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink/30 font-mono font-bold text-sm">¥</span>
+              <input type="number" id="splitTotal" value="6000" min="0" inputmode="numeric" class="w-full bg-white/70 border border-white/80 shadow-inner-light rounded-2xl pl-7 pr-3 py-3 font-mono font-bold text-lg text-ink outline-none transition" oninput="updateSplit()">
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] font-black text-ink/40 uppercase tracking-wider block mb-1.5">人數</label>
+            <div class="flex items-center gap-2">
+              <button onclick="stepSplitPeople(-1)" class="w-10 h-12 rounded-2xl bg-white/70 border border-white shadow-sm font-black text-ink/60 hover:bg-white transition flex-shrink-0">−</button>
+              <input type="number" id="splitPeople" value="6" min="1" max="20" inputmode="numeric" class="w-full bg-white/70 border border-white/80 shadow-inner-light rounded-2xl px-2 py-3 font-mono font-bold text-lg text-ink text-center outline-none transition" oninput="updateSplit()">
+              <button onclick="stepSplitPeople(1)" class="w-10 h-12 rounded-2xl bg-white/70 border border-white shadow-sm font-black text-ink/60 hover:bg-white transition flex-shrink-0">＋</button>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-mint/10 border border-mint/20 rounded-2xl px-4 py-3">
+            <div class="text-[10px] font-black text-mint/70 uppercase tracking-wider mb-0.5">每人日幣</div>
+            <div id="splitJpy" class="font-mono font-black text-xl text-mint">¥1,000</div>
+          </div>
+          <div class="bg-ocean/10 border border-ocean/20 rounded-2xl px-4 py-3">
+            <div class="text-[10px] font-black text-ocean/70 uppercase tracking-wider mb-0.5">每人台幣約</div>
+            <div id="splitTwd" class="font-mono font-black text-xl text-ocean">NT$ --</div>
+          </div>
+        </div>
+        <div id="splitRemainder" class="mt-3 text-[10px] font-bold text-ink/40 hidden"></div>
+      </div>
     </div>
   </section>
 
@@ -1397,9 +1430,14 @@ function drawRing(canvasId, pct, color) {
 function renderReadinessRings() {
   if (!document.getElementById('ringPacking')) return;
 
+  // 只計算「目前清單中實際存在」的項目勾選數，
+  // 避免 localStorage 中舊版清單殘留的 key 造成勾選數虛增（可能超過 100%）
   const totalChk = CHECKLIST_DATA.reduce((s, c) => s + c.items.length, 0);
-  const checkedChk = Object.values(state.checklist).filter(Boolean).length;
-  const packingPct = totalChk ? Math.round(checkedChk / totalChk * 100) : 0;
+  let checkedChk = 0;
+  CHECKLIST_DATA.forEach((cat, ci) => cat.items.forEach((_, ii) => {
+    if (state.checklist[`chk-${ci}-${ii}`]) checkedChk++;
+  }));
+  const packingPct = totalChk ? Math.min(100, Math.round(checkedChk / totalChk * 100)) : 0;
   drawRing('ringPacking', packingPct, '#72A98F');
   document.getElementById('ringPackingText').textContent = `${packingPct}%`;
 
@@ -1583,15 +1621,32 @@ function renderMarineData(data) {
 }
 
 async function fetchCurrency() {
+  const rateEl = document.getElementById('rateUpdate');
   try {
     const data = await fetchWithRetry('https://open.er-api.com/v6/latest/JPY');
     state.exchangeRate.JPY_TWD = data.rates.TWD;
-    
+
+    // 快取最新匯率，供離線或 API 失效時使用
+    try {
+      localStorage.setItem('ok_rate_v1', JSON.stringify({ rate: data.rates.TWD, ts: Date.now() }));
+    } catch(_) {}
+
     const updated = new Date().toLocaleTimeString('zh-TW', {hour:'2-digit', minute:'2-digit'});
-    document.getElementById('rateUpdate').innerHTML = `<i class="fas fa-sync-alt mr-1"></i> ${updated}`;
+    rateEl.innerHTML = `<i class="fas fa-sync-alt mr-1"></i> ${updated}`;
     updateCurrency();
   } catch(e) {
-    document.getElementById('rateUpdate').textContent = '無法取得匯率';
+    // 網路失敗：退回上次快取的真實匯率（比寫死的預設值準確），並標示快取時間
+    const cached = (() => { try { return JSON.parse(localStorage.getItem('ok_rate_v1')); } catch(_) { return null; } })();
+    if (cached && cached.rate) {
+      state.exchangeRate.JPY_TWD = cached.rate;
+      const t = new Date(cached.ts);
+      const label = `${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+      rateEl.innerHTML = `<i class="fas fa-database mr-1"></i> 離線快取 ${label}`;
+      updateCurrency();
+    } else {
+      rateEl.textContent = '無法取得匯率（使用概估值）';
+      updateCurrency();
+    }
   }
 }
 
@@ -1601,7 +1656,42 @@ function updateCurrency() {
   const jpy = parseFloat(jpyInput.value) || 0;
   const twd = Math.round(jpy * state.exchangeRate.JPY_TWD);
   document.getElementById('twdOutput').textContent = twd.toLocaleString();
+  updateSplit();
 }
+
+// ===================== 分帳計算機 =====================
+window.updateSplit = () => {
+  const totalEl = document.getElementById('splitTotal');
+  const peopleEl = document.getElementById('splitPeople');
+  if (!totalEl || !peopleEl) return;
+
+  const total = Math.max(0, parseFloat(totalEl.value) || 0);
+  const people = Math.max(1, Math.min(20, parseInt(peopleEl.value) || 1));
+
+  // 日幣沒有小數：每人金額無條件進位到整數円，多收的部分以餘數提示
+  const perJpy = Math.ceil(total / people);
+  const overpay = perJpy * people - total;
+  const perTwd = Math.round(perJpy * state.exchangeRate.JPY_TWD);
+
+  document.getElementById('splitJpy').textContent = '¥' + perJpy.toLocaleString();
+  document.getElementById('splitTwd').textContent = 'NT$ ' + perTwd.toLocaleString();
+
+  const remEl = document.getElementById('splitRemainder');
+  if (overpay > 0) {
+    remEl.textContent = `💡 每人取整数付 ¥${perJpy.toLocaleString()}，會多收 ¥${overpay.toLocaleString()}，可當公費或找一人少付。`;
+    remEl.classList.remove('hidden');
+  } else {
+    remEl.classList.add('hidden');
+  }
+};
+
+window.stepSplitPeople = (delta) => {
+  const el = document.getElementById('splitPeople');
+  if (!el) return;
+  const next = Math.max(1, Math.min(20, (parseInt(el.value) || 6) + delta));
+  el.value = next;
+  updateSplit();
+};
 
 document.getElementById('jpyInput')?.addEventListener('input', updateCurrency);
 
